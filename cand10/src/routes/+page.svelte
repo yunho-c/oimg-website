@@ -356,7 +356,40 @@
 						Open effortlessly
 					</h2>
 					<p class="text-base leading-7 text-muted-foreground">
-						Drag and drop your images, open from your file explorer, or invoke from the command line.
+						<button
+							type="button"
+							class={`font-medium underline decoration-current underline-offset-4 transition-colors ${
+								openEffortlesslyIndex === 0 ? "text-foreground" : "hover:text-foreground"
+							}`}
+							onmouseenter={() => showOpenEffortlesslySlide(0)}
+							onfocus={() => showOpenEffortlesslySlide(0)}
+							onclick={() => showOpenEffortlesslySlide(0)}
+						>
+							Drag and drop your images
+						</button>,
+						<button
+							type="button"
+							class={`font-medium underline decoration-current underline-offset-4 transition-colors ${
+								openEffortlesslyIndex === 1 ? "text-foreground" : "hover:text-foreground"
+							}`}
+							onmouseenter={() => showOpenEffortlesslySlide(1)}
+							onfocus={() => showOpenEffortlesslySlide(1)}
+							onclick={() => showOpenEffortlesslySlide(1)}
+						>
+							open from your file explorer
+						</button>,
+						or
+						<button
+							type="button"
+							class={`font-medium underline decoration-current underline-offset-4 transition-colors ${
+								openEffortlesslyIndex === 2 ? "text-foreground" : "hover:text-foreground"
+							}`}
+							onmouseenter={() => showOpenEffortlesslySlide(2)}
+							onfocus={() => showOpenEffortlesslySlide(2)}
+							onclick={() => showOpenEffortlesslySlide(2)}
+						>
+							invoke from the command line
+						</button>.
 					</p>
 				</div>
 
@@ -367,21 +400,14 @@
 							style={`transform: translateX(-${openEffortlesslyIndex * 100}%);`}
 						>
 							{#each openEffortlesslySlides as slide, index}
-								<div class="min-w-full space-y-4 p-4 sm:p-5">
-									<div class="overflow-hidden rounded-xl border bg-background shadow-sm">
+								<div class="min-w-full p-4 sm:p-5">
+									<div class="flex aspect-[16/10] items-center justify-center overflow-hidden rounded-xl border bg-background shadow-sm">
 										<img
-											class="block h-auto w-full"
+											class="block max-h-full w-auto max-w-full"
 											src={slide.src}
 											alt={slide.alt}
 											loading={index === 0 ? "eager" : "lazy"}
 										/>
-									</div>
-									<div class="space-y-2">
-										<div class="flex items-center justify-between gap-4">
-											<p class="text-sm font-medium">{slide.title}</p>
-											<Badge variant="secondary">0{index + 1}</Badge>
-										</div>
-										<p class="text-sm leading-6 text-muted-foreground">{slide.description}</p>
 									</div>
 								</div>
 							{/each}
