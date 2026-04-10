@@ -193,7 +193,7 @@
 					</div>
 				</div>
 
-					<Card class="gap-0 overflow-hidden py-0">
+					<Card class="transform-gpu gap-0 overflow-hidden py-0 shadow-sm transition-all duration-500 ease-in-out hover:scale-110 hover:shadow-2xl">
 						<video
 							class="block h-auto w-full bg-black"
 							src="/product-demo.mov"
