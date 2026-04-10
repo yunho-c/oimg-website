@@ -345,7 +345,7 @@
 
 				<div class="py-3">
 					<InteractiveVideo
-						src="/product-demo.mov"
+						src="/analyze_demo.mp4"
 						triggerLabel="Open navigate trade-offs video in theater mode"
 						theaterLabel="Navigate trade-offs theater mode"
 						cardClass="transform-gpu inline-flex w-fit gap-0 overflow-hidden py-0 bg-background shadow-sm transition-all duration-500 ease-in-out hover:scale-110 hover:shadow-2xl focus-within:ring-2 focus-within:ring-primary/40"
