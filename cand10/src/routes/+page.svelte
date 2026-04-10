@@ -7,7 +7,6 @@
 		Download,
 		FileImage,
 		FolderOpen,
-		Images,
 		Layers3,
 		Scaling,
 		ScanSearch,
@@ -73,15 +72,21 @@
 	const openEffortlesslySlides = [
 		{
 			title: "Bring images in immediately",
-			description: "Start with drag and drop when you want the fastest path from file to workspace."
+			description: "Start with drag and drop when you want the fastest path from file to workspace.",
+			src: "/open_dnd_macos.webp",
+			alt: "The OIMG app window receiving an image via drag and drop."
 		},
 		{
 			title: "Open from where you already work",
-			description: "Pull images in from the file explorer without breaking the flow of the task."
+			description: "Pull images in from the file explorer without breaking the flow of the task.",
+			src: "/open_explorer_macos.webp",
+			alt: "The macOS Finder open-with menu showing OIMG as an available app."
 		},
 		{
 			title: "Launch from the command line",
-			description: "Use OIMG from a terminal when the workflow starts in scripts, shells, or quick handoffs."
+			description: "Open OIMG from the terminal when the workflow starts in scripts, shells, or quick handoffs.",
+			src: "/open_cli_macos.webp",
+			alt: "A macOS terminal invoking OIMG from the command line with an image path."
 		}
 	];
 
@@ -362,35 +367,21 @@
 							style={`transform: translateX(-${openEffortlesslyIndex * 100}%);`}
 						>
 							{#each openEffortlesslySlides as slide, index}
-								<div class="min-w-full p-4 sm:p-5">
-									<div class="flex aspect-[16/10] flex-col justify-between rounded-xl border border-dashed bg-gradient-to-br from-muted/40 via-background to-muted/10 p-5">
-										<div class="flex items-start justify-between gap-4">
-											<div class="space-y-2">
-												<p class="text-sm font-medium">{slide.title}</p>
-												<p class="max-w-md text-sm leading-6 text-muted-foreground">
-													{slide.description}
-												</p>
-											</div>
+								<div class="min-w-full space-y-4 p-4 sm:p-5">
+									<div class="overflow-hidden rounded-xl border bg-background shadow-sm">
+										<img
+											class="block h-auto w-full"
+											src={slide.src}
+											alt={slide.alt}
+											loading={index === 0 ? "eager" : "lazy"}
+										/>
+									</div>
+									<div class="space-y-2">
+										<div class="flex items-center justify-between gap-4">
+											<p class="text-sm font-medium">{slide.title}</p>
 											<Badge variant="secondary">0{index + 1}</Badge>
 										</div>
-										<div class="grid gap-3 sm:grid-cols-[1.2fr_0.8fr]">
-											<div class="rounded-lg border bg-background/80 p-4 shadow-sm">
-												<div class="flex items-center gap-3">
-													<div class="flex size-10 items-center justify-center rounded-lg border bg-muted/40">
-														<Images class="size-4 text-muted-foreground" />
-													</div>
-													<div>
-														<p class="text-sm font-medium">Visual preview</p>
-														<p class="text-xs text-muted-foreground">
-															A clear look at how the app opens and where the workflow begins
-														</p>
-													</div>
-												</div>
-											</div>
-											<div class="rounded-lg border bg-background/70 p-4 text-sm leading-6 text-muted-foreground">
-												Each view should make the starting point feel obvious, fast, and low-friction.
-											</div>
-										</div>
+										<p class="text-sm leading-6 text-muted-foreground">{slide.description}</p>
 									</div>
 								</div>
 							{/each}
