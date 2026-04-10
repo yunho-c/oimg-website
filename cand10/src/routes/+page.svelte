@@ -90,7 +90,8 @@
 		}
 	];
 
-	const featureSectionColumns = "lg:grid-cols-[0.74fr_1.26fr]";
+	// const featureSectionColumns = "lg:grid-cols-[0.74fr_1.26fr]";
+	const featureSectionColumns = "lg:grid-cols-[1.00fr_1.00fr]";
 
 	const boardCases = [
 		{
