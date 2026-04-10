@@ -571,8 +571,19 @@
 			{/if}
 		</main>
 
-		<footer class="border-t py-6 text-sm text-muted-foreground">
+		<footer class="flex flex-col gap-2 border-t py-6 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
 			<p>&copy; {currentYear} OIMG. All rights reserved.</p>
+			<p>
+				Built with care by
+				<a
+					href="https://yunhocho.com/"
+					target="_blank"
+					rel="noreferrer"
+					class="underline decoration-current underline-offset-4 transition-colors hover:text-foreground"
+				>
+					Yunho Cho
+				</a>
+			</p>
 		</footer>
 	</div>
 </div>
