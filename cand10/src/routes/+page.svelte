@@ -189,7 +189,7 @@
 		</header>
 
 		<main class="flex flex-col gap-16 py-10 sm:gap-20 sm:py-16">
-			<section class="grid gap-6 lg:grid-cols-[1.15fr_0.85fr] lg:items-start">
+			<section id="download" class="grid gap-6 lg:grid-cols-[1.05fr_0.95fr] lg:items-start">
 				<div class="space-y-6">
 					<!-- <Badge variant="secondary">Preview-first export workflow</Badge> -->
 					<div class="space-y-4">
@@ -220,7 +220,7 @@
 				/>
 			</section>
 
-			<section class={`grid gap-6 ${featureSectionColumns} lg:items-center`}>
+			<section class={`grid gap-6 pt-12 sm:pt-16 ${featureSectionColumns} lg:items-center`}>
 				<div class="space-y-4">
 					<h2 class="text-3xl font-semibold tracking-tight sm:text-4xl">
 						Open effortlessly
@@ -273,7 +273,7 @@
 								<div class="min-w-full">
 									<div class="flex aspect-[16/10] items-center justify-center overflow-hidden">
 										<img
-											class="block max-h-full w-auto max-w-full"
+											class="block max-h-full w-auto max-w-full rounded-xl"
 											src={slide.src}
 											alt={slide.alt}
 											loading={index === 0 ? "eager" : "lazy"}
