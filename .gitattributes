@@ -3,3 +3,4 @@
 
 # Store cand10 screenshots in Git LFS
 cand10/static/*.webp filter=lfs diff=lfs merge=lfs -text
+cand10/static/product-demo.mov filter=lfs diff=lfs merge=lfs -text
