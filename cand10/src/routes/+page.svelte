@@ -24,12 +24,6 @@
 	import { Separator } from "$lib/components/ui/separator";
 	import { Tabs, TabsContent, TabsList, TabsTrigger } from "$lib/components/ui/tabs";
 
-	const navItems = [
-		{ label: "Steps", href: "#steps" },
-		{ label: "Board", href: "#board" },
-		{ label: "FAQ", href: "#faq" }
-	];
-
 	const signalCards = [
 		{ label: "Core moves", value: "5", detail: "Optimize, convert, resize, crop, extend." },
 		{ label: "Export formats", value: "5", detail: "JPEG, PNG, WebP, AVIF, JPEG XL." },
@@ -182,9 +176,6 @@
 
 			<div class="flex flex-col gap-3 sm:flex-row sm:items-center">
 				<nav class="flex items-center gap-5 text-sm text-muted-foreground">
-					{#each navItems as item}
-						<a href={item.href} class="transition-colors hover:text-foreground">{item.label}</a>
-					{/each}
 					<a
 						href="https://github.com/yunho-c/oimg"
 						target="_blank"
