@@ -70,6 +70,21 @@
 		}
 	];
 
+	const openEffortlesslySlides = [
+		{
+			title: "Screenshot slot 01",
+			description: "Drop in the import screen or the moment a file first lands in the app."
+		},
+		{
+			title: "Screenshot slot 02",
+			description: "Use this frame for the main editing surface or the live preview view."
+		},
+		{
+			title: "Screenshot slot 03",
+			description: "Reserve the last card for export settings, final review, or a before/after comparison."
+		}
+	];
+
 	const boardCases = [
 		{
 			value: "catalog",
@@ -141,6 +156,7 @@
 	let theaterDialog = $state<HTMLDivElement | null>(null);
 	let videoCardTrigger = $state<HTMLDivElement | null>(null);
 	let theaterCloseButton = $state<HTMLButtonElement | null>(null);
+	let openEffortlesslyIndex = $state(0);
 
 	function moveNode(node: HTMLElement, target: HTMLElement | null) {
 		if (target && node.parentNode !== target) {
@@ -212,6 +228,19 @@
 		if (!theaterDialog?.contains(target)) {
 			void closeTheaterMode();
 		}
+	}
+
+	function showPreviousOpenEffortlesslySlide() {
+		openEffortlesslyIndex =
+			(openEffortlesslyIndex - 1 + openEffortlesslySlides.length) % openEffortlesslySlides.length;
+	}
+
+	function showNextOpenEffortlesslySlide() {
+		openEffortlesslyIndex = (openEffortlesslyIndex + 1) % openEffortlesslySlides.length;
+	}
+
+	function showOpenEffortlesslySlide(index: number) {
+		openEffortlesslyIndex = index;
 	}
 
 	onMount(() => {
@@ -323,6 +352,104 @@
 						</div>
 					</Card>
 				</div>
+			</section>
+
+			<section class="grid gap-6 lg:grid-cols-[0.74fr_1.26fr] lg:items-center">
+				<div class="space-y-4">
+					<h2 class="text-3xl font-semibold tracking-tight sm:text-4xl">
+						Open effortlessly
+					</h2>
+					<p class="text-base leading-7 text-muted-foreground">
+						Drag and drop your images, open from your file explorer, or invoke from the command line.
+					</p>
+				</div>
+
+				<Card class="gap-5 overflow-hidden border bg-card/80 p-5 shadow-sm">
+					<div class="flex items-center justify-between gap-3">
+						<div class="space-y-1">
+							<p class="text-sm font-medium">Screenshot carousel</p>
+							<p class="text-sm text-muted-foreground">
+								{openEffortlesslyIndex + 1} / {openEffortlesslySlides.length}
+							</p>
+						</div>
+						<div class="flex items-center gap-2">
+							<Button
+								type="button"
+								variant="outline"
+								size="sm"
+								aria-label="Show previous screenshot"
+								onclick={showPreviousOpenEffortlesslySlide}
+							>
+								<ArrowRight class="size-4 rotate-180" />
+							</Button>
+							<Button
+								type="button"
+								variant="outline"
+								size="sm"
+								aria-label="Show next screenshot"
+								onclick={showNextOpenEffortlesslySlide}
+							>
+								<ArrowRight class="size-4" />
+							</Button>
+						</div>
+					</div>
+
+					<div class="overflow-hidden rounded-2xl border bg-muted/20">
+						<div
+							class="flex transition-transform duration-500 ease-in-out"
+							style={`transform: translateX(-${openEffortlesslyIndex * 100}%);`}
+						>
+							{#each openEffortlesslySlides as slide, index}
+								<div class="min-w-full p-4 sm:p-5">
+									<div class="flex aspect-[16/10] flex-col justify-between rounded-xl border border-dashed bg-gradient-to-br from-muted/40 via-background to-muted/10 p-5">
+										<div class="flex items-start justify-between gap-4">
+											<div class="space-y-2">
+												<p class="text-sm font-medium">{slide.title}</p>
+												<p class="max-w-md text-sm leading-6 text-muted-foreground">
+													{slide.description}
+												</p>
+											</div>
+											<Badge variant="secondary">0{index + 1}</Badge>
+										</div>
+										<div class="grid gap-3 sm:grid-cols-[1.2fr_0.8fr]">
+											<div class="rounded-lg border bg-background/80 p-4 shadow-sm">
+												<div class="flex items-center gap-3">
+													<div class="flex size-10 items-center justify-center rounded-lg border bg-muted/40">
+														<Images class="size-4 text-muted-foreground" />
+													</div>
+													<div>
+														<p class="text-sm font-medium">Replace with a real app screenshot</p>
+														<p class="text-xs text-muted-foreground">
+															PNG, JPEG, or a refined product capture later
+														</p>
+													</div>
+												</div>
+											</div>
+											<div class="rounded-lg border bg-background/70 p-4 text-sm leading-6 text-muted-foreground">
+												Use this card to highlight what the user sees first, what they can do
+												next, and why the opening workflow feels light.
+											</div>
+										</div>
+									</div>
+								</div>
+							{/each}
+						</div>
+					</div>
+
+					<div class="flex items-center justify-center gap-2">
+						{#each openEffortlesslySlides as _, index}
+							<button
+								type="button"
+								class={`size-2.5 rounded-full transition-colors ${
+									index === openEffortlesslyIndex ? "bg-foreground" : "bg-muted-foreground/25 hover:bg-muted-foreground/45"
+								}`}
+								aria-label={`Show screenshot ${index + 1}`}
+								aria-pressed={index === openEffortlesslyIndex}
+								onclick={() => showOpenEffortlesslySlide(index)}
+							></button>
+						{/each}
+					</div>
+				</Card>
 			</section>
 
 			<!-- <section class="grid gap-4 md:grid-cols-3">
