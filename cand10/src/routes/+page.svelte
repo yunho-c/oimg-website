@@ -193,12 +193,12 @@
 					</div>
 				</div>
 
-				<Card class="overflow-hidden">
-					<video
-						class="aspect-video w-full bg-black object-cover"
-						src="/product-demo.mov"
-						autoplay
-						muted
+					<Card class="gap-0 overflow-hidden py-0">
+						<video
+							class="block h-auto w-full bg-black"
+							src="/product-demo.mov"
+							autoplay
+							muted
 						loop
 						controls
 						playsinline
@@ -209,7 +209,7 @@
 				</Card>
 			</section>
 
-			<section class="grid gap-4 md:grid-cols-3">
+			<!-- <section class="grid gap-4 md:grid-cols-3">
 				{#each signalCards as card}
 					<Card>
 						<CardHeader class="gap-1">
@@ -221,7 +221,7 @@
 						</CardContent>
 					</Card>
 				{/each}
-			</section>
+			</section> -->
 
 			<section class="grid gap-6 lg:grid-cols-[0.74fr_1.26fr]" id="steps">
 				<div class="space-y-3">
