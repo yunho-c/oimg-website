@@ -430,6 +430,29 @@
 				</div>
 			</section>
 
+			<section class="grid gap-6 lg:grid-cols-[0.74fr_1.26fr] lg:items-center">
+				<div class="space-y-4">
+					<h2 class="text-3xl font-semibold tracking-tight sm:text-4xl">
+						Stay in control
+					</h2>
+					<p class="text-base leading-7 text-muted-foreground">
+						OIMG provides image quality assessment (Pixel Match Percentage,
+						MS-SSIM, and SSIMULACRA 2) — so you don't get blindsided by unexpected quality loss.
+					</p>
+				</div>
+
+				<div class="overflow-hidden">
+					<div class="flex aspect-[16/10] items-center justify-center overflow-hidden">
+						<img
+							class="block max-h-full w-auto max-w-full"
+							src="/quality_metrics.webp"
+							alt="OIMG quality metrics view with real-time quality assessment values."
+							loading="lazy"
+						/>
+					</div>
+				</div>
+			</section>
+
 			<!-- <section class="grid gap-4 md:grid-cols-3">
 				{#each signalCards as card}
 					<Card>
