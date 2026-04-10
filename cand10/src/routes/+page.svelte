@@ -72,16 +72,16 @@
 
 	const openEffortlesslySlides = [
 		{
-			title: "Screenshot slot 01",
-			description: "Drop in the import screen or the moment a file first lands in the app."
+			title: "Bring images in immediately",
+			description: "Start with drag and drop when you want the fastest path from file to workspace."
 		},
 		{
-			title: "Screenshot slot 02",
-			description: "Use this frame for the main editing surface or the live preview view."
+			title: "Open from where you already work",
+			description: "Pull images in from the file explorer without breaking the flow of the task."
 		},
 		{
-			title: "Screenshot slot 03",
-			description: "Reserve the last card for export settings, final review, or a before/after comparison."
+			title: "Launch from the command line",
+			description: "Use OIMG from a terminal when the workflow starts in scripts, shells, or quick handoffs."
 		}
 	];
 
@@ -230,15 +230,6 @@
 		}
 	}
 
-	function showPreviousOpenEffortlesslySlide() {
-		openEffortlesslyIndex =
-			(openEffortlesslyIndex - 1 + openEffortlesslySlides.length) % openEffortlesslySlides.length;
-	}
-
-	function showNextOpenEffortlesslySlide() {
-		openEffortlesslyIndex = (openEffortlesslyIndex + 1) % openEffortlesslySlides.length;
-	}
-
 	function showOpenEffortlesslySlide(index: number) {
 		openEffortlesslyIndex = index;
 	}
@@ -364,37 +355,8 @@
 					</p>
 				</div>
 
-				<Card class="gap-5 overflow-hidden border bg-card/80 p-5 shadow-sm">
-					<div class="flex items-center justify-between gap-3">
-						<div class="space-y-1">
-							<p class="text-sm font-medium">Screenshot carousel</p>
-							<p class="text-sm text-muted-foreground">
-								{openEffortlesslyIndex + 1} / {openEffortlesslySlides.length}
-							</p>
-						</div>
-						<div class="flex items-center gap-2">
-							<Button
-								type="button"
-								variant="outline"
-								size="sm"
-								aria-label="Show previous screenshot"
-								onclick={showPreviousOpenEffortlesslySlide}
-							>
-								<ArrowRight class="size-4 rotate-180" />
-							</Button>
-							<Button
-								type="button"
-								variant="outline"
-								size="sm"
-								aria-label="Show next screenshot"
-								onclick={showNextOpenEffortlesslySlide}
-							>
-								<ArrowRight class="size-4" />
-							</Button>
-						</div>
-					</div>
-
-					<div class="overflow-hidden rounded-2xl border bg-muted/20">
+				<Card class="gap-4 overflow-hidden bg-card/80 p-5 shadow-sm">
+					<div class="overflow-hidden rounded-2xl bg-muted/20">
 						<div
 							class="flex transition-transform duration-500 ease-in-out"
 							style={`transform: translateX(-${openEffortlesslyIndex * 100}%);`}
@@ -418,16 +380,15 @@
 														<Images class="size-4 text-muted-foreground" />
 													</div>
 													<div>
-														<p class="text-sm font-medium">Replace with a real app screenshot</p>
+														<p class="text-sm font-medium">Visual preview</p>
 														<p class="text-xs text-muted-foreground">
-															PNG, JPEG, or a refined product capture later
+															A clear look at how the app opens and where the workflow begins
 														</p>
 													</div>
 												</div>
 											</div>
 											<div class="rounded-lg border bg-background/70 p-4 text-sm leading-6 text-muted-foreground">
-												Use this card to highlight what the user sees first, what they can do
-												next, and why the opening workflow feels light.
+												Each view should make the starting point feel obvious, fast, and low-friction.
 											</div>
 										</div>
 									</div>
