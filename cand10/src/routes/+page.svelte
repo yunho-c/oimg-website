@@ -550,7 +550,7 @@
 
 	{#if isTheaterModeOpen}
 		<div
-			class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm"
+			class="fixed inset-0 z-50 bg-black/55 backdrop-blur-[2px]"
 			role="presentation"
 			onclick={handleBackdropClick}
 			transition:fade={{ duration: 200 }}
