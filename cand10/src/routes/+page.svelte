@@ -193,30 +193,19 @@
 					</div>
 				</div>
 
-				<Card>
-					<CardHeader class="space-y-3">
-						<Badge variant="outline" class="w-fit">Operator notes</Badge>
-						<CardTitle>What OIMG is actually for</CardTitle>
-						<CardDescription class="text-base leading-7">
-							Not a full editor. Not a gallery manager. A focused place for the final export
-							pass: file weight, format, framing, and delivery readiness.
-						</CardDescription>
-					</CardHeader>
-					<CardContent class="space-y-4">
-						<div class="rounded-lg border bg-muted/30 p-4">
-							<p class="text-sm font-medium">When to use it</p>
-							<p class="mt-2 text-sm leading-6 text-muted-foreground">
-								When the image already exists and now needs to load faster, fit better, or land
-								in a cleaner format before handoff.
-							</p>
-						</div>
-						<div class="rounded-lg border bg-muted/30 p-4">
-							<p class="text-sm font-medium">Main promise</p>
-							<p class="mt-2 text-sm leading-6 text-muted-foreground">
-								Preview the result first and keep the source when smaller is not smarter.
-							</p>
-						</div>
-					</CardContent>
+				<Card class="overflow-hidden">
+					<video
+						class="aspect-video w-full bg-black object-cover"
+						src="/product-demo.mov"
+						autoplay
+						muted
+						loop
+						controls
+						playsinline
+						preload="metadata"
+					>
+						Your browser does not support the product demo video.
+					</video>
 				</Card>
 			</section>
 
