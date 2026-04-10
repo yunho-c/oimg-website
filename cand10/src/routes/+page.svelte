@@ -1,7 +1,4 @@
 <script lang="ts">
-	import { cubicOut } from "svelte/easing";
-	import { onMount, tick } from "svelte";
-	import { fade, scale } from "svelte/transition";
 	import {
 		ArrowRight,
 		Download,
@@ -10,9 +7,9 @@
 		Layers3,
 		Scaling,
 		ScanSearch,
-		ShieldCheck,
-		X
+		ShieldCheck
 	} from "@lucide/svelte";
+	import InteractiveVideo from "$lib/components/interactive-video.svelte";
 	import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "$lib/components/ui/accordion";
 	import { Badge } from "$lib/components/ui/badge";
 	import { Button } from "$lib/components/ui/button";
@@ -90,7 +87,6 @@
 		}
 	];
 
-	// const featureSectionColumns = "lg:grid-cols-[0.74fr_1.26fr]";
 	const featureSectionColumns = "lg:grid-cols-[1.00fr_1.00fr]";
 
 	const boardCases = [
@@ -156,100 +152,11 @@
 		}
 	];
 
-	let isTheaterModeOpen = $state(false);
-	let bodyOverflow = "";
-	let inlineVideoHeight = $state(0);
-	let inlineVideoHost = $state<HTMLDivElement | null>(null);
-	let theaterVideoHost = $state<HTMLDivElement | null>(null);
-	let theaterDialog = $state<HTMLDivElement | null>(null);
-	let videoCardTrigger = $state<HTMLDivElement | null>(null);
-	let theaterCloseButton = $state<HTMLButtonElement | null>(null);
 	let openEffortlesslyIndex = $state(0);
-
-	function moveNode(node: HTMLElement, target: HTMLElement | null) {
-		if (target && node.parentNode !== target) {
-			target.appendChild(node);
-		}
-	}
-
-	function portal(node: HTMLElement, target: HTMLElement | null) {
-		moveNode(node, target);
-
-		return {
-			update(nextTarget: HTMLElement | null) {
-				moveNode(node, nextTarget);
-			}
-		};
-	}
-
-	function lockBodyScroll() {
-		if (typeof document === "undefined") return;
-		bodyOverflow = document.body.style.overflow;
-		document.body.style.overflow = "hidden";
-	}
-
-	function unlockBodyScroll() {
-		if (typeof document === "undefined") return;
-		document.body.style.overflow = bodyOverflow;
-	}
-
-	async function openTheaterMode() {
-		if (isTheaterModeOpen) return;
-
-		inlineVideoHeight = inlineVideoHost?.getBoundingClientRect().height ?? 0;
-		isTheaterModeOpen = true;
-		lockBodyScroll();
-
-		await tick();
-		theaterCloseButton?.focus();
-	}
-
-	async function closeTheaterMode() {
-		if (!isTheaterModeOpen) return;
-
-		isTheaterModeOpen = false;
-		unlockBodyScroll();
-
-		await tick();
-		inlineVideoHeight = 0;
-		videoCardTrigger?.focus();
-	}
-
-	function handleWindowKeydown(event: KeyboardEvent) {
-		if (event.key === "Escape" && isTheaterModeOpen) {
-			event.preventDefault();
-			void closeTheaterMode();
-		}
-	}
-
-	function handleVideoCardKeydown(event: KeyboardEvent) {
-		if (event.key === "Enter" || event.key === " ") {
-			event.preventDefault();
-			void openTheaterMode();
-		}
-	}
-
-	function handleBackdropClick(event: MouseEvent) {
-		const target = event.target;
-		if (!(target instanceof Node)) return;
-
-		if (!theaterDialog?.contains(target)) {
-			void closeTheaterMode();
-		}
-	}
 
 	function showOpenEffortlesslySlide(index: number) {
 		openEffortlesslyIndex = index;
 	}
-
-	onMount(() => {
-		window.addEventListener("keydown", handleWindowKeydown);
-
-		return () => {
-			window.removeEventListener("keydown", handleWindowKeydown);
-			unlockBodyScroll();
-		};
-	});
 </script>
 
 <svelte:head>
@@ -315,42 +222,11 @@
 					</div>
 				</div>
 
-				<div
-					bind:this={videoCardTrigger}
-					class="outline-none"
-					role="button"
-					tabindex="0"
-					aria-haspopup="dialog"
-					aria-expanded={isTheaterModeOpen}
-					aria-label="Open product demo in theater mode"
-					onclick={() => void openTheaterMode()}
-					onkeydown={handleVideoCardKeydown}
-				>
-					<Card class="transform-gpu gap-0 overflow-hidden py-0 shadow-sm transition-all duration-500 ease-in-out hover:scale-110 hover:shadow-2xl focus-within:ring-2 focus-within:ring-primary/40">
-						<div
-							bind:this={inlineVideoHost}
-							class="w-full"
-							style:min-height={isTheaterModeOpen && inlineVideoHeight > 0
-								? `${inlineVideoHeight}px`
-								: null}
-						>
-							<video
-								use:portal={isTheaterModeOpen ? theaterVideoHost : inlineVideoHost}
-								class={isTheaterModeOpen
-									? "block max-h-[90vh] w-auto max-w-full bg-black"
-									: "block h-auto w-full bg-black"}
-								src="/product-demo.mov"
-								autoplay
-								muted
-								loop
-								playsinline
-								preload="metadata"
-							>
-								Your browser does not support the product demo video.
-							</video>
-						</div>
-					</Card>
-				</div>
+				<InteractiveVideo
+					src="/product-demo.mov"
+					triggerLabel="Open product demo in theater mode"
+					theaterLabel="Product demo theater mode"
+				/>
 			</section>
 
 			<section class={`grid gap-6 ${featureSectionColumns} lg:items-center`}>
@@ -467,20 +343,15 @@
 					</p>
 				</div>
 
-				<div class="overflow-hidden">
-					<div class="inline-flex items-center justify-center overflow-hidden rounded-xl border bg-background shadow-sm">
-						<video
-							class="block h-auto max-w-full bg-black"
-							src="/product-demo.mov"
-							autoplay
-							muted
-							loop
-							playsinline
-							preload="metadata"
-						>
-							Your browser does not support the product demo video.
-						</video>
-					</div>
+				<div class="py-3">
+					<InteractiveVideo
+						src="/product-demo.mov"
+						triggerLabel="Open navigate trade-offs video in theater mode"
+						theaterLabel="Navigate trade-offs theater mode"
+						cardClass="transform-gpu inline-flex w-fit gap-0 overflow-hidden py-0 bg-background shadow-sm transition-all duration-500 ease-in-out hover:scale-110 hover:shadow-2xl focus-within:ring-2 focus-within:ring-primary/40"
+						inlineHostClass="inline-flex items-center justify-center"
+						inlineVideoClass="block h-auto max-w-full bg-black"
+					/>
 				</div>
 			</section>
 
@@ -706,40 +577,4 @@
 			</section>
 		</main>
 	</div>
-
-	{#if isTheaterModeOpen}
-		<div
-			class="fixed inset-0 z-50 bg-black/55 backdrop-blur-[2px]"
-			role="presentation"
-			onclick={handleBackdropClick}
-			transition:fade={{ duration: 200 }}
-		>
-				<div class="flex min-h-screen items-center justify-center p-4 sm:p-6 lg:p-10">
-					<div
-						bind:this={theaterDialog}
-						class="relative mx-auto w-fit max-w-[90vw]"
-						role="dialog"
-						tabindex="-1"
-						aria-modal="true"
-					aria-label="Product demo theater mode"
-					transition:scale={{ duration: 220, easing: cubicOut, start: 0.96 }}
-				>
-					<button
-						bind:this={theaterCloseButton}
-						type="button"
-						class="absolute right-3 top-3 z-10 inline-flex size-10 items-center justify-center rounded-full bg-black/60 text-white shadow-lg transition-colors hover:bg-black/75 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
-						aria-label="Close theater mode"
-						onclick={() => void closeTheaterMode()}
-					>
-						<X class="size-4" />
-					</button>
-
-					<div
-						bind:this={theaterVideoHost}
-						class="inline-flex max-h-[90vh] max-w-[90vw] items-center justify-center overflow-hidden rounded-2xl shadow-2xl ring-1 ring-white/10"
-					></div>
-				</div>
-			</div>
-		</div>
-	{/if}
 </div>
