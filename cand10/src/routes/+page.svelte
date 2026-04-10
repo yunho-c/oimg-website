@@ -158,7 +158,7 @@
 					{/each}
 				</nav>
 				<Button size="sm" href="#download">
-					Download app
+					Download
 					<Download class="size-4" />
 				</Button>
 			</div>
@@ -173,19 +173,19 @@
 							Make images lighter without degrading visual quality.
 						</h1>
 						<p class="max-w-2xl text-lg leading-8 text-muted-foreground">
-							OIMG uses state-of-the-art image compression techniques to reduce file size between X% - Y% (99% confidence interval, evaluated on XYZ dataset).
+							OIMG uses modern image compression techniques to reduce file size.
 						</p>
 					</div>
 
 					<div class="flex flex-col gap-3 sm:flex-row">
 						<Button size="lg" href="#download" class="sm:w-auto">
-							Download app
+							Download
 							<Download class="size-4" />
 						</Button>
-						<Button size="lg" variant="outline" href="#board" class="sm:w-auto">
+						<!-- <Button size="lg" variant="outline" href="#board" class="sm:w-auto">
 							Open the product board
 							<ArrowRight class="size-4" />
-						</Button>
+						</Button> -->
 					</div>
 				</div>
 
@@ -430,7 +430,7 @@
 					<CardFooter class="flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
 						<p class="text-sm text-muted-foreground">Desktop app for deliberate export cleanup</p>
 						<Button size="lg" href="#download" class="sm:w-auto">
-							Download app
+							Download
 							<Download class="size-4" />
 						</Button>
 					</CardFooter>
