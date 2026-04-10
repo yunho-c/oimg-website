@@ -369,6 +369,7 @@
 				{/each}
 			</section> -->
 
+			{#if false}
 			<section class="grid gap-6 lg:grid-cols-[0.74fr_1.26fr]" id="steps">
 				<div class="space-y-3">
 					<Badge variant="outline">Four-step rail</Badge>
@@ -575,6 +576,7 @@
 					</CardFooter>
 				</Card>
 			</section>
+			{/if}
 		</main>
 	</div>
 </div>
