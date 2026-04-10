@@ -393,15 +393,15 @@
 					</p>
 				</div>
 
-				<Card class="gap-4 overflow-hidden bg-card/80 p-5 shadow-sm">
-					<div class="overflow-hidden rounded-2xl bg-muted/20">
+				<div class="space-y-4">
+					<div class="overflow-hidden">
 						<div
 							class="flex transition-transform duration-500 ease-in-out"
 							style={`transform: translateX(-${openEffortlesslyIndex * 100}%);`}
 						>
 							{#each openEffortlesslySlides as slide, index}
-								<div class="min-w-full p-4 sm:p-5">
-									<div class="flex aspect-[16/10] items-center justify-center overflow-hidden rounded-xl border bg-background shadow-sm">
+								<div class="min-w-full">
+									<div class="flex aspect-[16/10] items-center justify-center overflow-hidden">
 										<img
 											class="block max-h-full w-auto max-w-full"
 											src={slide.src}
@@ -427,7 +427,7 @@
 							></button>
 						{/each}
 					</div>
-				</Card>
+				</div>
 			</section>
 
 			<!-- <section class="grid gap-4 md:grid-cols-3">
