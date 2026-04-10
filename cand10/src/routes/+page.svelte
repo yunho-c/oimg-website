@@ -214,7 +214,7 @@
 				</div>
 
 				<InteractiveVideo
-					src="/product-demo.mov"
+					src="/analyze_demo.mp4"
 					triggerLabel="Open product demo in theater mode"
 					theaterLabel="Product demo theater mode"
 				/>
