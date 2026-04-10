@@ -1,2 +1,5 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+# Store cand10 screenshots in Git LFS
+cand10/static/*.webp filter=lfs diff=lfs merge=lfs -text
