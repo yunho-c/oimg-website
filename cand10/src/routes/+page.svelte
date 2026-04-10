@@ -442,9 +442,9 @@
 				</div>
 
 				<div class="overflow-hidden">
-					<div class="flex aspect-[16/10] items-center justify-center overflow-hidden">
+					<div class="inline-flex items-center justify-center overflow-hidden rounded-xl border bg-background shadow-sm">
 						<img
-							class="block max-h-full w-auto max-w-full"
+							class="block h-auto max-w-full"
 							src="/quality_metrics.webp"
 							alt="OIMG quality metrics view with real-time quality assessment values."
 							loading="lazy"
