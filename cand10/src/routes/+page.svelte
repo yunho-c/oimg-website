@@ -82,6 +82,7 @@
 	];
 
 	const featureSectionColumns = "lg:grid-cols-[1.00fr_1.00fr]";
+	const currentYear = new Date().getFullYear();
 
 	const boardCases = [
 		{
@@ -569,5 +570,9 @@
 			</section>
 			{/if}
 		</main>
+
+		<footer class="border-t py-6 text-sm text-muted-foreground">
+			<p>&copy; {currentYear} OIMG. All rights reserved.</p>
+		</footer>
 	</div>
 </div>
