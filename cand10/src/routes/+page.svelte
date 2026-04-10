@@ -90,6 +90,8 @@
 		}
 	];
 
+	const featureSectionColumns = "lg:grid-cols-[0.74fr_1.26fr]";
+
 	const boardCases = [
 		{
 			value: "catalog",
@@ -350,7 +352,7 @@
 				</div>
 			</section>
 
-			<section class="grid gap-6 lg:grid-cols-[0.74fr_1.26fr] lg:items-center">
+			<section class={`grid gap-6 ${featureSectionColumns} lg:items-center`}>
 				<div class="space-y-4">
 					<h2 class="text-3xl font-semibold tracking-tight sm:text-4xl">
 						Open effortlessly
@@ -430,7 +432,7 @@
 				</div>
 			</section>
 
-			<section class="grid gap-6 lg:grid-cols-[0.74fr_1.26fr] lg:items-center">
+			<section class={`grid gap-6 ${featureSectionColumns} lg:items-center`}>
 				<div class="space-y-4">
 					<h2 class="text-3xl font-semibold tracking-tight sm:text-4xl">
 						Stay in control
@@ -449,6 +451,34 @@
 							alt="OIMG quality metrics view with real-time quality assessment values."
 							loading="lazy"
 						/>
+					</div>
+				</div>
+			</section>
+
+			<section class={`grid gap-6 ${featureSectionColumns} lg:items-center`}>
+				<div class="space-y-4">
+					<h2 class="text-3xl font-semibold tracking-tight sm:text-4xl">
+						Navigate trade-offs
+					</h2>
+					<p class="text-base leading-7 text-muted-foreground">
+						Compare outcomes before you commit. OIMG keeps the quality, size, and format trade-offs
+						visible while you tune the export.
+					</p>
+				</div>
+
+				<div class="overflow-hidden">
+					<div class="inline-flex items-center justify-center overflow-hidden rounded-xl border bg-background shadow-sm">
+						<video
+							class="block h-auto max-w-full bg-black"
+							src="/product-demo.mov"
+							autoplay
+							muted
+							loop
+							playsinline
+							preload="metadata"
+						>
+							Your browser does not support the product demo video.
+						</video>
 					</div>
 				</div>
 			</section>
