@@ -147,7 +147,7 @@
 				</div>
 				<div>
 					<p class="text-sm font-semibold">oimg</p>
-					<p class="text-sm text-muted-foreground">Desktop image optimizer</p>
+					<!-- <p class="text-sm text-muted-foreground">Desktop image optimizer</p> -->
 				</div>
 			</div>
 
@@ -156,11 +156,15 @@
 					{#each navItems as item}
 						<a href={item.href} class="transition-colors hover:text-foreground">{item.label}</a>
 					{/each}
+					<a
+						href="https://github.com/yunho-c/oimg"
+						target="_blank"
+						rel="noreferrer"
+						class="transition-colors hover:text-foreground"
+					>
+						GitHub
+					</a>
 				</nav>
-				<Button size="sm" href="#download">
-					Download
-					<Download class="size-4" />
-				</Button>
 			</div>
 		</header>
 
