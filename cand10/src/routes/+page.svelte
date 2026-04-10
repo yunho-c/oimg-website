@@ -167,15 +167,13 @@
 		<main class="flex flex-col gap-16 py-10 sm:gap-20 sm:py-16">
 			<section class="grid gap-6 lg:grid-cols-[1.15fr_0.85fr] lg:items-start">
 				<div class="space-y-6">
-					<Badge variant="secondary">Preview-first export workflow</Badge>
+					<!-- <Badge variant="secondary">Preview-first export workflow</Badge> -->
 					<div class="space-y-4">
 						<h1 class="max-w-4xl text-balance text-4xl font-semibold tracking-tight sm:text-5xl lg:text-6xl">
-							A cleaner control panel for the last image decision.
+							Make images lighter without degrading visual quality.
 						</h1>
 						<p class="max-w-2xl text-lg leading-8 text-muted-foreground">
-							oimg is for the moment an image stops being a draft and becomes a file that has
-							to ship. Make it lighter, shape it for the destination, and keep the original
-							when the new export is not the better call.
+							OIMG uses state-of-the-art image compression techniques to reduce file size between X% - Y% (99% confidence interval, evaluated on XYZ dataset).
 						</p>
 					</div>
 
