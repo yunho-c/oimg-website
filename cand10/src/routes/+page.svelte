@@ -200,7 +200,6 @@
 							autoplay
 							muted
 						loop
-						controls
 						playsinline
 						preload="metadata"
 					>
