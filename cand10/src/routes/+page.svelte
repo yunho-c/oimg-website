@@ -9,6 +9,7 @@
 		ScanSearch,
 		ShieldCheck
 	} from "@lucide/svelte";
+	import Autoplay from "embla-carousel-autoplay";
 	import InteractiveVideo from "$lib/components/interactive-video.svelte";
 	import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "$lib/components/ui/accordion";
 	import { Badge } from "$lib/components/ui/badge";
@@ -82,6 +83,8 @@
 			alt: "A macOS terminal invoking OIMG from the command line with an image path."
 		}
 	];
+	const openEffortlesslyCarouselOptions = { duration: 32 };
+	const openEffortlesslyAutoplay = Autoplay({ delay: 5000 });
 
 	const featureSectionColumns = "lg:grid-cols-[1.00fr_1.00fr]";
 	const currentYear = new Date().getFullYear();
@@ -154,6 +157,7 @@
 
 	function showOpenEffortlesslySlide(index: number) {
 		openEffortlesslyApi?.scrollTo(index);
+		openEffortlesslyApi?.plugins().autoplay?.reset();
 		openEffortlesslyIndex = index;
 	}
 
@@ -161,6 +165,8 @@
 		const api = openEffortlesslyApi;
 
 		if (!api) return;
+
+		api.plugins().autoplay?.play();
 
 		const syncCurrentSlide = () => {
 			openEffortlesslyIndex = api.selectedScrollSnap();
@@ -171,6 +177,7 @@
 		api.on("reInit", syncCurrentSlide);
 
 		return () => {
+			api.plugins().autoplay?.stop();
 			api.off("select", syncCurrentSlide);
 			api.off("reInit", syncCurrentSlide);
 		};
@@ -287,11 +294,16 @@
 					</p>
 				</div>
 
-				<div class="space-y-4">
-					<Carousel.Root setApi={(api) => (openEffortlesslyApi = api)} class="w-full">
-						<Carousel.Content class="-ms-0">
-							{#each openEffortlesslySlides as slide, index}
-								<Carousel.Item class="ps-0">
+					<div class="space-y-4">
+						<Carousel.Root
+							setApi={(api) => (openEffortlesslyApi = api)}
+							opts={openEffortlesslyCarouselOptions}
+							plugins={[openEffortlesslyAutoplay]}
+							class="w-full"
+						>
+							<Carousel.Content class="-ms-0">
+								{#each openEffortlesslySlides as slide, index}
+									<Carousel.Item class="ps-0">
 									<div class="flex aspect-[16/10] items-center justify-center overflow-hidden">
 										<img
 											class="block max-h-full w-auto max-w-full rounded-xl"
@@ -309,15 +321,17 @@
 						{#each openEffortlesslySlides as _, index}
 							<button
 								type="button"
-								class={`size-2.5 rounded-full transition-colors ${
-									index === openEffortlesslyIndex ? "bg-foreground" : "bg-muted-foreground/25 hover:bg-muted-foreground/45"
-								}`}
-								aria-label={`Show screenshot ${index + 1}`}
-								aria-pressed={index === openEffortlesslyIndex}
-								onclick={() => showOpenEffortlesslySlide(index)}
-							></button>
-						{/each}
-					</div>
+									class={`size-2.5 rounded-full transition-colors ${
+										index === openEffortlesslyIndex ? "bg-foreground" : "bg-muted-foreground/25 hover:bg-muted-foreground/45"
+									}`}
+									aria-label={`Show screenshot ${index + 1}`}
+									aria-pressed={index === openEffortlesslyIndex}
+									onmouseenter={() => showOpenEffortlesslySlide(index)}
+									onfocus={() => showOpenEffortlesslySlide(index)}
+									ontouchstart={() => showOpenEffortlesslySlide(index)}
+								></button>
+							{/each}
+						</div>
 				</div>
 			</section>
 
