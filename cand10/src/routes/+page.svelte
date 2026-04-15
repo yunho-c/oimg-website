@@ -13,6 +13,7 @@
 	import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "$lib/components/ui/accordion";
 	import { Badge } from "$lib/components/ui/badge";
 	import { Button } from "$lib/components/ui/button";
+	import * as Carousel from "$lib/components/ui/carousel";
 	import {
 		Card,
 		CardContent,
@@ -23,6 +24,7 @@
 	} from "$lib/components/ui/card";
 	import { Separator } from "$lib/components/ui/separator";
 	import { Tabs, TabsContent, TabsList, TabsTrigger } from "$lib/components/ui/tabs";
+	import type { CarouselAPI } from "$lib/components/ui/carousel";
 
 	const signalCards = [
 		{ label: "Core moves", value: "5", detail: "Optimize, convert, resize, crop, extend." },
@@ -147,11 +149,32 @@
 		}
 	];
 
+	let openEffortlesslyApi = $state<CarouselAPI | undefined>(undefined);
 	let openEffortlesslyIndex = $state(0);
 
 	function showOpenEffortlesslySlide(index: number) {
+		openEffortlesslyApi?.scrollTo(index);
 		openEffortlesslyIndex = index;
 	}
+
+	$effect(() => {
+		const api = openEffortlesslyApi;
+
+		if (!api) return;
+
+		const syncCurrentSlide = () => {
+			openEffortlesslyIndex = api.selectedScrollSnap();
+		};
+
+		syncCurrentSlide();
+		api.on("select", syncCurrentSlide);
+		api.on("reInit", syncCurrentSlide);
+
+		return () => {
+			api.off("select", syncCurrentSlide);
+			api.off("reInit", syncCurrentSlide);
+		};
+	});
 </script>
 
 <svelte:head>
@@ -265,13 +288,10 @@
 				</div>
 
 				<div class="space-y-4">
-					<div class="overflow-hidden">
-						<div
-							class="flex transition-transform duration-500 ease-in-out"
-							style={`transform: translateX(-${openEffortlesslyIndex * 100}%);`}
-						>
+					<Carousel.Root setApi={(api) => (openEffortlesslyApi = api)} class="w-full">
+						<Carousel.Content class="-ms-0">
 							{#each openEffortlesslySlides as slide, index}
-								<div class="min-w-full">
+								<Carousel.Item class="ps-0">
 									<div class="flex aspect-[16/10] items-center justify-center overflow-hidden">
 										<img
 											class="block max-h-full w-auto max-w-full rounded-xl"
@@ -280,10 +300,10 @@
 											loading={index === 0 ? "eager" : "lazy"}
 										/>
 									</div>
-								</div>
+								</Carousel.Item>
 							{/each}
-						</div>
-					</div>
+						</Carousel.Content>
+					</Carousel.Root>
 
 					<div class="flex items-center justify-center gap-2">
 						{#each openEffortlesslySlides as _, index}
