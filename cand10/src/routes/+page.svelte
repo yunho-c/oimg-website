@@ -661,14 +661,29 @@
 
 			<section class={`grid gap-6 ${featureSectionColumns} lg:items-center`}>
 				<div class="space-y-4">
-					<h2 class="text-3xl font-semibold tracking-tight sm:text-4xl">
-						Remain in control
-					</h2>
-					<p class="text-base leading-7 text-muted-foreground">
-						OIMG provides image quality assessment (Pixel Match Percentage,
-						MS-SSIM, and SSIMULACRA 2) — so you don't get surprised by unexpected quality loss.
-					</p>
-				</div>
+						<h2 class="text-3xl font-semibold tracking-tight sm:text-4xl">
+							Remain in control
+						</h2>
+						<p class="text-base leading-7 text-muted-foreground">
+							OIMG provides you with
+							<span class="group/metrics relative inline-flex items-center">
+								<button
+									type="button"
+									class="font-medium text-foreground underline decoration-current underline-offset-4"
+									aria-label="Show image quality assessment metrics"
+								>
+									various image quality metrics
+								</button>
+								<span
+									class="pointer-events-none absolute bottom-full left-1/2 z-10 mb-3 w-64 -translate-x-1/2 rounded-xl border bg-background px-3 py-2 text-sm leading-6 text-foreground opacity-0 shadow-lg transition-opacity duration-150 group-hover/metrics:opacity-100 group-focus-within/metrics:opacity-100"
+									role="tooltip"
+								>
+									Pixel Match Percentage, MS-SSIM, and SSIMULACRA 2
+								</span>
+							</span>
+							in real time — so you can proactively set optimization thresholds, instead of worrying about unexpected quality drops.
+						</p>
+					</div>
 
 				<div class="overflow-hidden">
 					<div class="inline-flex items-center justify-center overflow-hidden rounded-xl border bg-background shadow-sm">
