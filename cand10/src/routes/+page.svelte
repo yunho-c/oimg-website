@@ -135,26 +135,29 @@
 		}
 	];
 
-	const openEffortlesslySlides = [
-		{
-			title: "Bring images in immediately",
-			description: "Start with drag and drop when you want the fastest path from file to workspace.",
-			src: "/open_dnd_macos.webp",
-			alt: "The OIMG app window receiving an image via drag and drop."
-		},
-		{
-			title: "Open from where you already work",
-			description: "Pull images in from the file explorer without breaking the flow of the task.",
-			src: "/open_explorer_macos.webp",
-			alt: "The macOS Finder open-with menu showing OIMG as an available app."
-		},
-		{
-			title: "Launch from the command line",
-			description: "Open OIMG from the terminal when the workflow starts in scripts, shells, or quick handoffs.",
-			src: "/open_cli_macos.webp",
-			alt: "A macOS terminal invoking OIMG from the command line with an image path."
-		}
-	];
+		const openEffortlesslySlides = [
+			{
+				title: "Bring images in immediately",
+				description: "Start with drag and drop when you want the fastest path from file to workspace.",
+				src: "/open_dnd_macos.webp",
+				alt: "The OIMG app window receiving an image via drag and drop.",
+				enableShadow: false
+			},
+			{
+				title: "Open from where you already work",
+				description: "Pull images in from the file explorer without breaking the flow of the task.",
+				src: "/open_explorer_macos.webp",
+				alt: "The macOS Finder open-with menu showing OIMG as an available app.",
+				enableShadow: true
+			},
+			{
+				title: "Launch from the command line",
+				description: "Open OIMG from the terminal when the workflow starts in scripts, shells, or quick handoffs.",
+				src: "/open_cli_macos.webp",
+				alt: "A macOS terminal invoking OIMG from the command line with an image path.",
+				enableShadow: true
+			}
+		];
 
 		const navigateTradeoffImages = [
 			{
@@ -614,15 +617,23 @@
 							plugins={[openEffortlesslyAutoplay]}
 							class="w-full"
 						>
-							<Carousel.Content class="-ms-0">
-								{#each openEffortlesslySlides as slide, index}
-									<Carousel.Item class="ps-0">
-									<div class="flex aspect-[16/10] items-center justify-center overflow-hidden">
-										<img
-											class="block max-h-full w-auto max-w-full rounded-xl"
-											src={slide.src}
-											alt={slide.alt}
-											loading={index === 0 ? "eager" : "lazy"}
+								<Carousel.Content class="-ms-0">
+									{#each openEffortlesslySlides as slide, index}
+										<Carousel.Item class="ps-0">
+										<div
+											class={`flex aspect-[16/10] items-center justify-center ${
+												slide.enableShadow ? "px-6 py-6 sm:px-8 sm:py-8" : ""
+											}`}
+										>
+											<img
+												class={`block max-h-full w-auto max-w-full rounded-xl ${
+													slide.enableShadow
+														? "shadow-[0_15px_39px_-19px_rgba(15,23,42,0.21),0_7px_16px_-13px_rgba(15,23,42,0.16)]"
+														: ""
+												}`}
+												src={slide.src}
+												alt={slide.alt}
+												loading={index === 0 ? "eager" : "lazy"}
 										/>
 									</div>
 								</Carousel.Item>

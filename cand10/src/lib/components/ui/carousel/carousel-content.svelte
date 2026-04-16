@@ -14,10 +14,10 @@
 	const emblaCtx = getEmblaContext("<Carousel.Content/>");
 </script>
 
-<div
-	data-slot="carousel-content"
-	class="overflow-hidden"
-	use:emblaCarouselSvelte={{
+	<div
+		data-slot="carousel-content"
+		class="overflow-hidden"
+		use:emblaCarouselSvelte={{
 		options: {
 			container: "[data-embla-container]",
 			slides: "[data-embla-slide]",
