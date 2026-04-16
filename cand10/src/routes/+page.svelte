@@ -438,7 +438,7 @@
 	<div class="mx-auto flex min-h-screen max-w-7xl flex-col px-6 py-6 sm:px-8 lg:px-10">
 			<header class="flex flex-col gap-4 border-b py-4 sm:flex-row sm:items-center sm:justify-between">
 				<div class="flex items-center gap-3">
-					<div class="flex size-9 items-center justify-center rounded-lg border bg-card">
+					<div class="flex size-9 items-center justify-center rounded-lg bg-card">
 						<img src="/favicon.svg" alt="OIMG logo" class="size-7" />
 					</div>
 					<div>
