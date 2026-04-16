@@ -20,7 +20,7 @@
 		src,
 		triggerLabel,
 		theaterLabel,
-		cardClass = "transform-gpu gap-0 overflow-hidden py-0 shadow-sm transition-all duration-500 ease-in-out hover:scale-110 hover:shadow-2xl focus-within:ring-2 focus-within:ring-primary/40",
+		cardClass = "transform-gpu gap-0 overflow-hidden py-0 shadow-[0_24px_70px_-24px_rgba(15,23,42,0.28),0_12px_28px_-18px_rgba(15,23,42,0.2)] transition-all duration-500 ease-in-out hover:scale-110 hover:shadow-2xl focus-within:ring-2 focus-within:ring-primary/40",
 		inlineHostClass = "w-full",
 		inlineVideoClass = "block h-auto w-full bg-black",
 		theaterHostClass = "flex max-h-[90vh] items-center justify-center overflow-hidden rounded-2xl bg-black shadow-2xl ring-1 ring-white/10",
