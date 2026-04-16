@@ -155,6 +155,45 @@
 			alt: "A macOS terminal invoking OIMG from the command line with an image path."
 		}
 	];
+
+	const navigateTradeoffImages = [
+		{
+			title: "Fuji at distance",
+			description: "Check how compression treats soft atmospheric gradients and fine edge detail.",
+			src: "/example_images/fuji.jpg",
+			alt: "Mount Fuji photographed at a distance under a pale sky."
+		},
+		{
+			title: "Cloudy Yokohama",
+			description: "Review urban texture, signage, and shadow handling before you export.",
+			src: "/example_images/cloudy-yokohama.jpg",
+			alt: "Cloudy city scene in Yokohama with buildings and street detail."
+		},
+		{
+			title: "Sunny room",
+			description: "Compare bright interior tones when you need a lighter file without washing the image out.",
+			src: "/example_images/sunny-room.jpg",
+			alt: "Sunlit interior room with bright highlights and shadows."
+		},
+		{
+			title: "Bracken",
+			description: "Inspect organic texture and dense fine detail where artifacts show up fast.",
+			src: "/example_images/bracken.jpg",
+			alt: "Close-up image of green bracken leaves."
+		},
+		{
+			title: "Ducks",
+			description: "Use a more natural scene to judge color transitions and water detail.",
+			src: "/example_images/ducks.jpg",
+			alt: "Two ducks on water with natural reflections."
+		},
+		{
+			title: "Dark bulb",
+			description: "Stress-test low-light contrast and subtle tonal separation.",
+			src: "/example_images/dark-bulb.jpg",
+			alt: "Dark moody photograph centered on a lit bulb."
+		}
+	];
 	const openEffortlesslyCarouselOptions = { duration: 32 };
 	const openEffortlesslyAutoplay = Autoplay({ delay: 5000 });
 
@@ -226,6 +265,7 @@
 
 	let openEffortlesslyApi = $state<CarouselAPI | undefined>(undefined);
 	let openEffortlesslyIndex = $state(0);
+	let navigateTradeoffIndex = $state(0);
 	let selectedPlatform = $state<DownloadPlatform>("macos");
 	let selectedArchitecture = $state<DownloadArch>("arm64");
 	let detectedPlatform = $state<DownloadPlatform | null>(null);
@@ -353,6 +393,10 @@
 		window.setTimeout(() => {
 			copyFeedback = "idle";
 		}, 1500);
+	}
+
+	function showNavigateTradeoffImage(index: number) {
+		navigateTradeoffIndex = index;
 	}
 
 	function showOpenEffortlesslySlide(index: number) {
@@ -643,15 +687,42 @@
 					</p>
 				</div>
 
-				<div class="py-3">
-					<InteractiveVideo
-						src="/analyze_demo.mp4"
-						triggerLabel="Open navigate trade-offs video in theater mode"
-						theaterLabel="Navigate trade-offs theater mode"
-						cardClass="transform-gpu inline-flex w-fit gap-0 overflow-hidden py-0 bg-background shadow-sm transition-all duration-500 ease-in-out hover:scale-110 hover:shadow-2xl focus-within:ring-2 focus-within:ring-primary/40"
-						inlineHostClass="inline-flex items-center justify-center"
-						inlineVideoClass="block h-auto max-w-full bg-black"
-						/>
+					<div class="space-y-4 py-3">
+						<div class="overflow-hidden rounded-[1.5rem] border bg-card p-3 shadow-sm">
+							<div class="overflow-hidden rounded-[1.1rem] bg-muted/30">
+								<img
+									class="block aspect-[16/10] h-auto w-full object-cover"
+									src={navigateTradeoffImages[navigateTradeoffIndex].src}
+									alt={navigateTradeoffImages[navigateTradeoffIndex].alt}
+									loading="lazy"
+								/>
+							</div>
+						</div>
+
+						<div class="flex gap-3 overflow-x-auto pb-1">
+							{#each navigateTradeoffImages as image, index}
+								<button
+									type="button"
+									class={`group shrink-0 rounded-2xl border p-1 transition-all ${
+										index === navigateTradeoffIndex
+											? "border-foreground bg-card shadow-sm"
+											: "border-border/60 bg-background hover:border-foreground/40 hover:bg-card"
+									}`}
+									aria-label={`Show ${image.title}`}
+									aria-pressed={index === navigateTradeoffIndex}
+									onmouseenter={() => showNavigateTradeoffImage(index)}
+									onfocus={() => showNavigateTradeoffImage(index)}
+									onclick={() => showNavigateTradeoffImage(index)}
+								>
+									<img
+										class="block h-18 w-24 rounded-xl object-cover sm:h-20 sm:w-28"
+										src={image.src}
+										alt={image.alt}
+										loading="lazy"
+									/>
+								</button>
+							{/each}
+						</div>
 					</div>
 				</section>
 
@@ -666,14 +737,14 @@
 					</div>
 
 					<div class="overflow-hidden py-3">
-						<div class="inline-flex items-center justify-center overflow-hidden rounded-xl border bg-background shadow-sm">
-							<img
-								class="block h-auto max-w-full"
-								src="/quality_metrics.webp"
-								alt="Placeholder screenshot for OIMG compatibility workflow."
-								loading="lazy"
-							/>
-						</div>
+							<div class="inline-flex items-center justify-center overflow-hidden rounded-xl border bg-background shadow-sm">
+								<img
+									class="block h-auto max-w-full"
+									src="/save_as_jpg.png"
+									alt="OIMG save-as JPG compatibility workflow."
+									loading="lazy"
+								/>
+							</div>
 					</div>
 				</section>
 
