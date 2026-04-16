@@ -772,11 +772,11 @@
 						</p>
 					</div>
 
-					<div class="overflow-hidden py-3">
-							<div class="inline-flex items-center justify-center overflow-hidden rounded-xl border bg-background shadow-sm">
-								<img
-									class="block h-auto max-w-full"
-									src="/save_as_jpg.png"
+						<div class="py-3">
+								<div class="inline-flex items-center justify-center overflow-hidden rounded-xl border bg-background shadow-[0_24px_70px_-24px_rgba(15,23,42,0.35),0_12px_28px_-18px_rgba(15,23,42,0.28)]">
+									<img
+										class="block h-auto max-w-full"
+										src="/save_as_jpg.png"
 									alt="OIMG save-as JPG compatibility workflow."
 									loading="lazy"
 								/>
