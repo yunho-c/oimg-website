@@ -757,10 +757,10 @@
 									</div>
 								</div>
 								<div class="pointer-events-none absolute left-4 top-4 rounded-full bg-white/80 px-3 py-1 text-xs font-medium tracking-[0.12em] text-slate-900 uppercase">
-									Before
+									Original
 								</div>
 								<div class="pointer-events-none absolute right-4 top-4 rounded-full bg-black/55 px-3 py-1 text-xs font-medium tracking-[0.12em] text-white uppercase">
-									After
+									Optimized
 								</div>
 								</div>
 							</div>
