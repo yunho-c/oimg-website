@@ -659,10 +659,10 @@
 				</div>
 			</section>
 
-			<section class={`grid gap-6 ${featureSectionColumns} lg:items-center`}>
-				<div class="space-y-4">
-						<h2 class="text-3xl font-semibold tracking-tight sm:text-4xl">
-							Remain in control
+				<section class={`grid gap-6 ${featureSectionColumns} lg:items-center`}>
+					<div class="space-y-4">
+							<h2 class="text-3xl font-semibold tracking-tight sm:text-4xl">
+								Remain in control
 						</h2>
 						<p class="text-base leading-7 text-muted-foreground">
 							OIMG provides you with
@@ -682,84 +682,61 @@
 								</span>
 							</span>
 							in real time — so you can proactively set optimization thresholds, instead of worrying about unexpected quality drops.
-						</p>
-					</div>
+							</p>
+						</div>
 
-				<div class="overflow-hidden">
-					<div class="inline-flex items-center justify-center overflow-hidden rounded-xl border bg-background shadow-sm">
-						<img
-							class="block h-auto max-w-full"
-							src="/quality_metrics.webp"
-							alt="OIMG quality metrics view with real-time quality assessment values."
-							loading="lazy"
-						/>
-					</div>
-				</div>
-			</section>
-
-				<section class={`grid gap-6 ${featureSectionColumns} lg:items-center`}>
-					<div class="space-y-4">
-						<h2 class="text-3xl font-semibold tracking-tight sm:text-4xl">
-							Navigate trade-offs
-					</h2>
-					<p class="text-base leading-7 text-muted-foreground">
-						Compare outcomes before you commit. OIMG keeps the quality, size, and format trade-offs
-						visible while you tune the export.
-					</p>
-				</div>
-
-						<div class="space-y-4 py-3">
-							<div class="overflow-hidden rounded-[1.5rem] border bg-card">
-								<div class="relative overflow-hidden rounded-[1.5rem] bg-muted/30">
+					<div class="space-y-4 py-3">
+						<div class="overflow-hidden rounded-[1.5rem] border bg-card">
+							<div class="relative overflow-hidden rounded-[1.5rem] bg-muted/30">
+								<img
+									class="block aspect-[16/10] h-auto w-full object-cover"
+									src={navigateTradeoffImages[navigateTradeoffIndex].src}
+									alt={navigateTradeoffImages[navigateTradeoffIndex].alt}
+									loading="lazy"
+								/>
+								<div
+									class="absolute inset-0 overflow-hidden"
+									style={`clip-path: inset(0 0 0 ${navigateTradeoffReveal}%);`}
+								>
 									<img
-										class="block aspect-[16/10] h-auto w-full object-cover"
+										class="block aspect-[16/10] h-full w-full object-cover blur-[10px]"
 										src={navigateTradeoffImages[navigateTradeoffIndex].src}
-										alt={navigateTradeoffImages[navigateTradeoffIndex].alt}
+										alt=""
+										aria-hidden="true"
 										loading="lazy"
 									/>
-									<div
-										class="absolute inset-0 overflow-hidden"
-										style={`clip-path: inset(0 0 0 ${navigateTradeoffReveal}%);`}
-									>
-										<img
-											class="block aspect-[16/10] h-full w-full object-cover blur-[10px]"
-											src={navigateTradeoffImages[navigateTradeoffIndex].src}
-											alt=""
-											aria-hidden="true"
-											loading="lazy"
-										/>
-									</div>
-									<div class="pointer-events-none absolute inset-y-0" style={`left: calc(${navigateTradeoffReveal}% - 1px);`}>
-										<div class="h-full w-0.5 bg-white/90 shadow-[0_0_0_1px_rgba(15,23,42,0.18)]"></div>
-									</div>
-									<div
-										class="pointer-events-none absolute top-1/2 z-10 -translate-y-1/2"
-										style={`left: calc(${navigateTradeoffReveal}% - 22px);`}
-									>
-										<div class="flex size-11 items-center justify-center rounded-full border border-white/80 bg-white/90 shadow-lg backdrop-blur">
-											<div class="flex items-center gap-1 text-[0.65rem] font-semibold text-slate-900">
-												<span>&larr;</span>
-												<span>&rarr;</span>
-											</div>
+								</div>
+								<div class="pointer-events-none absolute inset-y-0" style={`left: calc(${navigateTradeoffReveal}% - 1px);`}>
+									<div class="h-full w-0.5 bg-white/90 shadow-[0_0_0_1px_rgba(15,23,42,0.18)]"></div>
+								</div>
+								<div
+									class="pointer-events-none absolute top-1/2 z-10 -translate-y-1/2"
+									style={`left: calc(${navigateTradeoffReveal}% - 22px);`}
+								>
+									<div class="flex size-11 items-center justify-center rounded-full border border-white/80 bg-white/90 shadow-lg backdrop-blur">
+										<div class="flex items-center gap-1 text-[0.65rem] font-semibold text-slate-900">
+											<span>&larr;</span>
+											<span>&rarr;</span>
 										</div>
 									</div>
-									<div class="pointer-events-none absolute left-4 top-4 rounded-full bg-white/80 px-3 py-1 text-xs font-medium tracking-[0.12em] text-slate-900 uppercase">
-										Before
-									</div>
-									<div class="pointer-events-none absolute right-4 top-4 rounded-full bg-black/55 px-3 py-1 text-xs font-medium tracking-[0.12em] text-white uppercase">
-										After
-									</div>
-									<input
-										class="absolute inset-0 z-20 h-full w-full cursor-col-resize opacity-0"
-										type="range"
-										min="0"
-										max="100"
-										step="1"
-										aria-label="Adjust before and after comparison"
-										bind:value={navigateTradeoffReveal}
-									/>
 								</div>
+								<div class="pointer-events-none absolute left-4 top-4 rounded-full bg-white/80 px-3 py-1 text-xs font-medium tracking-[0.12em] text-slate-900 uppercase">
+									Before
+								</div>
+								<div class="pointer-events-none absolute right-4 top-4 rounded-full bg-black/55 px-3 py-1 text-xs font-medium tracking-[0.12em] text-white uppercase">
+									After
+								</div>
+								<input
+									class="absolute inset-0 z-20 h-full w-full cursor-col-resize opacity-0"
+									type="range"
+									min="0"
+									max="100"
+									step="1"
+									aria-label="Adjust before and after comparison"
+									bind:value={navigateTradeoffReveal}
+								/>
 							</div>
+						</div>
 
 						<div class="flex gap-3 overflow-x-auto pb-1">
 							{#each navigateTradeoffImages as image, index}
@@ -785,6 +762,29 @@
 								</button>
 							{/each}
 						</div>
+					</div>
+				</section>
+
+				<section class={`grid gap-6 ${featureSectionColumns} lg:items-center`}>
+					<div class="space-y-4">
+						<h2 class="text-3xl font-semibold tracking-tight sm:text-4xl">
+							Navigate trade-offs
+					</h2>
+					<p class="text-base leading-7 text-muted-foreground">
+						Compare outcomes before you commit. OIMG keeps the quality, size, and format trade-offs
+						visible while you tune the export.
+					</p>
+				</div>
+
+					<div class="py-3">
+						<InteractiveVideo
+							src="/analyze_demo.mp4"
+							triggerLabel="Open navigate trade-offs video in theater mode"
+							theaterLabel="Navigate trade-offs theater mode"
+							cardClass="transform-gpu inline-flex w-fit gap-0 overflow-hidden py-0 bg-background shadow-sm transition-all duration-500 ease-in-out hover:scale-110 hover:shadow-2xl focus-within:ring-2 focus-within:ring-primary/40"
+							inlineHostClass="inline-flex items-center justify-center"
+							inlineVideoClass="block h-auto max-w-full bg-black"
+						/>
 					</div>
 				</section>
 
