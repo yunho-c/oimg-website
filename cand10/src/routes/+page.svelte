@@ -1,5 +1,8 @@
 <script lang="ts">
+	import { onMount } from "svelte";
 	import {
+		Check,
+		Copy,
 		Download,
 		ExternalLink,
 		FolderOpen,
@@ -25,6 +28,76 @@
 	import { Separator } from "$lib/components/ui/separator";
 	import { Tabs, TabsContent, TabsList, TabsTrigger } from "$lib/components/ui/tabs";
 	import type { CarouselAPI } from "$lib/components/ui/carousel";
+
+	type DownloadPlatform = "macos" | "windows" | "linux";
+	type DownloadArch = "x64" | "arm64";
+
+	type DownloadTarget = {
+		label: string;
+		downloadHref: string;
+		command: string;
+	};
+
+	type PlatformDownloadConfig = {
+		label: string;
+		arches: Partial<Record<DownloadArch, DownloadTarget>>;
+	};
+
+	type NavigatorWithUAData = Navigator & {
+		userAgentData?: {
+			platform?: string;
+			architecture?: string;
+			getHighEntropyValues?: (
+				keys: string[]
+			) => Promise<{ architecture?: string; platform?: string }>;
+		};
+	};
+
+	const oimgRepoHref = "https://github.com/yunho-c/oimg";
+	const downloadPlatformOrder: DownloadPlatform[] = ["macos", "windows", "linux"];
+
+	const downloadCatalog: Record<DownloadPlatform, PlatformDownloadConfig> = {
+			macos: {
+				label: "macOS",
+				arches: {
+						arm64: {
+							label: "Apple Silicon",
+							downloadHref: `${oimgRepoHref}/releases/latest/download/oimg-macos-arm64.dmg`,
+							command: "brew install --cask oimg"
+						},
+						x64: {
+							label: "Intel",
+							downloadHref: `${oimgRepoHref}/releases/latest/download/oimg-macos-x64.dmg`,
+							command: "brew install --cask oimg"
+						}
+				}
+			},
+			windows: {
+				label: "Windows",
+					arches: {
+						x64: {
+							label: "x64",
+							downloadHref: `${oimgRepoHref}/releases/latest/download/oimg-windows-x64.exe`,
+							command: "winget install YunhoCho.OIMG"
+						}
+					}
+			},
+			linux: {
+				label: "Linux",
+					arches: {
+						x64: {
+							label: "x64",
+							downloadHref: `${oimgRepoHref}/releases/latest/download/oimg-linux-x64.AppImage`,
+							command: "sudo apt install oimg"
+						},
+						arm64: {
+							label: "arm64",
+							downloadHref: `${oimgRepoHref}/releases/latest/download/oimg-linux-arm64.AppImage`,
+							command: "sudo apt install oimg"
+						}
+				}
+			}
+	};
 
 	const signalCards = [
 		{ label: "Core moves", value: "5", detail: "Optimize, convert, resize, crop, extend." },
@@ -153,6 +226,130 @@
 
 	let openEffortlesslyApi = $state<CarouselAPI | undefined>(undefined);
 	let openEffortlesslyIndex = $state(0);
+	let selectedPlatform = $state<DownloadPlatform>("macos");
+	let selectedArchitecture = $state<DownloadArch>("arm64");
+	let detectedPlatform = $state<DownloadPlatform | null>(null);
+	let detectedArchitecture = $state<DownloadArch | null>(null);
+	let showAllDownloadOptions = $state(false);
+	let copyFeedback = $state<"idle" | "copied">("idle");
+
+	function getAvailableArchitectures(platform: DownloadPlatform): DownloadArch[] {
+		return Object.keys(downloadCatalog[platform].arches) as DownloadArch[];
+	}
+
+	function isArchitectureAvailable(platform: DownloadPlatform, architecture: DownloadArch): boolean {
+		return architecture in downloadCatalog[platform].arches;
+	}
+
+	function getArchitectureLabel(platform: DownloadPlatform, architecture: DownloadArch): string {
+		return downloadCatalog[platform].arches[architecture]?.label ?? architecture;
+	}
+
+	function detectPlatform(platformValue: string, userAgent: string): DownloadPlatform | null {
+		const normalizedPlatform = platformValue.toLowerCase();
+		const normalizedUserAgent = userAgent.toLowerCase();
+
+		if (normalizedPlatform.includes("mac") || normalizedUserAgent.includes("mac os")) return "macos";
+		if (normalizedPlatform.includes("win") || normalizedUserAgent.includes("windows")) return "windows";
+		if (normalizedPlatform.includes("linux") || normalizedUserAgent.includes("linux")) return "linux";
+
+		return null;
+	}
+
+	function detectArchitecture(value: string | undefined): DownloadArch | null {
+		if (!value) return null;
+
+		const normalizedValue = value.toLowerCase();
+
+		if (
+			normalizedValue.includes("arm64") ||
+			normalizedValue.includes("aarch64") ||
+			normalizedValue.includes("arm")
+		) {
+			return "arm64";
+		}
+
+		if (
+			normalizedValue.includes("x86_64") ||
+			normalizedValue.includes("x64") ||
+			normalizedValue.includes("amd64") ||
+			normalizedValue.includes("win64") ||
+			normalizedValue.includes("wow64") ||
+			normalizedValue.includes("x86")
+		) {
+			return "x64";
+		}
+
+		return null;
+	}
+
+	const selectedPlatformConfig = $derived(downloadCatalog[selectedPlatform]);
+	const selectedTarget = $derived(selectedPlatformConfig.arches[selectedArchitecture] as DownloadTarget);
+	const selectedArchitectures = $derived(getAvailableArchitectures(selectedPlatform));
+	$effect(() => {
+		if (!selectedArchitectures.includes(selectedArchitecture)) {
+			selectedArchitecture = selectedArchitectures[0];
+		}
+	});
+
+	onMount(() => {
+		let cancelled = false;
+
+		const applyDetection = (platform: DownloadPlatform | null, architecture: DownloadArch | null) => {
+			if (cancelled) return;
+
+			if (platform) {
+				detectedPlatform = platform;
+				selectedPlatform = platform;
+			}
+
+			if (platform && architecture && isArchitectureAvailable(platform, architecture)) {
+				detectedArchitecture = architecture;
+				selectedArchitecture = architecture;
+				return;
+			}
+
+			detectedArchitecture = architecture;
+		};
+
+		const detectClientPlatform = async () => {
+			const nav = navigator as NavigatorWithUAData;
+			const userAgentPlatform = nav.userAgentData?.platform ?? nav.platform ?? "";
+			const userAgent = nav.userAgent ?? "";
+			let platform = detectPlatform(userAgentPlatform, userAgent);
+			let architecture =
+				detectArchitecture(nav.userAgentData?.architecture) ?? detectArchitecture(userAgent);
+
+			if (nav.userAgentData?.getHighEntropyValues) {
+				try {
+					const highEntropy = await nav.userAgentData.getHighEntropyValues(["architecture", "platform"]);
+					platform = detectPlatform(highEntropy.platform ?? userAgentPlatform, userAgent) ?? platform;
+					architecture = detectArchitecture(highEntropy.architecture) ?? architecture;
+				} catch {
+					// Ignore and fall back to low-entropy detection.
+				}
+			}
+
+			applyDetection(platform, architecture);
+		};
+
+		void detectClientPlatform();
+
+		return () => {
+			cancelled = true;
+		};
+	});
+
+	async function copySelectedCommand() {
+		if (!navigator.clipboard) return;
+
+		await navigator.clipboard.writeText(selectedTarget.command);
+		copyFeedback = "copied";
+
+		window.setTimeout(() => {
+			copyFeedback = "idle";
+		}, 1500);
+	}
 
 	function showOpenEffortlesslySlide(index: number) {
 		openEffortlesslyApi?.scrollTo(index);
@@ -219,29 +416,103 @@
 		</header>
 
 		<main class="flex flex-col gap-16 py-10 sm:gap-20 sm:py-16">
-			<section id="download" class="grid gap-6 lg:grid-cols-[1.05fr_0.95fr] lg:items-start">
-				<div class="space-y-6">
-					<!-- <Badge variant="secondary">Preview-first export workflow</Badge> -->
+				<section id="download" class="grid gap-6 lg:grid-cols-[1.05fr_0.95fr] lg:items-start">
+					<div class="space-y-6">
+						<!-- <Badge variant="secondary">Preview-first export workflow</Badge> -->
 					<div class="space-y-4">
 						<h1 class="max-w-4xl text-balance text-4xl font-semibold tracking-tight sm:text-5xl lg:text-6xl">
 							Make images lighter without degrading visual quality.
 						</h1>
-						<p class="max-w-2xl text-lg leading-8 text-muted-foreground">
-							OIMG uses modern image compression techniques to reduce file size.
-						</p>
-					</div>
+							<p class="max-w-2xl text-lg leading-8 text-muted-foreground">
+								OIMG uses modern image compression techniques to reduce file size.
+							</p>
+						</div>
 
-					<div class="flex flex-col gap-3 sm:flex-row">
-						<Button size="lg" href="#download" class="sm:w-auto">
-							Download
-							<Download class="size-4" />
-						</Button>
-						<!-- <Button size="lg" variant="outline" href="#board" class="sm:w-auto">
-							Open the product board
-							<ArrowRight class="size-4" />
-						</Button> -->
+							<div class="max-w-2xl space-y-5">
+									<div class="flex flex-col gap-3 sm:flex-row sm:items-center">
+										<Button
+											size="lg"
+											href={selectedTarget.downloadHref}
+										target="_blank"
+										rel="noreferrer"
+										class="sm:w-auto"
+									>
+											Download
+											<Download class="size-4" />
+										</Button>
+										<Button
+											type="button"
+											size="lg"
+											variant="outline"
+											class="sm:w-auto"
+											onclick={() => (showAllDownloadOptions = !showAllDownloadOptions)}
+										>
+											{showAllDownloadOptions ? "Hide options" : "Show all options"}
+										</Button>
+									</div>
+
+									{#if showAllDownloadOptions}
+										<div class="grid gap-4 sm:grid-cols-2">
+											<div class="space-y-2">
+												<p class="text-sm font-medium">Platform</p>
+												<div class="flex flex-wrap gap-2">
+													{#each downloadPlatformOrder as platform}
+														<Button
+															type="button"
+															size="sm"
+															variant={selectedPlatform === platform ? "default" : "outline"}
+															onclick={() => (selectedPlatform = platform)}
+														>
+															{downloadCatalog[platform].label}
+														</Button>
+													{/each}
+												</div>
+											</div>
+
+											<div class="space-y-2">
+												<p class="text-sm font-medium">Architecture</p>
+												<div class="flex flex-wrap gap-2">
+													{#each selectedArchitectures as architecture}
+														<Button
+															type="button"
+															size="sm"
+															variant={selectedArchitecture === architecture ? "default" : "outline"}
+															onclick={() => (selectedArchitecture = architecture)}
+														>
+															{getArchitectureLabel(selectedPlatform, architecture)}
+														</Button>
+													{/each}
+												</div>
+											</div>
+										</div>
+									{/if}
+
+									<div class="w-full rounded-xl border border-white/10 bg-neutral-950 p-4 text-white sm:w-4/5">
+										<div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+											<div class="space-y-2">
+													<p class="font-mono text-sm leading-6 break-all text-neutral-100">
+														{selectedTarget.command}
+													</p>
+											</div>
+											<Button
+												type="button"
+												size="sm"
+												variant="outline"
+												class="border-white/15 bg-white/5 text-white hover:bg-white/10 hover:text-white sm:shrink-0"
+												onclick={copySelectedCommand}
+											>
+											{#if copyFeedback === "copied"}
+												Copied
+												<Check class="size-4" />
+											{:else}
+												Copy
+												<Copy class="size-4" />
+											{/if}
+										</Button>
+										</div>
+									</div>
+						</div>
 					</div>
-				</div>
 
 				<InteractiveVideo
 					src="/analyze_demo.mp4"
@@ -337,11 +608,11 @@
 			<section class={`grid gap-6 ${featureSectionColumns} lg:items-center`}>
 				<div class="space-y-4">
 					<h2 class="text-3xl font-semibold tracking-tight sm:text-4xl">
-						Stay in control
+						Remain in control
 					</h2>
 					<p class="text-base leading-7 text-muted-foreground">
 						OIMG provides image quality assessment (Pixel Match Percentage,
-						MS-SSIM, and SSIMULACRA 2) — so you don't get blindsided by unexpected quality loss.
+						MS-SSIM, and SSIMULACRA 2) — so you don't get surprised by unexpected quality loss.
 					</p>
 				</div>
 
@@ -377,6 +648,28 @@
 						inlineHostClass="inline-flex items-center justify-center"
 						inlineVideoClass="block h-auto max-w-full bg-black"
 						/>
+					</div>
+				</section>
+
+				<section class="grid gap-6 lg:grid-cols-[0.98fr_1.02fr] lg:items-center">
+					<div class="space-y-4">
+						<h2 class="text-3xl font-semibold tracking-tight sm:text-4xl">
+							Compatibility? No problem.
+						</h2>
+						<p class="text-base leading-7 text-muted-foreground">
+							Convert back to JPG or PNG on demand with one click—for example, when uploading onto websites that only support limited formats!
+						</p>
+					</div>
+
+					<div class="overflow-hidden py-3">
+						<div class="inline-flex items-center justify-center overflow-hidden rounded-xl border bg-background shadow-sm">
+							<img
+								class="block h-auto max-w-full"
+								src="/quality_metrics.webp"
+								alt="Placeholder screenshot for OIMG compatibility workflow."
+								loading="lazy"
+							/>
+						</div>
 					</div>
 				</section>
 
