@@ -1,7 +1,7 @@
 <script lang="ts">
 	import {
-		ArrowRight,
 		Download,
+		ExternalLink,
 		FileImage,
 		FolderOpen,
 		Layers3,
@@ -358,10 +358,10 @@
 				</div>
 			</section>
 
-			<section class={`grid gap-6 ${featureSectionColumns} lg:items-center`}>
-				<div class="space-y-4">
-					<h2 class="text-3xl font-semibold tracking-tight sm:text-4xl">
-						Navigate trade-offs
+				<section class={`grid gap-6 ${featureSectionColumns} lg:items-center`}>
+					<div class="space-y-4">
+						<h2 class="text-3xl font-semibold tracking-tight sm:text-4xl">
+							Navigate trade-offs
 					</h2>
 					<p class="text-base leading-7 text-muted-foreground">
 						Compare outcomes before you commit. OIMG keeps the quality, size, and format trade-offs
@@ -377,13 +377,58 @@
 						cardClass="transform-gpu inline-flex w-fit gap-0 overflow-hidden py-0 bg-background shadow-sm transition-all duration-500 ease-in-out hover:scale-110 hover:shadow-2xl focus-within:ring-2 focus-within:ring-primary/40"
 						inlineHostClass="inline-flex items-center justify-center"
 						inlineVideoClass="block h-auto max-w-full bg-black"
-					/>
-				</div>
-			</section>
+						/>
+					</div>
+				</section>
 
-			<!-- <section class="grid gap-4 md:grid-cols-3">
-				{#each signalCards as card}
-					<Card>
+				<section class="grid gap-6 lg:grid-cols-[0.98fr_1.02fr] lg:items-center">
+					<div class="space-y-4">
+						<h2 class="text-3xl font-semibold tracking-tight sm:text-4xl">
+							Free and Open Source
+						</h2>
+						<p class="text-base leading-7 text-muted-foreground">
+							OIMG is free for personal and academic use forever,
+							and is open sourced under GPLv3 license.
+              Please contact
+							<a
+								href="mailto:license@oimg.org"
+								class="underline decoration-current underline-offset-4 transition-colors hover:text-foreground"
+							>
+								license@oimg.org
+							</a>
+							to discuss custom license arrangements.
+						</p>
+					</div>
+
+					<div class="flex items-center lg:justify-end">
+						<Button
+							size="lg"
+							variant="outline"
+							href="https://github.com/yunho-c/oimg"
+							target="_blank"
+							rel="noreferrer"
+							class="sm:w-auto mx-2"
+							>
+								Source Code
+								<ExternalLink class="size-4" />
+							</Button>
+						<Button
+							size="lg"
+							variant="outline"
+							href="https://github.com/yunho-c/oimg/issues"
+							target="_blank"
+							rel="noreferrer"
+							class="sm:w-auto"
+							>
+								Issue tracker
+								<ExternalLink class="size-4" />
+							</Button>
+						</div>
+					</section>
+
+				<!-- <section class="grid gap-4 md:grid-cols-3">
+					{#each signalCards as card}
+						<Card>
 						<CardHeader class="gap-1">
 							<CardDescription>{card.label}</CardDescription>
 							<CardTitle class="text-2xl">{card.value}</CardTitle>
