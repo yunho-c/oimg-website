@@ -156,44 +156,38 @@
 		}
 	];
 
-	const navigateTradeoffImages = [
-		{
-			title: "Fuji at distance",
-			description: "Check how compression treats soft atmospheric gradients and fine edge detail.",
-			src: "/example_images/fuji.jpg",
-			alt: "Mount Fuji photographed at a distance under a pale sky."
-		},
-		{
-			title: "Cloudy Yokohama",
-			description: "Review urban texture, signage, and shadow handling before you export.",
-			src: "/example_images/cloudy-yokohama.jpg",
-			alt: "Cloudy city scene in Yokohama with buildings and street detail."
-		},
-		{
-			title: "Sunny room",
-			description: "Compare bright interior tones when you need a lighter file without washing the image out.",
-			src: "/example_images/sunny-room.jpg",
-			alt: "Sunlit interior room with bright highlights and shadows."
-		},
-		{
-			title: "Bracken",
-			description: "Inspect organic texture and dense fine detail where artifacts show up fast.",
-			src: "/example_images/bracken.jpg",
-			alt: "Close-up image of green bracken leaves."
-		},
-		{
-			title: "Ducks",
-			description: "Use a more natural scene to judge color transitions and water detail.",
-			src: "/example_images/ducks.jpg",
-			alt: "Two ducks on water with natural reflections."
-		},
-		{
-			title: "Dark bulb",
-			description: "Stress-test low-light contrast and subtle tonal separation.",
-			src: "/example_images/dark-bulb.jpg",
-			alt: "Dark moody photograph centered on a lit bulb."
-		}
-	];
+		const navigateTradeoffImages = [
+			{
+				title: "Fuji at distance",
+				src: "/example_images/fuji.jpg",
+				alt: "Mount Fuji photographed at a distance under a pale sky."
+			},
+			{
+				title: "Cloudy Yokohama",
+				src: "/example_images/cloudy-yokohama.jpg",
+				alt: "Cloudy city scene in Yokohama with buildings and street detail."
+			},
+			{
+				title: "Sunny room",
+				src: "/example_images/sunny-room.jpg",
+				alt: "Sunlit interior room with bright highlights and shadows."
+			},
+			{
+				title: "Bracken",
+				src: "/example_images/bracken.jpg",
+				alt: "Close-up image of green bracken leaves."
+			},
+			{
+				title: "Ducks",
+				src: "/example_images/ducks.jpg",
+				alt: "Two ducks on water with natural reflections."
+			},
+			{
+				title: "Dark bulb",
+				src: "/example_images/dark-bulb.jpg",
+				alt: "Dark moody photograph centered on a lit bulb."
+			}
+		];
 	const openEffortlesslyCarouselOptions = { duration: 32 };
 	const openEffortlesslyAutoplay = Autoplay({ delay: 5000 });
 
@@ -263,10 +257,11 @@
 		}
 	];
 
-	let openEffortlesslyApi = $state<CarouselAPI | undefined>(undefined);
-	let openEffortlesslyIndex = $state(0);
-	let navigateTradeoffIndex = $state(0);
-	let selectedPlatform = $state<DownloadPlatform>("macos");
+		let openEffortlesslyApi = $state<CarouselAPI | undefined>(undefined);
+		let openEffortlesslyIndex = $state(0);
+		let navigateTradeoffIndex = $state(0);
+		let navigateTradeoffReveal = $state(50);
+		let selectedPlatform = $state<DownloadPlatform>("macos");
 	let selectedArchitecture = $state<DownloadArch>("arm64");
 	let detectedPlatform = $state<DownloadPlatform | null>(null);
 	let detectedArchitecture = $state<DownloadArch | null>(null);
@@ -395,9 +390,9 @@
 		}, 1500);
 	}
 
-	function showNavigateTradeoffImage(index: number) {
-		navigateTradeoffIndex = index;
-	}
+		function showNavigateTradeoffImage(index: number) {
+			navigateTradeoffIndex = index;
+		}
 
 	function showOpenEffortlesslySlide(index: number) {
 		openEffortlesslyApi?.scrollTo(index);
@@ -687,17 +682,58 @@
 					</p>
 				</div>
 
-					<div class="space-y-4 py-3">
-						<div class="overflow-hidden rounded-[1.5rem] border bg-card p-3 shadow-sm">
-							<div class="overflow-hidden rounded-[1.1rem] bg-muted/30">
-								<img
-									class="block aspect-[16/10] h-auto w-full object-cover"
-									src={navigateTradeoffImages[navigateTradeoffIndex].src}
-									alt={navigateTradeoffImages[navigateTradeoffIndex].alt}
-									loading="lazy"
-								/>
+						<div class="space-y-4 py-3">
+							<div class="overflow-hidden rounded-[1.5rem] border bg-card">
+								<div class="relative overflow-hidden rounded-[1.5rem] bg-muted/30">
+									<img
+										class="block aspect-[16/10] h-auto w-full object-cover"
+										src={navigateTradeoffImages[navigateTradeoffIndex].src}
+										alt={navigateTradeoffImages[navigateTradeoffIndex].alt}
+										loading="lazy"
+									/>
+									<div
+										class="absolute inset-0 overflow-hidden"
+										style={`clip-path: inset(0 0 0 ${navigateTradeoffReveal}%);`}
+									>
+										<img
+											class="block aspect-[16/10] h-full w-full object-cover blur-[10px]"
+											src={navigateTradeoffImages[navigateTradeoffIndex].src}
+											alt=""
+											aria-hidden="true"
+											loading="lazy"
+										/>
+									</div>
+									<div class="pointer-events-none absolute inset-y-0" style={`left: calc(${navigateTradeoffReveal}% - 1px);`}>
+										<div class="h-full w-0.5 bg-white/90 shadow-[0_0_0_1px_rgba(15,23,42,0.18)]"></div>
+									</div>
+									<div
+										class="pointer-events-none absolute top-1/2 z-10 -translate-y-1/2"
+										style={`left: calc(${navigateTradeoffReveal}% - 22px);`}
+									>
+										<div class="flex size-11 items-center justify-center rounded-full border border-white/80 bg-white/90 shadow-lg backdrop-blur">
+											<div class="flex items-center gap-1 text-[0.65rem] font-semibold text-slate-900">
+												<span>&larr;</span>
+												<span>&rarr;</span>
+											</div>
+										</div>
+									</div>
+									<div class="pointer-events-none absolute left-4 top-4 rounded-full bg-white/80 px-3 py-1 text-xs font-medium tracking-[0.12em] text-slate-900 uppercase">
+										Before
+									</div>
+									<div class="pointer-events-none absolute right-4 top-4 rounded-full bg-black/55 px-3 py-1 text-xs font-medium tracking-[0.12em] text-white uppercase">
+										After
+									</div>
+									<input
+										class="absolute inset-0 z-20 h-full w-full cursor-col-resize opacity-0"
+										type="range"
+										min="0"
+										max="100"
+										step="1"
+										aria-label="Adjust before and after comparison"
+										bind:value={navigateTradeoffReveal}
+									/>
+								</div>
 							</div>
-						</div>
 
 						<div class="flex gap-3 overflow-x-auto pb-1">
 							{#each navigateTradeoffImages as image, index}
