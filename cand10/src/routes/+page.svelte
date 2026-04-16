@@ -427,7 +427,7 @@
 </script>
 
 <svelte:head>
-	<title>oimg | A calmer final export workflow</title>
+	<title>OIMG | A better way to compress images</title>
 	<meta
 		name="description"
 		content="A stock shadcn-styled OIMG landing page framed as a cleaner operator board for lighter exports, format changes, and safer final-file decisions."
@@ -447,7 +447,7 @@
 				</div>
 			</div>
 
-			<div class="flex flex-col gap-3 sm:flex-row sm:items-center">
+				<div class="flex flex-col gap-3 sm:mr-2 sm:flex-row sm:items-center">
 				<nav class="flex items-center gap-5 text-sm text-muted-foreground">
 					<a
 						href="https://github.com/yunho-c/oimg"
