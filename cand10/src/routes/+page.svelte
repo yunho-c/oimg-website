@@ -264,6 +264,7 @@
 		let openEffortlesslyIndex = $state(0);
 		let navigateTradeoffIndex = $state(0);
 		let navigateTradeoffReveal = $state(50);
+		let navigateTradeoffFrame = $state<HTMLDivElement | null>(null);
 		let selectedPlatform = $state<DownloadPlatform>("macos");
 	let selectedArchitecture = $state<DownloadArch>("arm64");
 	let detectedPlatform = $state<DownloadPlatform | null>(null);
@@ -395,6 +396,28 @@
 
 		function showNavigateTradeoffImage(index: number) {
 			navigateTradeoffIndex = index;
+			navigateTradeoffReveal = 50;
+		}
+
+		function updateNavigateTradeoffReveal(event: MouseEvent) {
+			const frame = navigateTradeoffFrame;
+			if (!frame) return;
+
+			const rect = frame.getBoundingClientRect();
+			const relativeX = event.clientX - rect.left;
+			const ratio = Math.min(Math.max(relativeX / rect.width, 0), 1);
+
+			navigateTradeoffReveal = ratio * 100;
+		}
+
+		function handleNavigateTradeoffKeydown(event: KeyboardEvent) {
+			if (event.key === "ArrowLeft") {
+				event.preventDefault();
+				navigateTradeoffReveal = Math.max(navigateTradeoffReveal - 5, 0);
+			} else if (event.key === "ArrowRight") {
+				event.preventDefault();
+				navigateTradeoffReveal = Math.min(navigateTradeoffReveal + 5, 100);
+			}
 		}
 
 	function showOpenEffortlesslySlide(index: number) {
@@ -685,12 +708,25 @@
 							</p>
 						</div>
 
-					<div class="space-y-4 py-3">
-						<div class="overflow-hidden rounded-[1.5rem] border bg-card">
-							<div class="relative overflow-hidden rounded-[1.5rem] bg-muted/30">
-								<img
-									class="block aspect-[16/10] h-auto w-full object-cover"
-									src={navigateTradeoffImages[navigateTradeoffIndex].src}
+						<div class="space-y-4 py-3">
+								<div class="overflow-hidden rounded-[1.5rem] border bg-card">
+									<!-- svelte-ignore a11y_no_static_element_interactions -->
+									<div
+										bind:this={navigateTradeoffFrame}
+										class="relative cursor-ew-resize overflow-hidden rounded-[1.5rem] bg-muted/30"
+									role="slider"
+									tabindex="0"
+									aria-label="Before and after image comparison"
+									aria-valuemin={0}
+									aria-valuemax={100}
+									aria-valuenow={Math.round(navigateTradeoffReveal)}
+									onmousemove={updateNavigateTradeoffReveal}
+									onmouseenter={updateNavigateTradeoffReveal}
+									onkeydown={handleNavigateTradeoffKeydown}
+								>
+									<img
+										class="block aspect-[16/10] h-auto w-full object-cover"
+										src={navigateTradeoffImages[navigateTradeoffIndex].src}
 									alt={navigateTradeoffImages[navigateTradeoffIndex].alt}
 									loading="lazy"
 								/>
@@ -726,17 +762,8 @@
 								<div class="pointer-events-none absolute right-4 top-4 rounded-full bg-black/55 px-3 py-1 text-xs font-medium tracking-[0.12em] text-white uppercase">
 									After
 								</div>
-								<input
-									class="absolute inset-0 z-20 h-full w-full cursor-col-resize opacity-0"
-									type="range"
-									min="0"
-									max="100"
-									step="1"
-									aria-label="Adjust before and after comparison"
-									bind:value={navigateTradeoffReveal}
-								/>
+								</div>
 							</div>
-						</div>
 
 						<div class="flex gap-3 overflow-x-auto pb-1">
 							{#each navigateTradeoffImages as image, index}
