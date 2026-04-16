@@ -245,6 +245,10 @@
 		return downloadCatalog[platform].arches[architecture]?.label ?? architecture;
 	}
 
+	function getDownloadButtonLabel(platform: DownloadPlatform, architecture: DownloadArch): string {
+		return `Download for ${downloadCatalog[platform].label} (${getArchitectureLabel(platform, architecture)})`;
+	}
+
 	function detectPlatform(platformValue: string, userAgent: string): DownloadPlatform | null {
 		const normalizedPlatform = platformValue.toLowerCase();
 		const normalizedUserAgent = userAgent.toLowerCase();
@@ -437,7 +441,7 @@
 										rel="noreferrer"
 										class="sm:w-auto"
 									>
-											Download
+											{getDownloadButtonLabel(selectedPlatform, selectedArchitecture)}
 											<Download class="size-4" />
 										</Button>
 										<Button
