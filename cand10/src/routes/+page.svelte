@@ -43,6 +43,15 @@
 		arches: Partial<Record<DownloadArch, DownloadTarget>>;
 	};
 
+	type PageMedia = {
+		src: string;
+		relativeSize: number;
+	};
+
+	type PageImageMedia = PageMedia & {
+		alt: string;
+	};
+
 	type NavigatorWithUAData = Navigator & {
 		userAgentData?: {
 			platform?: string;
@@ -239,6 +248,22 @@
 		}
 	];
 
+	const heroDemoVideo: PageMedia = {
+		src: "/analyze_demo.mp4",
+		relativeSize: 1
+	};
+
+	const navigateTradeoffsVideo: PageMedia = {
+		src: "/analyze_demo.mp4",
+		relativeSize: 1
+	};
+
+	const compatibilityImage: PageImageMedia = {
+		src: "/save_as_jpg.png",
+		alt: "OIMG save-as JPG compatibility workflow.",
+		relativeSize: 0.7
+	};
+
 	const safeguards = [
 		{
 			value: "preview-first",
@@ -394,10 +419,14 @@
 		}, 1500);
 	}
 
-		function showNavigateTradeoffImage(index: number) {
-			navigateTradeoffIndex = index;
-			navigateTradeoffReveal = 50;
-		}
+	function showNavigateTradeoffImage(index: number) {
+		navigateTradeoffIndex = index;
+		navigateTradeoffReveal = 50;
+	}
+
+	function getRelativeSizeWidth(relativeSize: number) {
+		return `${relativeSize * 100}%`;
+	}
 
 		function updateNavigateTradeoffReveal(event: MouseEvent) {
 			const frame = navigateTradeoffFrame;
@@ -462,11 +491,10 @@
 			<header class="flex flex-col gap-4 border-b py-4 sm:flex-row sm:items-center sm:justify-between">
 				<div class="flex items-center gap-3">
 					<div class="flex size-9 items-center justify-center rounded-lg bg-card">
-						<img src="/favicon.svg" alt="OIMG logo" class="size-7" />
+						<img src="/favicon.svg" alt="OIMG logo" class="size-11" />
 					</div>
 					<div>
-					<p class="text-sm font-semibold">oimg</p>
-					<!-- <p class="text-sm text-muted-foreground">Desktop image optimizer</p> -->
+					<p class="text-sm font-semibold">OIMG</p>
 				</div>
 			</div>
 
@@ -584,9 +612,10 @@
 					</div>
 
 				<InteractiveVideo
-					src="/analyze_demo.mp4"
+					src={heroDemoVideo.src}
 					triggerLabel="Open product demo in theater mode"
 					theaterLabel="Product demo theater mode"
+					relativeSize={heroDemoVideo.relativeSize}
 				/>
 			</section>
 
@@ -805,12 +834,13 @@
 
 					<div class="py-3">
 						<InteractiveVideo
-							src="/analyze_demo.mp4"
+							src={navigateTradeoffsVideo.src}
 							triggerLabel="Open navigate trade-offs video in theater mode"
 							theaterLabel="Navigate trade-offs theater mode"
-							cardClass="transform-gpu inline-flex w-fit gap-0 overflow-hidden py-0 bg-background shadow-sm transition-all duration-500 ease-in-out hover:scale-110 hover:shadow-2xl focus-within:ring-2 focus-within:ring-primary/40"
-							inlineHostClass="inline-flex items-center justify-center"
-							inlineVideoClass="block h-auto max-w-full bg-black"
+							relativeSize={navigateTradeoffsVideo.relativeSize}
+							cardClass="transform-gpu w-full gap-0 overflow-hidden py-0 bg-background shadow-sm transition-all duration-500 ease-in-out hover:scale-110 hover:shadow-2xl focus-within:ring-2 focus-within:ring-primary/40"
+							inlineHostClass="flex w-full items-center justify-center"
+							inlineVideoClass="block h-auto w-full max-w-full bg-black"
 						/>
 					</div>
 				</section>
@@ -826,11 +856,14 @@
 					</div>
 
 						<div class="py-3">
-								<div class="inline-flex items-center justify-center overflow-hidden rounded-xl border bg-background shadow-[0_24px_70px_-24px_rgba(15,23,42,0.35),0_12px_28px_-18px_rgba(15,23,42,0.28)]">
+								<div
+									class="mx-auto flex items-center justify-center overflow-hidden rounded-xl border bg-background shadow-[0_24px_70px_-24px_rgba(15,23,42,0.35),0_12px_28px_-18px_rgba(15,23,42,0.28)]"
+									style:width={getRelativeSizeWidth(compatibilityImage.relativeSize)}
+								>
 									<img
-										class="block h-auto max-w-full"
-										src="/save_as_jpg.png"
-									alt="OIMG save-as JPG compatibility workflow."
+										class="block h-auto w-full max-w-full"
+										src={compatibilityImage.src}
+									alt={compatibilityImage.alt}
 									loading="lazy"
 								/>
 							</div>

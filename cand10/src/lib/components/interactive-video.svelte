@@ -9,6 +9,7 @@
 		src: string;
 		triggerLabel: string;
 		theaterLabel: string;
+		relativeSize?: number;
 		cardClass?: string;
 		inlineHostClass?: string;
 		inlineVideoClass?: string;
@@ -20,6 +21,7 @@
 		src,
 		triggerLabel,
 		theaterLabel,
+		relativeSize = 1,
 		cardClass = "transform-gpu gap-0 overflow-hidden py-0 shadow-[0_24px_70px_-24px_rgba(15,23,42,0.28),0_12px_28px_-18px_rgba(15,23,42,0.2)] transition-all duration-500 ease-in-out hover:scale-110 hover:shadow-2xl focus-within:ring-2 focus-within:ring-primary/40",
 		inlineHostClass = "w-full",
 		inlineVideoClass = "block h-auto w-full bg-black",
@@ -110,12 +112,13 @@
 
 <div
 	bind:this={triggerElement}
-	class="outline-none"
+	class="mx-auto outline-none"
 	role="button"
 	tabindex="0"
 	aria-haspopup="dialog"
 	aria-expanded={isTheaterModeOpen}
 	aria-label={triggerLabel}
+	style:width={`${relativeSize * 100}%`}
 	onclick={() => void openTheaterMode()}
 	onkeydown={handleTriggerKeydown}
 >
