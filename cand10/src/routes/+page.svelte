@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from "svelte";
+	import { fly } from "svelte/transition";
 	import {
 		Check,
 		Copy,
@@ -318,6 +319,14 @@
 		return `Download for ${downloadCatalog[platform].label} (${getArchitectureLabel(platform, architecture)})`;
 	}
 
+	function selectPlatform(platform: DownloadPlatform) {
+		selectedPlatform = platform;
+
+		if (!isArchitectureAvailable(platform, selectedArchitecture)) {
+			selectedArchitecture = getAvailableArchitectures(platform)[0];
+		}
+	}
+
 	function detectPlatform(platformValue: string, userAgent: string): DownloadPlatform | null {
 		const normalizedPlatform = platformValue.toLowerCase();
 		const normalizedUserAgent = userAgent.toLowerCase();
@@ -356,9 +365,16 @@
 		return null;
 	}
 
-	const selectedPlatformConfig = $derived(downloadCatalog[selectedPlatform]);
-	const selectedTarget = $derived(selectedPlatformConfig.arches[selectedArchitecture] as DownloadTarget);
 	const selectedArchitectures = $derived(getAvailableArchitectures(selectedPlatform));
+	const selectedPlatformConfig = $derived(downloadCatalog[selectedPlatform]);
+	const effectiveArchitecture = $derived(
+		selectedArchitectures.includes(selectedArchitecture)
+			? selectedArchitecture
+			: selectedArchitectures[0]
+	);
+	const selectedTarget = $derived(
+		selectedPlatformConfig.arches[effectiveArchitecture] as DownloadTarget
+	);
 	$effect(() => {
 		if (!selectedArchitectures.includes(selectedArchitecture)) {
 			selectedArchitecture = selectedArchitectures[0];
@@ -373,7 +389,7 @@
 
 			if (platform) {
 				detectedPlatform = platform;
-				selectedPlatform = platform;
+				selectPlatform(platform);
 			}
 
 			if (platform && architecture && isArchitectureAvailable(platform, architecture)) {
@@ -577,7 +593,7 @@
 										rel="noreferrer"
 										class="sm:w-auto"
 									>
-											{getDownloadButtonLabel(selectedPlatform, selectedArchitecture)}
+											{getDownloadButtonLabel(selectedPlatform, effectiveArchitecture)}
 											<Download class="size-4" />
 										</Button>
 										<Button
@@ -621,7 +637,11 @@
 									</div>
 
 									{#if showAllDownloadOptions}
-										<div class="grid gap-4 sm:grid-cols-2">
+										<div
+											class="grid gap-4 sm:grid-cols-2"
+											in:fly={{ y: -8, duration: 180 }}
+											out:fly={{ y: -6, duration: 150 }}
+										>
 											<div class="space-y-2">
 												<p class="text-sm font-medium">Platform</p>
 												<div class="flex flex-wrap gap-2">
@@ -630,7 +650,7 @@
 															type="button"
 															size="sm"
 															variant={selectedPlatform === platform ? "default" : "outline"}
-															onclick={() => (selectedPlatform = platform)}
+															onclick={() => selectPlatform(platform)}
 														>
 															{downloadCatalog[platform].label}
 														</Button>
@@ -1193,7 +1213,7 @@
 		<footer class="flex flex-col gap-2 border-t py-6 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
 			<p>&copy; {currentYear} OIMG. All rights reserved.</p>
 			<p>
-				Built with care by
+				Built with care and love by
 				<a
 					href="https://yunhocho.com/"
 					target="_blank"
