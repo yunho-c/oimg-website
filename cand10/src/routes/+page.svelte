@@ -622,7 +622,11 @@
 												type="button"
 												size="sm"
 												variant="outline"
-												class="border-white/15 bg-white/5 text-white hover:bg-white/10 hover:text-white sm:shrink-0"
+												class={`sm:shrink-0 transition-colors duration-200 ${
+													copyFeedback === "copied"
+														? "border-white bg-white text-neutral-950 hover:bg-white hover:text-neutral-950"
+														: "border-white/15 bg-white/5 text-white hover:bg-white/10 hover:text-white"
+												}`}
 												onclick={copySelectedCommand}
 											>
 											{#if copyFeedback === "copied"}
