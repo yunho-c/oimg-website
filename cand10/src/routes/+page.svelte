@@ -737,7 +737,7 @@
 							onfocus={() => showOpenEffortlesslySlide(1)}
 							onclick={() => showOpenEffortlesslySlide(1)}
 						>
-							open from your file explorer
+							open from file explorer
 						</button>,
 						or
 						<button
@@ -749,7 +749,7 @@
 							onfocus={() => showOpenEffortlesslySlide(2)}
 							onclick={() => showOpenEffortlesslySlide(2)}
 						>
-							invoke from the command line
+							run from the command line
 						</button>.
 					</p>
 				</div>
@@ -916,10 +916,10 @@
 				<section class={`grid gap-6 ${featureSectionColumns} lg:items-center`}>
 					<div class="space-y-4">
 						<h2 class="text-3xl font-semibold tracking-tight sm:text-4xl">
-							Navigate size-quality trade-off
+							Find the sweet spot
 					</h2>
 					<p class="text-base leading-7 text-muted-foreground">
-						OIMG can sweep across different optimization strengths to let you pick the sweet spot quickly.
+						Navigate around the size vs. quality trade-off by visualizing quality metrics and compression efficiency on a graph.
 					</p>
 				</div>
 
@@ -942,7 +942,7 @@
 							Compatibility? No problem.
 						</h2>
 						<p class="text-base leading-7 text-muted-foreground">
-							Convert back to JPG or PNG on demand with one click—for example, when uploading onto websites that only support limited formats!
+							Convert back to JPG or PNG on demand with one click (for example, when uploading to websites with limited format support)!
 						</p>
 					</div>
 
