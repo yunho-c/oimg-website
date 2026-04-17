@@ -553,10 +553,10 @@
 		<header class="flex flex-col gap-4 border-b py-4 sm:flex-row sm:items-center sm:justify-between">
 				<a href="#page-top" class="flex items-center gap-3 transition-colors hover:text-foreground">
 					<div class="flex size-9 items-center justify-center rounded-lg bg-card">
-						<img src="/favicon.svg" alt="OIMG logo" class="size-11" />
+						<img src="/favicon.svg" alt="OIMG logo" class="size-9" />
 					</div>
 					<div>
-					<p class="text-sm font-semibold">OIMG</p>
+					<p class="text-lg font-semibold">OIMG</p>
 				</div>
 			</a>
 
@@ -565,6 +565,21 @@
 					<a href="#page-top" class="transition-colors hover:text-foreground">
 						Download
 					</a>
+					<div class="group/web-version relative">
+						<button
+							type="button"
+							class="cursor-not-allowed transition-colors opacity-60"
+							aria-disabled="true"
+						>
+							Web version
+						</button>
+						<span
+							class="pointer-events-none absolute left-1/2 top-full z-10 mt-2 -translate-x-1/2 rounded-lg border bg-background px-3 py-1.5 text-sm font-medium whitespace-nowrap text-foreground opacity-0 shadow-lg transition-opacity duration-150 group-hover/web-version:opacity-100 group-focus-within/web-version:opacity-100"
+							role="tooltip"
+						>
+							Coming soon
+						</span>
+					</div>
 					<a
 						href="https://github.com/yunho-c/oimg"
 						target="_blank"
@@ -901,11 +916,10 @@
 				<section class={`grid gap-6 ${featureSectionColumns} lg:items-center`}>
 					<div class="space-y-4">
 						<h2 class="text-3xl font-semibold tracking-tight sm:text-4xl">
-							Navigate trade-offs
+							Navigate size-quality trade-off
 					</h2>
 					<p class="text-base leading-7 text-muted-foreground">
-						Compare outcomes before you commit. OIMG keeps the quality, size, and format trade-offs
-						visible while you tune the export.
+						OIMG can sweep across different optimization strengths to let you pick the sweet spot quickly.
 					</p>
 				</div>
 
