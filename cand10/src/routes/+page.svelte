@@ -486,7 +486,7 @@
 	/>
 </svelte:head>
 
-<div class="bg-background text-foreground">
+<div id="page-top" class="bg-background text-foreground">
 	<div class="mx-auto flex min-h-screen max-w-7xl flex-col px-6 py-6 sm:px-8 lg:px-10">
 			<header class="flex flex-col gap-4 border-b py-4 sm:flex-row sm:items-center sm:justify-between">
 				<div class="flex items-center gap-3">
@@ -500,11 +500,14 @@
 
 				<div class="flex flex-col gap-3 sm:mr-2 sm:flex-row sm:items-center">
 				<nav class="flex items-center gap-5 text-sm text-muted-foreground">
+					<a href="#page-top" class="transition-colors hover:text-foreground">
+						Download
+					</a>
 					<a
 						href="https://github.com/yunho-c/oimg"
 						target="_blank"
 						rel="noreferrer"
-						class="transition-colors hover:text-foreground"
+						class="transition-[color,text-shadow] duration-200 hover:text-[#6d4db3] hover:[text-shadow:0_0_18px_rgba(109,77,179,0.15)]"
 					>
 						GitHub
 					</a>
@@ -1159,3 +1162,9 @@
 		</footer>
 	</div>
 </div>
+
+<style>
+	:global(html) {
+		scroll-behavior: smooth;
+	}
+</style>
