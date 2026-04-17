@@ -966,7 +966,16 @@
 						Built for speed
 					</h2>
 					<p class="max-w-3xl text-base leading-7 text-muted-foreground">
-						OIMG is written in Rust for speed and memory safety, and utilizes multithreading and SIMD optimizations so that you can make the most of your time!
+						OIMG is written in Rust for speed and memory safety, and utilizes multithreading and SIMD optimizations so that you can make the most of your time.
+					</p>
+				</section>
+
+				<section class="space-y-4">
+					<h2 class="text-3xl font-semibold tracking-tight sm:text-4xl">
+						Private by design
+					</h2>
+					<p class="max-w-3xl text-base leading-7 text-muted-foreground">
+						OIMG makes zero network calls. All data stays local by default. No opting out, no BS.
 					</p>
 				</section>
 
