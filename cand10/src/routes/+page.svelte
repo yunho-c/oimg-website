@@ -52,6 +52,11 @@
 		alt: string;
 	};
 
+	type CommandToken = {
+		text: string;
+		kind: "binary" | "verb" | "flag" | "package" | "utility";
+	};
+
 	type NavigatorWithUAData = Navigator & {
 		userAgentData?: {
 			platform?: string;
@@ -428,6 +433,41 @@
 		return `${relativeSize * 100}%`;
 	}
 
+	function tokenizeCommand(command: string): CommandToken[] {
+		const tokens = command.trim().split(/\s+/);
+		const binaryIndex = tokens[0] === "sudo" ? 1 : 0;
+		const verbIndex = binaryIndex + 1;
+
+		return tokens.map((text, index) => {
+			if (text === "sudo") {
+				return { text, kind: "utility" };
+			}
+
+			if (index === binaryIndex) {
+				return { text, kind: "binary" };
+			}
+
+			if (index === verbIndex) {
+				return { text, kind: "verb" };
+			}
+
+			if (text.startsWith("-")) {
+				return { text, kind: "flag" };
+			}
+
+			return { text, kind: "package" };
+		});
+	}
+
+	function getCommandTokenClass(kind: CommandToken["kind"]) {
+		if (kind === "binary") return "text-sky-200";
+		if (kind === "verb") return "text-violet-200";
+		if (kind === "flag") return "text-amber-200";
+		if (kind === "utility") return "text-neutral-400";
+
+		return "text-emerald-200";
+	}
+
 		function updateNavigateTradeoffReveal(event: MouseEvent) {
 			const frame = navigateTradeoffFrame;
 			if (!frame) return;
@@ -488,15 +528,15 @@
 
 <div id="page-top" class="bg-background text-foreground">
 	<div class="mx-auto flex min-h-screen max-w-7xl flex-col px-6 py-6 sm:px-8 lg:px-10">
-			<header class="flex flex-col gap-4 border-b py-4 sm:flex-row sm:items-center sm:justify-between">
-				<div class="flex items-center gap-3">
+		<header class="flex flex-col gap-4 border-b py-4 sm:flex-row sm:items-center sm:justify-between">
+				<a href="#page-top" class="flex items-center gap-3 transition-colors hover:text-foreground">
 					<div class="flex size-9 items-center justify-center rounded-lg bg-card">
 						<img src="/favicon.svg" alt="OIMG logo" class="size-11" />
 					</div>
 					<div>
 					<p class="text-sm font-semibold">OIMG</p>
 				</div>
-			</div>
+			</a>
 
 				<div class="flex flex-col gap-3 sm:mr-2 sm:flex-row sm:items-center">
 				<nav class="flex items-center gap-5 text-sm text-muted-foreground">
@@ -547,8 +587,37 @@
 											class="sm:w-auto"
 											onclick={() => (showAllDownloadOptions = !showAllDownloadOptions)}
 										>
-											{showAllDownloadOptions ? "Hide options" : "Show all options"}
+											{showAllDownloadOptions ? "Hide options" : "Show all"}
 										</Button>
+									</div>
+
+									<div class="w-full rounded-xl border border-white/10 bg-neutral-950 p-4 text-white sm:w-4/5">
+										<div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+											<div class="space-y-2">
+												<div class="flex flex-wrap items-baseline gap-x-2 gap-y-1 font-mono text-sm leading-6">
+													{#each tokenizeCommand(selectedTarget.command) as token}
+														<span class={getCommandTokenClass(token.kind)}>
+															{token.text}
+														</span>
+													{/each}
+												</div>
+											</div>
+											<Button
+												type="button"
+												size="sm"
+												variant="outline"
+												class="border-white/15 bg-white/5 text-white hover:bg-white/10 hover:text-white sm:shrink-0"
+												onclick={copySelectedCommand}
+											>
+											{#if copyFeedback === "copied"}
+												Copied
+												<Check class="size-4" />
+											{:else}
+												Copy
+												<Copy class="size-4" />
+											{/if}
+										</Button>
+										</div>
 									</div>
 
 									{#if showAllDownloadOptions}
@@ -586,31 +655,6 @@
 											</div>
 										</div>
 									{/if}
-
-									<div class="w-full rounded-xl border border-white/10 bg-neutral-950 p-4 text-white sm:w-4/5">
-										<div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-											<div class="space-y-2">
-													<p class="font-mono text-sm leading-6 break-all text-neutral-100">
-														{selectedTarget.command}
-													</p>
-											</div>
-											<Button
-												type="button"
-												size="sm"
-												variant="outline"
-												class="border-white/15 bg-white/5 text-white hover:bg-white/10 hover:text-white sm:shrink-0"
-												onclick={copySelectedCommand}
-											>
-											{#if copyFeedback === "copied"}
-												Copied
-												<Check class="size-4" />
-											{:else}
-												Copy
-												<Copy class="size-4" />
-											{/if}
-										</Button>
-										</div>
-									</div>
 						</div>
 					</div>
 
