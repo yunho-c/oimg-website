@@ -987,8 +987,8 @@
 								href="https://github.com/yunho-c/oimg"
 								target="_blank"
 								rel="noreferrer"
-								class="mx-2 border-[#4b2f7f] bg-[#4b2f7f] text-white hover:bg-[#41296f] hover:text-white sm:w-auto"
-								>
+								class="mx-2 border-2 border-[#6d4db3] bg-background text-[#6d4db3] hover:bg-[#f4f0ff] hover:text-[#5e43a0] sm:w-auto"
+							>
 									Source code @ GitHub
 									<svg viewBox="0 0 24 24" aria-hidden="true" class="size-4 fill-current">
 										<path
