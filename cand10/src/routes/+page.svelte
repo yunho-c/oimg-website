@@ -598,10 +598,11 @@
 						<!-- <Badge variant="secondary">Preview-first export workflow</Badge> -->
 					<div class="space-y-4">
 						<h1 class="max-w-4xl text-balance text-4xl font-semibold tracking-tight sm:text-5xl lg:text-6xl">
-							Make images lighter without degrading visual quality.
+							Compress images without losing quality.
 						</h1>
 							<p class="max-w-2xl text-lg leading-8 text-muted-foreground">
-								OIMG uses modern image compression techniques to reduce file size.
+								OIMG uses state-of-the-art image compression techniques to reduce file size with minimal quality drop.
+                <!-- Save storage and network bandwidth while keeping your precious memories using OIMG! -->
 							</p>
 						</div>
 
