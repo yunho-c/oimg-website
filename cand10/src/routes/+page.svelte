@@ -301,6 +301,7 @@
 		let openEffortlesslyIndex = $state(0);
 		let navigateTradeoffIndex = $state(0);
 		let navigateTradeoffReveal = $state(50);
+		let navigateTradeoffPointerId = $state<number | null>(null);
 		let navigateTradeoffFrame = $state<HTMLDivElement | null>(null);
 		let selectedPlatform = $state<DownloadPlatform>("macos");
 	let selectedArchitecture = $state<DownloadArch>("arm64");
@@ -490,15 +491,36 @@
 		return "text-emerald-200";
 	}
 
-		function updateNavigateTradeoffReveal(event: MouseEvent) {
+		function updateNavigateTradeoffReveal(clientX: number) {
 			const frame = navigateTradeoffFrame;
 			if (!frame) return;
 
 			const rect = frame.getBoundingClientRect();
-			const relativeX = event.clientX - rect.left;
+			const relativeX = clientX - rect.left;
 			const ratio = Math.min(Math.max(relativeX / rect.width, 0), 1);
 
 			navigateTradeoffReveal = ratio * 100;
+		}
+
+		function handleNavigateTradeoffPointerDown(event: PointerEvent) {
+			navigateTradeoffPointerId = event.pointerId;
+			navigateTradeoffFrame?.setPointerCapture(event.pointerId);
+			updateNavigateTradeoffReveal(event.clientX);
+		}
+
+		function handleNavigateTradeoffPointerMove(event: PointerEvent) {
+			if (event.pointerType !== "mouse" && navigateTradeoffPointerId !== event.pointerId) {
+				return;
+			}
+
+			updateNavigateTradeoffReveal(event.clientX);
+		}
+
+		function releaseNavigateTradeoffPointer(event: PointerEvent) {
+			if (navigateTradeoffPointerId !== event.pointerId) return;
+
+			navigateTradeoffFrame?.releasePointerCapture(event.pointerId);
+			navigateTradeoffPointerId = null;
 		}
 
 		function handleNavigateTradeoffKeydown(event: KeyboardEvent) {
@@ -835,15 +857,18 @@
 									<!-- svelte-ignore a11y_no_static_element_interactions -->
 									<div
 										bind:this={navigateTradeoffFrame}
-										class="relative cursor-ew-resize overflow-hidden rounded-[1.5rem] bg-muted/30"
+										class="relative touch-none select-none cursor-ew-resize overflow-hidden rounded-[1.5rem] bg-muted/30"
 									role="slider"
 									tabindex="0"
 									aria-label="Before and after image comparison"
 									aria-valuemin={0}
 									aria-valuemax={100}
 									aria-valuenow={Math.round(navigateTradeoffReveal)}
-									onmousemove={updateNavigateTradeoffReveal}
-									onmouseenter={updateNavigateTradeoffReveal}
+									onpointerdown={handleNavigateTradeoffPointerDown}
+									onpointermove={handleNavigateTradeoffPointerMove}
+									onpointerup={releaseNavigateTradeoffPointer}
+									onpointercancel={releaseNavigateTradeoffPointer}
+									onlostpointercapture={releaseNavigateTradeoffPointer}
 									onkeydown={handleNavigateTradeoffKeydown}
 								>
 									<img
