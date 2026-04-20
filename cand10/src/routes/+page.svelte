@@ -301,6 +301,7 @@
 		let openEffortlesslyIndex = $state(0);
 		let navigateTradeoffIndex = $state(0);
 		let navigateTradeoffReveal = $state(50);
+		let navigateTradeoffTargetReveal = $state(50);
 		let navigateTradeoffPointerId = $state<number | null>(null);
 		let navigateTradeoffFrame = $state<HTMLDivElement | null>(null);
 		let selectedPlatform = $state<DownloadPlatform>("macos");
@@ -450,6 +451,7 @@
 	function showNavigateTradeoffImage(index: number) {
 		navigateTradeoffIndex = index;
 		navigateTradeoffReveal = 50;
+		navigateTradeoffTargetReveal = 50;
 	}
 
 	function getRelativeSizeWidth(relativeSize: number) {
@@ -499,7 +501,7 @@
 			const relativeX = clientX - rect.left;
 			const ratio = Math.min(Math.max(relativeX / rect.width, 0), 1);
 
-			navigateTradeoffReveal = ratio * 100;
+			navigateTradeoffTargetReveal = ratio * 100;
 		}
 
 		function handleNavigateTradeoffPointerDown(event: PointerEvent) {
@@ -526,12 +528,39 @@
 		function handleNavigateTradeoffKeydown(event: KeyboardEvent) {
 			if (event.key === "ArrowLeft") {
 				event.preventDefault();
-				navigateTradeoffReveal = Math.max(navigateTradeoffReveal - 5, 0);
+				navigateTradeoffTargetReveal = Math.max(navigateTradeoffTargetReveal - 5, 0);
 			} else if (event.key === "ArrowRight") {
 				event.preventDefault();
-				navigateTradeoffReveal = Math.min(navigateTradeoffReveal + 5, 100);
+				navigateTradeoffTargetReveal = Math.min(navigateTradeoffTargetReveal + 5, 100);
 			}
 		}
+
+		$effect(() => {
+			let frameId = 0;
+
+			const animate = () => {
+				const delta = navigateTradeoffTargetReveal - navigateTradeoffReveal;
+
+				if (Math.abs(delta) < 0.15) {
+					navigateTradeoffReveal = navigateTradeoffTargetReveal;
+					frameId = 0;
+					return;
+				}
+
+				navigateTradeoffReveal += delta * 0.18;
+				frameId = requestAnimationFrame(animate);
+			};
+
+			if (Math.abs(navigateTradeoffTargetReveal - navigateTradeoffReveal) >= 0.15) {
+				frameId = requestAnimationFrame(animate);
+			}
+
+			return () => {
+				if (frameId) {
+					cancelAnimationFrame(frameId);
+				}
+			};
+		});
 
 	function showOpenEffortlesslySlide(index: number) {
 		openEffortlesslyApi?.scrollTo(index);
