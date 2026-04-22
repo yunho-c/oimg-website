@@ -13,6 +13,7 @@
 		ShieldCheck
 	} from "@lucide/svelte";
 	import Autoplay from "embla-carousel-autoplay";
+	import { AppleLogoIcon, LinuxLogoIcon, WindowsLogoIcon } from "phosphor-svelte";
 	import InteractiveVideo from "$lib/components/interactive-video.svelte";
 	import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "$lib/components/ui/accordion";
 	import { Badge } from "$lib/components/ui/badge";
@@ -72,6 +73,11 @@
 	const mediaBaseUrl = "https://media.oimg.org";
 	const analyzeDemoVideoPath = "videos/analyze_demo.mp4";
 	const downloadPlatformOrder: DownloadPlatform[] = ["macos", "windows", "linux"];
+	const platformIcons = {
+		macos: AppleLogoIcon,
+		windows: WindowsLogoIcon,
+		linux: LinuxLogoIcon
+	} as const;
 
 	function getMediaUrl(path: string) {
 		return `${mediaBaseUrl}/${path}`;
@@ -723,12 +729,14 @@
 												<p class="text-sm font-medium">Platform</p>
 												<div class="flex flex-wrap gap-2">
 													{#each downloadPlatformOrder as platform}
+														{@const PlatformIcon = platformIcons[platform]}
 														<Button
 															type="button"
 															size="sm"
 															variant={selectedPlatform === platform ? "default" : "outline"}
 															onclick={() => selectPlatform(platform)}
 														>
+															<PlatformIcon class="size-4" weight="fill" />
 															{downloadCatalog[platform].label}
 														</Button>
 													{/each}
