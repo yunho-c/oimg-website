@@ -14,6 +14,7 @@
 	} from "@lucide/svelte";
 	import Autoplay from "embla-carousel-autoplay";
 	import { AppleLogoIcon, LinuxLogoIcon, WindowsLogoIcon } from "phosphor-svelte";
+	import InteractiveImage from "$lib/components/interactive-image.svelte";
 	import InteractiveVideo from "$lib/components/interactive-video.svelte";
 	import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "$lib/components/ui/accordion";
 	import { Badge } from "$lib/components/ui/badge";
@@ -465,10 +466,6 @@
 		navigateTradeoffTargetReveal = 50;
 	}
 
-	function getRelativeSizeWidth(relativeSize: number) {
-		return `${relativeSize * 100}%`;
-	}
-
 	function tokenizeCommand(command: string): CommandToken[] {
 		const tokens = command.trim().split(/\s+/);
 		const binaryIndex = tokens[0] === "sudo" ? 1 : 0;
@@ -833,26 +830,30 @@
 								<Carousel.Content class="-ms-0">
 									{#each openEffortlesslySlides as slide, index}
 										<Carousel.Item class="ps-0">
-										<div
-											class={`flex aspect-[16/10] items-center justify-center ${
-												slide.enableShadow ? "px-6 py-6 sm:px-8 sm:py-8" : ""
-											}`}
-										>
-											<img
-												class={`block max-h-full w-auto max-w-full rounded-xl ${
-													slide.enableShadow
-														? "shadow-[0_15px_39px_-19px_rgba(15,23,42,0.21),0_7px_16px_-13px_rgba(15,23,42,0.16)]"
-														: ""
+											<div
+												class={`flex aspect-[16/10] items-center justify-center ${
+													slide.enableShadow ? "px-6 py-6 sm:px-8 sm:py-8" : ""
 												}`}
-												src={slide.src}
-												alt={slide.alt}
-												loading={index === 0 ? "eager" : "lazy"}
-										/>
-									</div>
-								</Carousel.Item>
-							{/each}
-						</Carousel.Content>
-					</Carousel.Root>
+											>
+												<InteractiveImage
+													src={slide.src}
+													alt={slide.alt}
+													triggerLabel={`Open screenshot ${index + 1} in theater mode`}
+													theaterLabel={`Open effortlessly screenshot ${index + 1}`}
+													triggerClass="outline-none"
+													inlineImageClass={`block max-h-full w-auto max-w-full rounded-xl ${
+														slide.enableShadow
+															? "shadow-[0_15px_39px_-19px_rgba(15,23,42,0.21),0_7px_16px_-13px_rgba(15,23,42,0.16)]"
+															: ""
+													}`}
+													theaterImageClass="block h-auto max-h-[90vh] w-auto max-w-[90vw] rounded-xl"
+													imageLoading={index === 0 ? "eager" : "lazy"}
+												/>
+											</div>
+										</Carousel.Item>
+									{/each}
+								</Carousel.Content>
+							</Carousel.Root>
 
 					<div class="flex items-center justify-center gap-2">
 						{#each openEffortlesslySlides as _, index}
@@ -1019,17 +1020,16 @@
 					</div>
 
 						<div class="py-3">
-								<div
-									class="mx-auto flex items-center justify-center overflow-hidden rounded-xl border bg-background shadow-[0_24px_70px_-24px_rgba(15,23,42,0.35),0_12px_28px_-18px_rgba(15,23,42,0.28)]"
-									style:width={getRelativeSizeWidth(compatibilityImage.relativeSize)}
-								>
-									<img
-										class="block h-auto w-full max-w-full"
-										src={compatibilityImage.src}
-									alt={compatibilityImage.alt}
-									loading="lazy"
-								/>
-							</div>
+							<InteractiveImage
+								src={compatibilityImage.src}
+								alt={compatibilityImage.alt}
+								triggerLabel="Open compatibility workflow image in theater mode"
+								theaterLabel="Compatibility workflow theater mode"
+								relativeSize={compatibilityImage.relativeSize}
+								triggerClass="mx-auto outline-none"
+								frameClass="overflow-hidden rounded-xl border bg-background shadow-[0_24px_70px_-24px_rgba(15,23,42,0.35),0_12px_28px_-18px_rgba(15,23,42,0.28)]"
+								inlineImageClass="block h-auto w-full max-w-full"
+							/>
 					</div>
 				</section>
 
