@@ -11,6 +11,7 @@
 		theaterLabel: string;
 		relativeSize?: number;
 		triggerClass?: string;
+		surfaceClass?: string;
 		frameClass?: string;
 		inlineImageClass?: string;
 		theaterHostClass?: string;
@@ -24,7 +25,8 @@
 		triggerLabel,
 		theaterLabel,
 		relativeSize = 1,
-		triggerClass = "mx-auto outline-none",
+		triggerClass = "mx-auto cursor-zoom-in outline-none",
+		surfaceClass = "transform-gpu transition-all duration-500 ease-in-out shadow-[0_24px_70px_-24px_rgba(15,23,42,0.18),0_12px_28px_-18px_rgba(15,23,42,0.12)] hover:scale-110 hover:shadow-2xl",
 		frameClass = "",
 		inlineImageClass = "block h-auto w-full max-w-full",
 		theaterHostClass = "overflow-hidden rounded-2xl bg-background shadow-2xl ring-1 ring-white/10",
@@ -123,8 +125,10 @@
 	onclick={() => void openTheaterMode()}
 	onkeydown={handleTriggerKeydown}
 >
-	<div class={frameClass}>
+	<div class={surfaceClass}>
+		<div class={frameClass}>
 		<img class={inlineImageClass} {src} {alt} loading={imageLoading} />
+		</div>
 	</div>
 </div>
 

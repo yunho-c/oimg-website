@@ -174,6 +174,7 @@
 				description: "Start with drag and drop when you want the fastest path from file to workspace.",
 				src: "/open_dnd_macos.webp",
 				alt: "The OIMG app window receiving an image via drag and drop.",
+				relativeSize: 1,
 				enableShadow: false
 			},
 			{
@@ -181,6 +182,7 @@
 				description: "Pull images in from the file explorer without breaking the flow of the task.",
 				src: "/open_explorer_macos.webp",
 				alt: "The macOS Finder open-with menu showing OIMG as an available app.",
+				relativeSize: 0.82,
 				enableShadow: true
 			},
 			{
@@ -188,6 +190,7 @@
 				description: "Open OIMG from the terminal when the workflow starts in scripts, shells, or quick handoffs.",
 				src: "/open_cli_macos.webp",
 				alt: "A macOS terminal invoking OIMG from the command line with an image path.",
+				relativeSize: 0.82,
 				enableShadow: true
 			}
 		];
@@ -840,12 +843,14 @@
 													alt={slide.alt}
 													triggerLabel={`Open screenshot ${index + 1} in theater mode`}
 													theaterLabel={`Open effortlessly screenshot ${index + 1}`}
+													relativeSize={slide.relativeSize}
 													triggerClass="outline-none"
-													inlineImageClass={`block max-h-full w-auto max-w-full rounded-xl ${
+													surfaceClass={`transform-gpu transition-all duration-500 ease-in-out hover:scale-110 ${
 														slide.enableShadow
-															? "shadow-[0_15px_39px_-19px_rgba(15,23,42,0.21),0_7px_16px_-13px_rgba(15,23,42,0.16)]"
-															: ""
+															? "shadow-[0_24px_70px_-24px_rgba(15,23,42,0.18),0_12px_28px_-18px_rgba(15,23,42,0.12)] hover:shadow-2xl"
+															: "shadow-none hover:shadow-none"
 													}`}
+													inlineImageClass="block max-h-full w-auto max-w-full rounded-xl"
 													theaterImageClass="block h-auto max-h-[90vh] w-auto max-w-[90vw] rounded-xl"
 													imageLoading={index === 0 ? "eager" : "lazy"}
 												/>
@@ -1027,7 +1032,8 @@
 								theaterLabel="Compatibility workflow theater mode"
 								relativeSize={compatibilityImage.relativeSize}
 								triggerClass="mx-auto outline-none"
-								frameClass="overflow-hidden rounded-xl border bg-background shadow-[0_24px_70px_-24px_rgba(15,23,42,0.35),0_12px_28px_-18px_rgba(15,23,42,0.28)]"
+								surfaceClass="transform-gpu transition-all duration-500 ease-in-out shadow-[0_24px_70px_-24px_rgba(15,23,42,0.28),0_12px_28px_-18px_rgba(15,23,42,0.2)] hover:scale-110 hover:shadow-2xl"
+								frameClass="overflow-hidden rounded-xl border bg-background"
 								inlineImageClass="block h-auto w-full max-w-full"
 							/>
 					</div>
