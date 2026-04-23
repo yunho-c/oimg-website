@@ -78,6 +78,11 @@
 		windows: WindowsLogoIcon,
 		linux: LinuxLogoIcon
 	} as const;
+	const platformIconColors: Record<DownloadPlatform, string> = {
+		macos: "currentColor",
+		windows: "#0078D4",
+		linux: "#EAB308"
+	};
 
 	function getMediaUrl(path: string) {
 		return `${mediaBaseUrl}/${path}`;
@@ -736,7 +741,11 @@
 															variant={selectedPlatform === platform ? "default" : "outline"}
 															onclick={() => selectPlatform(platform)}
 														>
-															<PlatformIcon class="size-4" weight="fill" />
+															<PlatformIcon
+																class="size-4"
+																color={platformIconColors[platform]}
+																weight="fill"
+															/>
 															{downloadCatalog[platform].label}
 														</Button>
 													{/each}
