@@ -1105,7 +1105,7 @@
 								href="https://github.com/yunho-c/oimg"
 								target="_blank"
 								rel="noreferrer"
-								class="mx-2 border-2 border-[#6d4db3] bg-background text-[#6d4db3] hover:bg-[#f4f0ff] hover:text-[#5e43a0] sm:w-auto"
+								class="mx-2 border-2 border-[#6d4db3] bg-background text-[#6d4db3] hover:bg-[#f4f0ff] hover:text-[#5e43a0] hover:shadow-[0_0_10px_rgba(109,77,179,0.1)] sm:w-auto"
 							>
 									Source code @ GitHub
 									<svg viewBox="0 0 24 24" aria-hidden="true" class="size-4 fill-current">
@@ -1120,7 +1120,7 @@
 							href="https://github.com/yunho-c/oimg/issues"
 							target="_blank"
 							rel="noreferrer"
-							class="sm:w-auto"
+							class="mx-2 border-2 border-[#dc2626] bg-background text-[#dc2626] hover:bg-[#fff1f1] hover:text-[#b91c1c] hover:shadow-[0_0_10px_rgba(220,38,38,0.1)] sm:w-auto"
 							>
 								Issue tracker
 								<ExternalLink class="size-4" />
