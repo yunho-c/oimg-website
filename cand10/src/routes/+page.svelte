@@ -324,6 +324,7 @@
 	let detectedPlatform = $state<DownloadPlatform | null>(null);
 	let detectedArchitecture = $state<DownloadArch | null>(null);
 	let showAllDownloadOptions = $state(false);
+	let showCliInstall = $state(false);
 	let copyFeedback = $state<"idle" | "copied">("idle");
 
 	function getAvailableArchitectures(platform: DownloadPlatform): DownloadArch[] {
@@ -702,6 +703,17 @@
 											{getDownloadButtonLabel(selectedPlatform, effectiveArchitecture)}
 											<Download class="size-4" />
 										</Button>
+										<span class="text-sm text-muted-foreground">or</span>
+										<Button
+											type="button"
+											size="lg"
+											variant="outline"
+											class="sm:w-auto"
+											aria-expanded={showCliInstall}
+											onclick={() => (showCliInstall = !showCliInstall)}
+										>
+											Install via CLI
+										</Button>
 										<Button
 											type="button"
 											size="lg"
@@ -709,42 +721,48 @@
 											class="sm:w-auto"
 											onclick={() => (showAllDownloadOptions = !showAllDownloadOptions)}
 										>
-											{showAllDownloadOptions ? "Hide options" : "Show all"}
+											{showAllDownloadOptions ? "Hide options" : "Show options"}
 										</Button>
 									</div>
 
-									<div class="w-full rounded-xl border border-white/10 bg-neutral-950 p-4 text-white sm:w-4/5">
-										<div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-											<div class="space-y-2">
-												<div class="flex flex-wrap items-baseline gap-x-2 gap-y-1 font-mono text-sm leading-6">
-													{#each tokenizeCommand(selectedTarget.command) as token}
-														<span class={getCommandTokenClass(token.kind)}>
-															{token.text}
-														</span>
-													{/each}
+									{#if showCliInstall}
+										<div
+											class="w-full rounded-xl border border-white/10 bg-neutral-950 p-4 text-white sm:w-4/5"
+											in:fly={{ y: -8, duration: 180 }}
+											out:fly={{ y: -6, duration: 150 }}
+										>
+											<div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+												<div class="space-y-2">
+													<div class="flex flex-wrap items-baseline gap-x-2 gap-y-1 font-mono text-sm leading-6">
+														{#each tokenizeCommand(selectedTarget.command) as token}
+															<span class={getCommandTokenClass(token.kind)}>
+																{token.text}
+															</span>
+														{/each}
+													</div>
 												</div>
+												<Button
+													type="button"
+													size="sm"
+													variant="outline"
+													class={`sm:shrink-0 transition-colors duration-200 ${
+														copyFeedback === "copied"
+															? "border-white bg-white text-neutral-950 hover:bg-white hover:text-neutral-950"
+															: "border-white/15 bg-white/5 text-white hover:bg-white/10 hover:text-white"
+													}`}
+													onclick={copySelectedCommand}
+												>
+												{#if copyFeedback === "copied"}
+													Copied
+													<Check class="size-4" />
+												{:else}
+													Copy
+													<Copy class="size-4" />
+												{/if}
+											</Button>
 											</div>
-											<Button
-												type="button"
-												size="sm"
-												variant="outline"
-												class={`sm:shrink-0 transition-colors duration-200 ${
-													copyFeedback === "copied"
-														? "border-white bg-white text-neutral-950 hover:bg-white hover:text-neutral-950"
-														: "border-white/15 bg-white/5 text-white hover:bg-white/10 hover:text-white"
-												}`}
-												onclick={copySelectedCommand}
-											>
-											{#if copyFeedback === "copied"}
-												Copied
-												<Check class="size-4" />
-											{:else}
-												Copy
-												<Copy class="size-4" />
-											{/if}
-										</Button>
 										</div>
-									</div>
+									{/if}
 
 									{#if showAllDownloadOptions}
 										<div
