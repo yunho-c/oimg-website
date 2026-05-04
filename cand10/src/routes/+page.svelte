@@ -692,7 +692,7 @@
 						</div>
 
 							<div class="max-w-2xl space-y-5">
-									<div class="flex flex-col gap-3 sm:flex-row sm:items-center">
+									<div class="flex flex-col gap-2.5 sm:flex-row sm:items-center">
 										<Button
 											size="lg"
 											href={selectedTarget.downloadHref}
@@ -717,11 +717,11 @@
 										<Button
 											type="button"
 											size="lg"
-											variant="outline"
+											variant="ghost"
 											class="sm:w-auto"
 											onclick={() => (showAllDownloadOptions = !showAllDownloadOptions)}
 										>
-											{showAllDownloadOptions ? "Hide options" : "Show options"}
+											{showAllDownloadOptions ? "Hide options" : "More options"}
 										</Button>
 									</div>
 
