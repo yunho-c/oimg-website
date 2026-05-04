@@ -447,8 +447,21 @@
 
 		void detectClientPlatform();
 
+		const clearTopHashOnScroll = () => {
+			if (window.location.hash === "#top" && window.scrollY > 0) {
+				window.history.replaceState(
+					window.history.state,
+					"",
+					window.location.pathname + window.location.search
+				);
+			}
+		};
+
+		window.addEventListener("scroll", clearTopHashOnScroll, { passive: true });
+
 		return () => {
 			cancelled = true;
+			window.removeEventListener("scroll", clearTopHashOnScroll);
 		};
 	});
 
@@ -461,6 +474,15 @@
 		window.setTimeout(() => {
 			copyFeedback = "idle";
 		}, 1500);
+	}
+
+	function scrollToTop(event: MouseEvent) {
+		event.preventDefault();
+		window.scrollTo({ top: 0, behavior: "smooth" });
+
+		if (window.location.hash === "#top") {
+			window.history.replaceState(window.history.state, "", window.location.pathname + window.location.search);
+		}
 	}
 
 	function showNavigateTradeoffImage(index: number) {
@@ -610,10 +632,10 @@
 	/>
 </svelte:head>
 
-<div id="page-top" class="bg-background text-foreground">
+<div id="top" class="bg-background text-foreground">
 	<div class="mx-auto flex min-h-screen max-w-7xl flex-col px-6 py-6 sm:px-8 lg:px-10">
 		<header class="flex flex-col gap-4 border-b py-4 sm:flex-row sm:items-center sm:justify-between">
-				<a href="#page-top" class="flex items-center gap-3 transition-colors hover:text-foreground">
+				<a href="/" class="flex items-center gap-3 transition-colors hover:text-foreground" onclick={scrollToTop}>
 					<div class="flex size-9 items-center justify-center rounded-lg bg-card">
 						<img src="/favicon.svg" alt="OIMG logo" class="size-9" />
 					</div>
@@ -624,7 +646,7 @@
 
 				<div class="flex flex-col gap-3 sm:mr-2 sm:flex-row sm:items-center">
 				<nav class="flex items-center gap-5 text-sm text-muted-foreground">
-					<a href="#page-top" class="transition-colors hover:text-foreground">
+					<a href="/" class="transition-colors hover:text-foreground" onclick={scrollToTop}>
 						Download
 					</a>
 					<div class="group/web-version relative">
@@ -884,14 +906,14 @@
 								Remain in control
 						</h2>
 						<p class="text-base leading-7 text-muted-foreground">
-							OIMG provides you with
+							OIMG computes
 							<span class="group/metrics relative inline-flex items-center">
 								<button
 									type="button"
 									class="font-medium text-foreground underline decoration-current underline-offset-4"
 									aria-label="Show image quality assessment metrics"
 								>
-									various image quality metrics
+									image quality metrics
 								</button>
 								<span
 									class="pointer-events-none absolute bottom-full left-1/2 z-10 mb-3 w-64 -translate-x-1/2 rounded-xl border bg-background px-3 py-2 text-sm leading-6 text-foreground opacity-0 shadow-lg transition-opacity duration-150 group-hover/metrics:opacity-100 group-focus-within/metrics:opacity-100"
@@ -900,7 +922,7 @@
 									Pixel Match Percentage, MS-SSIM, and SSIMULACRA 2
 								</span>
 							</span>
-							in real time — so you can proactively set optimization thresholds, instead of worrying about unexpected quality drops.
+							in real time — so you can adjust proactively instead of experiencing unexpected quality drops.
 							</p>
 						</div>
 
@@ -994,10 +1016,10 @@
 				<section class={`grid gap-6 ${featureSectionColumns} lg:items-center`}>
 					<div class="space-y-4">
 						<h2 class="text-3xl font-semibold tracking-tight sm:text-4xl">
-							Find the sweet spot
+							Find optimal thresholds
 					</h2>
 					<p class="text-base leading-7 text-muted-foreground">
-						Navigate around the size vs. quality trade-off by visualizing quality metrics and compression efficiency on a graph.
+						Explore the size vs. quality trade-off by visualizing quality metrics and compression efficiency on a graph.
 					</p>
 				</div>
 
@@ -1020,7 +1042,7 @@
 							Compatibility? No problem.
 						</h2>
 						<p class="text-base leading-7 text-muted-foreground">
-							Convert back to JPG or PNG on demand with one click (for example, when uploading to websites with limited format support)!
+							Convert back to JPG or PNG on demand with one click. (This is handy when uploading images to old websites!)
 						</p>
 					</div>
 
@@ -1053,7 +1075,7 @@
 						Private by design
 					</h2>
 					<p class="max-w-3xl text-base leading-7 text-muted-foreground">
-						OIMG makes zero network calls. All data stays local by default. No opting out, no BS.
+						OIMG makes zero network calls. All data stays local.
 					</p>
 				</section>
 
