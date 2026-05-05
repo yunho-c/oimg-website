@@ -13,6 +13,7 @@
 		ShieldCheck
 	} from "@lucide/svelte";
 	import Autoplay from "embla-carousel-autoplay";
+	import NumberFlow, { NumberFlowGroup } from "@number-flow/svelte";
 	import { AppleLogoIcon, LinuxLogoIcon, WindowsLogoIcon } from "phosphor-svelte";
 	import InteractiveImage from "$lib/components/interactive-image.svelte";
 	import InteractiveVideo from "$lib/components/interactive-video.svelte";
@@ -31,6 +32,12 @@
 	import { Separator } from "$lib/components/ui/separator";
 	import { Slider } from "$lib/components/ui/slider";
 	import { Tabs, TabsContent, TabsList, TabsTrigger } from "$lib/components/ui/tabs";
+	import {
+		getQualityMetrics,
+		qualityMetricLabels,
+		type QualityImageId,
+		type QualityMetricKey
+	} from "$lib/data/quality-metrics";
 	import type { CarouselAPI } from "$lib/components/ui/carousel";
 
 	type DownloadPlatform = "macos" | "windows" | "linux";
@@ -53,6 +60,13 @@
 	};
 
 	type PageImageMedia = PageMedia & {
+		alt: string;
+	};
+
+	type NavigateTradeoffImage = {
+		id: QualityImageId;
+		title: string;
+		src: string;
 		alt: string;
 	};
 
@@ -196,43 +210,48 @@
 			}
 		];
 
-		const navigateTradeoffImages = [
+		const navigateTradeoffImages: NavigateTradeoffImage[] = [
 			{
+				id: "fuji",
 				title: "Fuji at distance",
 				src: "/example_images/fuji.jpg",
 				alt: "Mount Fuji photographed at a distance under a pale sky."
 			},
 			{
+				id: "cloudy-yokohama",
 				title: "Cloudy Yokohama",
 				src: "/example_images/cloudy-yokohama.jpg",
 				alt: "Cloudy city scene in Yokohama with buildings and street detail."
 			},
 			{
+				id: "sunny-room",
 				title: "Sunny room",
 				src: "/example_images/sunny-room.jpg",
 				alt: "Sunlit interior room with bright highlights and shadows."
 			},
 			{
+				id: "bracken",
 				title: "Bracken",
 				src: "/example_images/bracken.jpg",
 				alt: "Close-up image of green bracken leaves."
 			},
 			{
+				id: "ducks",
 				title: "Ducks",
 				src: "/example_images/ducks.jpg",
 				alt: "Two ducks on water with natural reflections."
 			},
 			{
+				id: "dark-bulb",
 				title: "Dark bulb",
 				src: "/example_images/dark-bulb.jpg",
 				alt: "Dark moody photograph centered on a lit bulb."
 			}
 		];
-	const remainControlStats = [
-		{ value: "00", label: "Pixel match" },
-		{ value: "00", label: "MS-SSIM" },
-		{ value: "00", label: "SSIMULACRA" }
-	];
+	const qualityMetricOrder: QualityMetricKey[] = ["pmp", "msSsim", "ssimu2"];
+	const metricNumberFormat = {
+		maximumFractionDigits: 1
+	} satisfies Intl.NumberFormatOptions;
 	const openEffortlesslyCarouselOptions = { duration: 32 };
 	const openEffortlesslyAutoplay = Autoplay({ delay: 5000 });
 
@@ -405,6 +424,19 @@
 	);
 	const selectedTarget = $derived(
 		selectedPlatformConfig.arches[effectiveArchitecture] as DownloadTarget
+	);
+	const selectedQualityMetrics = $derived(
+		getQualityMetrics(navigateTradeoffImages[navigateTradeoffIndex].id, navigateTradeoffSliderValue)
+	);
+	const remainControlStats = $derived(
+		qualityMetricOrder.map((metric) => {
+			const rawValue = selectedQualityMetrics[metric];
+
+			return {
+				value: rawValue === null ? null : Math.round(rawValue * 1000) / 10,
+				label: qualityMetricLabels[metric]
+			};
+		})
 	);
 	$effect(() => {
 		if (!selectedArchitectures.includes(selectedArchitecture)) {
@@ -1036,16 +1068,26 @@
 
 							<div class="grid grid-cols-3">
 								<!-- border-y -->
+								<NumberFlowGroup>
 								{#each remainControlStats as stat}
 									<div class="px-3 py-4 text-center">
 										<div class="text-3xl font-semibold tracking-tight tabular-nums sm:text-4xl">
-											{stat.value}
+											{#if stat.value === null}
+												<span aria-label="No metric data">--</span>
+											{:else}
+												<NumberFlow
+													value={stat.value}
+													format={metricNumberFormat}
+													class="[font:inherit] leading-none"
+												/>
+											{/if}
 										</div>
 										<div class="mt-1 text-[0.65rem] font-medium tracking-[0.12em] text-muted-foreground uppercase">
 											{stat.label}
 										</div>
 									</div>
 								{/each}
+								</NumberFlowGroup>
 							</div>
 
 						<div class="flex gap-3 overflow-x-auto pb-1">
