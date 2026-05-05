@@ -29,6 +29,7 @@
 		CardTitle
 	} from "$lib/components/ui/card";
 	import { Separator } from "$lib/components/ui/separator";
+	import { Slider } from "$lib/components/ui/slider";
 	import { Tabs, TabsContent, TabsList, TabsTrigger } from "$lib/components/ui/tabs";
 	import type { CarouselAPI } from "$lib/components/ui/carousel";
 
@@ -319,6 +320,7 @@
 		let navigateTradeoffTargetReveal = $state(50);
 		let navigateTradeoffPointerId = $state<number | null>(null);
 		let navigateTradeoffFrame = $state<HTMLDivElement | null>(null);
+		let navigateTradeoffSliderValue = $state(50);
 		let selectedPlatform = $state<DownloadPlatform>("macos");
 	let selectedArchitecture = $state<DownloadArch>("arm64");
 	let detectedPlatform = $state<DownloadPlatform | null>(null);
@@ -945,62 +947,85 @@
 						</div>
 
 						<div class="space-y-4 py-3">
-								<div class="overflow-hidden rounded-[1.5rem] border bg-card">
-									<!-- svelte-ignore a11y_no_static_element_interactions -->
-									<div
-										bind:this={navigateTradeoffFrame}
-										class="relative touch-none select-none cursor-ew-resize overflow-hidden rounded-[1.5rem] bg-muted/30"
-									role="slider"
-									tabindex="0"
-									aria-label="Before and after image comparison"
-									aria-valuemin={0}
-									aria-valuemax={100}
-									aria-valuenow={Math.round(navigateTradeoffReveal)}
-									onpointerdown={handleNavigateTradeoffPointerDown}
-									onpointermove={handleNavigateTradeoffPointerMove}
-									onpointerup={releaseNavigateTradeoffPointer}
-									onpointercancel={releaseNavigateTradeoffPointer}
-									onlostpointercapture={releaseNavigateTradeoffPointer}
-									onkeydown={handleNavigateTradeoffKeydown}
-								>
-									<img
-										class="block aspect-[16/10] h-auto w-full object-cover"
-										src={navigateTradeoffImages[navigateTradeoffIndex].src}
-									alt={navigateTradeoffImages[navigateTradeoffIndex].alt}
-									loading="lazy"
-								/>
-								<div
-									class="absolute inset-0 overflow-hidden"
-									style={`clip-path: inset(0 0 0 ${navigateTradeoffReveal}%);`}
-								>
-									<img
-										class="block aspect-[16/10] h-full w-full object-cover blur-[10px]"
-										src={navigateTradeoffImages[navigateTradeoffIndex].src}
-										alt=""
-										aria-hidden="true"
+							<div class="grid grid-cols-[minmax(0,1fr)_3.5rem] items-stretch gap-3">
+									<div class="overflow-hidden rounded-[1.5rem] border bg-card">
+										<!-- svelte-ignore a11y_no_static_element_interactions -->
+										<div
+											bind:this={navigateTradeoffFrame}
+											class="relative touch-none select-none cursor-ew-resize overflow-hidden rounded-[1.5rem] bg-muted/30"
+										role="slider"
+										tabindex="0"
+										aria-label="Before and after image comparison"
+										aria-valuemin={0}
+										aria-valuemax={100}
+										aria-valuenow={Math.round(navigateTradeoffReveal)}
+										onpointerdown={handleNavigateTradeoffPointerDown}
+										onpointermove={handleNavigateTradeoffPointerMove}
+										onpointerup={releaseNavigateTradeoffPointer}
+										onpointercancel={releaseNavigateTradeoffPointer}
+										onlostpointercapture={releaseNavigateTradeoffPointer}
+										onkeydown={handleNavigateTradeoffKeydown}
+									>
+										<img
+											class="block aspect-[16/10] h-auto w-full object-cover"
+											src={navigateTradeoffImages[navigateTradeoffIndex].src}
+										alt={navigateTradeoffImages[navigateTradeoffIndex].alt}
 										loading="lazy"
 									/>
-								</div>
-								<div class="pointer-events-none absolute inset-y-0" style={`left: calc(${navigateTradeoffReveal}% - 1px);`}>
-									<div class="h-full w-0.5 bg-white/90 shadow-[0_0_0_1px_rgba(15,23,42,0.18)]"></div>
-								</div>
-								<div
-									class="pointer-events-none absolute top-1/2 z-10 -translate-y-1/2"
-									style={`left: calc(${navigateTradeoffReveal}% - 22px);`}
-								>
-									<div class="flex size-11 items-center justify-center rounded-full border border-white/80 bg-white/90 shadow-lg backdrop-blur">
-										<div class="flex items-center gap-1 text-[0.65rem] font-semibold text-slate-900">
-											<span>&larr;</span>
-											<span>&rarr;</span>
+									<div
+										class="absolute inset-0 overflow-hidden"
+										style={`clip-path: inset(0 0 0 ${navigateTradeoffReveal}%);`}
+									>
+										<img
+											class="block aspect-[16/10] h-full w-full object-cover blur-[10px]"
+											src={navigateTradeoffImages[navigateTradeoffIndex].src}
+											alt=""
+											aria-hidden="true"
+											loading="lazy"
+										/>
+									</div>
+									<div class="pointer-events-none absolute inset-y-0" style={`left: calc(${navigateTradeoffReveal}% - 1px);`}>
+										<div class="h-full w-0.5 bg-white/90 shadow-[0_0_0_1px_rgba(15,23,42,0.18)]"></div>
+									</div>
+									<div
+										class="pointer-events-none absolute top-1/2 z-10 -translate-y-1/2"
+										style={`left: calc(${navigateTradeoffReveal}% - 22px);`}
+									>
+										<div class="flex size-11 items-center justify-center rounded-full border border-white/80 bg-white/90 shadow-lg backdrop-blur">
+											<div class="flex items-center gap-1 text-[0.65rem] font-semibold text-slate-900">
+												<span>&larr;</span>
+												<span>&rarr;</span>
+											</div>
 										</div>
 									</div>
+									<div class="pointer-events-none absolute left-4 top-4 rounded-full bg-white/80 px-3 py-1 text-xs font-medium tracking-[0.12em] text-slate-900 uppercase">
+										Original
+									</div>
+									<div class="pointer-events-none absolute right-4 top-4 rounded-full bg-black/55 px-3 py-1 text-xs font-medium tracking-[0.12em] text-white uppercase">
+										Optimized
+									</div>
+									</div>
 								</div>
-								<div class="pointer-events-none absolute left-4 top-4 rounded-full bg-white/80 px-3 py-1 text-xs font-medium tracking-[0.12em] text-slate-900 uppercase">
-									Original
-								</div>
-								<div class="pointer-events-none absolute right-4 top-4 rounded-full bg-black/55 px-3 py-1 text-xs font-medium tracking-[0.12em] text-white uppercase">
-									Optimized
-								</div>
+
+								<div class="flex px-1 py-1">
+									<div class="flex w-full flex-col items-center gap-2">
+										<div class="relative flex min-h-44 flex-1 items-center justify-center">
+											<Slider
+												type="single"
+												bind:value={navigateTradeoffSliderValue}
+												orientation="vertical"
+												min={0}
+												max={100}
+												step={10}
+												aria-label="Optimized preview amount"
+												aria-valuetext={`${navigateTradeoffSliderValue}%`}
+												class="h-full min-h-44"
+											/>
+										</div>
+										<span class="text-[0.65rem] font-semibold tabular-nums text-foreground">
+											{navigateTradeoffSliderValue}
+										</span>
+									</div>
 								</div>
 							</div>
 
