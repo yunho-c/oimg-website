@@ -228,6 +228,11 @@
 				alt: "Dark moody photograph centered on a lit bulb."
 			}
 		];
+	const remainControlStats = [
+		{ value: "00", label: "Pixel match" },
+		{ value: "00", label: "MS-SSIM" },
+		{ value: "00", label: "SSIMULACRA" }
+	];
 	const openEffortlesslyCarouselOptions = { duration: 32 };
 	const openEffortlesslyAutoplay = Autoplay({ delay: 5000 });
 
@@ -1027,6 +1032,20 @@
 										</span>
 									</div>
 								</div>
+							</div>
+
+							<div class="grid grid-cols-3">
+								<!-- border-y -->
+								{#each remainControlStats as stat}
+									<div class="px-3 py-4 text-center">
+										<div class="text-3xl font-semibold tracking-tight tabular-nums sm:text-4xl">
+											{stat.value}
+										</div>
+										<div class="mt-1 text-[0.65rem] font-medium tracking-[0.12em] text-muted-foreground uppercase">
+											{stat.label}
+										</div>
+									</div>
+								{/each}
 							</div>
 
 						<div class="flex gap-3 overflow-x-auto pb-1">
