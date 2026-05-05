@@ -12,6 +12,11 @@ export type QualityMetricKey = "pmp" | "msSsim" | "ssimu2";
 
 export type QualityMetrics = Record<QualityMetricKey, number | null>;
 
+export type QualityFileSizes = {
+	original: string;
+	optimized: Record<QualityValue, string>;
+};
+
 export const qualityMetricLabels: Record<QualityMetricKey, string> = {
 	pmp: "Pixel match",
 	msSsim: "MS-SSIM",
@@ -101,6 +106,105 @@ export const qualityMetricTable: Record<QualityImageId, Record<QualityValue, Qua
 	}
 };
 
+export const qualityFileSizeTable: Record<QualityImageId, QualityFileSizes> = {
+	fuji: {
+		original: "8.8 MB",
+		optimized: {
+			0: "60 KB",
+			10: "215 KB",
+			20: "390 KB",
+			30: "534 KB",
+			40: "664 KB",
+			50: "778 KB",
+			60: "906 KB",
+			70: "1.1 MB",
+			80: "1.4 MB",
+			90: "2.3 MB",
+			100: "7.5 MB"
+		}
+	},
+	"cloudy-yokohama": {
+		original: "2.8 MB",
+		optimized: {
+			0: "40 KB",
+			10: "228 KB",
+			20: "418 KB",
+			30: "575 KB",
+			40: "716 KB",
+			50: "834 KB",
+			60: "981 KB",
+			70: "1.2 MB",
+			80: "1.5 MB",
+			90: "2.6 MB",
+			100: "4.6 MB"
+		}
+	},
+	"sunny-room": {
+		original: "1.6 MB",
+		optimized: {
+			0: "38 KB",
+			10: "147 KB",
+			20: "278 KB",
+			30: "367 KB",
+			40: "494 KB",
+			50: "581 KB",
+			60: "675 KB",
+			70: "807 KB",
+			80: "1.0 MB",
+			90: "1.4 MB",
+			100: "3.2 MB"
+		}
+	},
+	bracken: {
+		original: "2.7 MB",
+		optimized: {
+			0: "55 KB",
+			10: "318 KB",
+			20: "590 KB",
+			30: "781 KB",
+			40: "1.0 MB",
+			50: "1.2 MB",
+			60: "1.4 MB",
+			70: "1.6 MB",
+			80: "2.2 MB",
+			90: "2.7 MB",
+			100: "5.0 MB"
+		}
+	},
+	ducks: {
+		original: "9.7 MB",
+		optimized: {
+			0: "66 KB",
+			10: "369 KB",
+			20: "696 KB",
+			30: "973 KB",
+			40: "1.2 MB",
+			50: "1.4 MB",
+			60: "1.7 MB",
+			70: "2.0 MB",
+			80: "2.7 MB",
+			90: "4.2 MB",
+			100: "9.9 MB"
+		}
+	},
+	"dark-bulb": {
+		original: "438 KB",
+		optimized: {
+			0: "19 KB",
+			10: "27 KB",
+			20: "38 KB",
+			30: "48 KB",
+			40: "60 KB",
+			50: "69 KB",
+			60: "84 KB",
+			70: "105 KB",
+			80: "177 KB",
+			90: "408 KB",
+			100: "903 KB"
+		}
+	}
+};
+
 export function getNearestQualityValue(quality: number) {
 	return Math.min(Math.max(Math.round(quality / 10) * 10, 0), 100) as QualityValue;
 }
@@ -113,4 +217,12 @@ export function getQualityMetrics(imageId: QualityImageId, quality: number) {
 	const nearestQuality = getNearestQualityValue(quality);
 
 	return qualityMetricTable[imageId][nearestQuality];
+}
+
+export function getOriginalQualityFileSize(imageId: QualityImageId) {
+	return qualityFileSizeTable[imageId].original;
+}
+
+export function getOptimizedQualityFileSize(imageId: QualityImageId, quality: number) {
+	return qualityFileSizeTable[imageId].optimized[getNearestQualityValue(quality)];
 }
