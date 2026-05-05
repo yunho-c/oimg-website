@@ -33,6 +33,7 @@
 	import { Slider } from "$lib/components/ui/slider";
 	import { Tabs, TabsContent, TabsList, TabsTrigger } from "$lib/components/ui/tabs";
 	import {
+		getOptimizedQualityImageUrl,
 		getQualityMetrics,
 		qualityMetricLabels,
 		type QualityImageId,
@@ -428,6 +429,12 @@
 	const selectedQualityMetrics = $derived(
 		getQualityMetrics(navigateTradeoffImages[navigateTradeoffIndex].id, navigateTradeoffSliderValue)
 	);
+	const selectedOptimizedPreviewSrc = $derived(
+		getOptimizedQualityImageUrl(
+			navigateTradeoffImages[navigateTradeoffIndex].id,
+			navigateTradeoffSliderValue
+		)
+	);
 	const remainControlStats = $derived(
 		qualityMetricOrder.map((metric) => {
 			const rawValue = selectedQualityMetrics[metric];
@@ -443,6 +450,14 @@
 			selectedArchitecture = selectedArchitectures[0];
 		}
 	});
+
+	function handleOptimizedPreviewError(event: Event) {
+		const image = event.currentTarget as HTMLImageElement | null;
+
+		if (!image) return;
+
+		image.src = image.dataset.fallbackSrc ?? navigateTradeoffImages[navigateTradeoffIndex].src;
+	}
 
 	onMount(() => {
 		let cancelled = false;
@@ -1014,11 +1029,13 @@
 										style={`clip-path: inset(0 0 0 ${navigateTradeoffReveal}%);`}
 									>
 										<img
-											class="block aspect-[16/10] h-full w-full object-cover blur-[10px]"
-											src={navigateTradeoffImages[navigateTradeoffIndex].src}
+											class="block aspect-[16/10] h-full w-full object-cover"
+											src={selectedOptimizedPreviewSrc}
+											data-fallback-src={navigateTradeoffImages[navigateTradeoffIndex].src}
 											alt=""
 											aria-hidden="true"
 											loading="lazy"
+											onerror={handleOptimizedPreviewError}
 										/>
 									</div>
 									<div class="pointer-events-none absolute inset-y-0" style={`left: calc(${navigateTradeoffReveal}% - 1px);`}>

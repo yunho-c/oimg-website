@@ -18,6 +18,8 @@ export const qualityMetricLabels: Record<QualityMetricKey, string> = {
 	ssimu2: "SSIMULACRA"
 };
 
+const qualitySweepBaseUrl = "https://media.oimg.org/images/quality-sweep";
+
 export const qualityMetricTable: Record<QualityImageId, Record<QualityValue, QualityMetrics>> = {
 	fuji: {
 		0: { pmp: 0.18, msSsim: 0.369, ssimu2: -0.692 },
@@ -99,8 +101,16 @@ export const qualityMetricTable: Record<QualityImageId, Record<QualityValue, Qua
 	}
 };
 
+export function getNearestQualityValue(quality: number) {
+	return Math.min(Math.max(Math.round(quality / 10) * 10, 0), 100) as QualityValue;
+}
+
+export function getOptimizedQualityImageUrl(imageId: QualityImageId, quality: number) {
+	return `${qualitySweepBaseUrl}/${imageId}_opt_q${getNearestQualityValue(quality)}.jpeg`;
+}
+
 export function getQualityMetrics(imageId: QualityImageId, quality: number) {
-	const nearestQuality = Math.min(Math.max(Math.round(quality / 10) * 10, 0), 100) as QualityValue;
+	const nearestQuality = getNearestQualityValue(quality);
 
 	return qualityMetricTable[imageId][nearestQuality];
 }
