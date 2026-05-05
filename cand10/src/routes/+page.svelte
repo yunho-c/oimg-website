@@ -1014,6 +1014,9 @@
 
 								<div class="flex px-1 py-1">
 									<div class="flex w-full flex-col items-center gap-2">
+										<span class="text-[0.65rem] font-semibold tabular-nums text-foreground">
+											{navigateTradeoffSliderValue}
+										</span>
 										<div class="relative flex min-h-44 flex-1 items-center justify-center">
 											<Slider
 												type="single"
@@ -1027,9 +1030,6 @@
 												class="h-full min-h-44"
 											/>
 										</div>
-										<span class="text-[0.65rem] font-semibold tabular-nums text-foreground">
-											{navigateTradeoffSliderValue}
-										</span>
 									</div>
 								</div>
 							</div>
