@@ -1149,20 +1149,19 @@
 											{/if}
 										</div>
 									</div>
-									<div class="pointer-events-none absolute left-4 top-4 flex flex-col items-start gap-1.5">
-										<div class="rounded-full bg-white/80 px-3 py-1 text-xs font-medium tracking-[0.12em] text-slate-900 uppercase">
+									<div class="pointer-events-none absolute inset-x-0 top-0 h-14 bg-gradient-to-b from-black/85 via-black/45 to-transparent"></div>
+									<div class="pointer-events-none absolute inset-x-0 top-0 flex justify-between gap-4 px-4 pt-3 text-white">
+										<div class="min-w-0 text-xs font-medium tracking-[0.12em] uppercase drop-shadow">
 											Original
+											<span class="ml-2 font-semibold tracking-normal normal-case tabular-nums">
+												{selectedOriginalFileSize ?? "--"}
+											</span>
 										</div>
-										<div class="rounded-full bg-white/75 px-2.5 py-0.5 text-[0.7rem] font-semibold tabular-nums text-slate-900 shadow-sm backdrop-blur">
-											{selectedOriginalFileSize ?? "--"}
-										</div>
-									</div>
-									<div class="pointer-events-none absolute right-4 top-4 flex flex-col items-end gap-1.5">
-										<div class="rounded-full bg-black/55 px-3 py-1 text-xs font-medium tracking-[0.12em] text-white uppercase">
+										<div class="min-w-0 text-right text-xs font-medium tracking-[0.12em] uppercase drop-shadow">
 											Optimized
-										</div>
-										<div class="rounded-full bg-black/50 px-2.5 py-0.5 text-[0.7rem] font-semibold tabular-nums text-white shadow-sm backdrop-blur">
-											{selectedOptimizedFileSize ?? "--"}
+											<span class="ml-2 font-semibold tracking-normal normal-case tabular-nums">
+												{selectedOptimizedFileSize ?? "--"}
+											</span>
 										</div>
 									</div>
 								</div>
@@ -1299,20 +1298,19 @@
 											{/if}
 										</div>
 									</div>
-									<div class="pointer-events-none absolute left-4 top-4 flex flex-col items-start gap-1.5">
-										<div class="rounded-full bg-white/80 px-3 py-1 text-xs font-medium tracking-[0.12em] text-slate-900 uppercase">
+									<div class="pointer-events-none absolute inset-x-0 top-0 h-12 bg-gradient-to-b from-black/85 via-black/45 to-transparent"></div>
+									<div class="pointer-events-none absolute inset-x-0 top-0 flex justify-between gap-4 px-4 pt-3 text-white">
+										<div class="min-w-0 text-xs font-medium tracking-[0.12em] uppercase drop-shadow">
 											Original
+											<span class="ml-2 font-semibold tracking-normal normal-case tabular-nums">
+												{selectedOriginalFileSize ?? "--"}
+											</span>
 										</div>
-										<div class="rounded-full bg-white/75 px-2.5 py-0.5 text-[0.7rem] font-semibold tabular-nums text-slate-900 shadow-sm backdrop-blur">
-											{selectedOriginalFileSize ?? "--"}
-										</div>
-									</div>
-									<div class="pointer-events-none absolute right-4 top-4 flex flex-col items-end gap-1.5">
-										<div class="rounded-full bg-black/55 px-3 py-1 text-xs font-medium tracking-[0.12em] text-white uppercase">
+										<div class="min-w-0 text-right text-xs font-medium tracking-[0.12em] uppercase drop-shadow">
 											Optimized
-										</div>
-										<div class="rounded-full bg-black/50 px-2.5 py-0.5 text-[0.7rem] font-semibold tabular-nums text-white shadow-sm backdrop-blur">
-											{selectedOptimizedFileSize ?? "--"}
+											<span class="ml-2 font-semibold tracking-normal normal-case tabular-nums">
+												{selectedOptimizedFileSize ?? "--"}
+											</span>
 										</div>
 									</div>
 									</div>
