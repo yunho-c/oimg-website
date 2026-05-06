@@ -512,12 +512,24 @@
 	);
 	const selectedOriginalFileSizeDisplay = $derived(parseFileSizeDisplay(selectedOriginalFileSize));
 	const selectedOptimizedFileSizeDisplay = $derived(parseFileSizeDisplay(selectedOptimizedFileSize));
+	function getQualityMetricColor(value: number | null) {
+		if (value === null) return undefined;
+		if (value < 0) return "#440000";
+		if (value < 30) return "#AA0000";
+		if (value < 50) return "#DE602E";
+		if (value < 70) return "#DBDE25";
+
+		return undefined;
+	}
+
 	const remainControlStats = $derived(
 		qualityMetricOrder.map((metric) => {
 			const rawValue = selectedQualityMetrics[metric];
+			const value = rawValue === null ? null : Math.round(rawValue * 1000) / 10;
 
 			return {
-				value: rawValue === null ? null : Math.round(rawValue * 1000) / 10,
+				value,
+				color: getQualityMetricColor(value),
 				label: qualityMetricLabels[metric]
 			};
 		})
@@ -1269,7 +1281,10 @@
 								<NumberFlowGroup>
 									{#each remainControlStats as stat}
 										<div class="px-3 text-center">
-											<div class="text-2xl font-semibold tracking-tight tabular-nums sm:text-3xl">
+											<div
+												class="text-2xl font-semibold tracking-tight tabular-nums sm:text-3xl"
+												style:color={stat.color}
+											>
 												{#if stat.value === null}
 													<span aria-label="No metric data">--</span>
 												{:else}
@@ -1440,7 +1455,10 @@
 								<NumberFlowGroup>
 								{#each remainControlStats as stat}
 									<div class="px-3 py-4 text-center">
-										<div class="text-3xl font-semibold tracking-tight tabular-nums sm:text-4xl">
+										<div
+											class="text-3xl font-semibold tracking-tight tabular-nums sm:text-4xl"
+											style:color={stat.color}
+										>
 											{#if stat.value === null}
 												<span aria-label="No metric data">--</span>
 											{:else}
