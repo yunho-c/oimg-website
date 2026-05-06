@@ -36,10 +36,12 @@
 	import { Slider } from "$lib/components/ui/slider";
 	import { Tabs, TabsContent, TabsList, TabsTrigger } from "$lib/components/ui/tabs";
 	import {
+		getCloudflareImageUrl,
 		getOptimizedQualityImageUrl,
 		getOptimizedQualityFileSize,
 		getOriginalQualityFileSize,
 		getQualityMetrics,
+		getTransformedOptimizedQualityImageUrl,
 		qualityMetricLabels,
 		type QualityImageId,
 		type QualityMetricKey
@@ -97,6 +99,7 @@
 	};
 
 	const oimgRepoHref = "https://github.com/yunho-c/oimg";
+	const siteBaseUrl = "https://oimg.org";
 	const mediaBaseUrl = "https://media.oimg.org";
 	const analyzeDemoVideoPath = "videos/analyze_demo.mp4";
 	const downloadPlatformOrder: DownloadPlatform[] = ["macos", "windows", "linux"];
@@ -260,6 +263,9 @@
 			}
 		];
 	const qualityMetricOrder: QualityMetricKey[] = ["pmp", "msSsim", "ssimu2"];
+	const inlinePreviewImageWidth = 1200;
+	const theaterPreviewImageWidth = 2400;
+	const thumbnailImageWidth = 320;
 	const metricNumberFormat = {
 		maximumFractionDigits: 1
 	} satisfies Intl.NumberFormatOptions;
@@ -462,18 +468,45 @@
 	const selectedQualityMetrics = $derived(
 		getQualityMetrics(navigateTradeoffImages[navigateTradeoffIndex].id, navigateTradeoffSliderValue)
 	);
-	const selectedOptimizedPreviewSrc = $derived(
+	const selectedTradeoffImage = $derived(navigateTradeoffImages[navigateTradeoffIndex]);
+	const selectedRawOptimizedPreviewSrc = $derived(
 		getOptimizedQualityImageUrl(
-			navigateTradeoffImages[navigateTradeoffIndex].id,
+			selectedTradeoffImage.id,
 			navigateTradeoffSliderValue
 		)
 	);
+	const selectedInlineOriginalPreviewSrc = $derived(
+		getCloudflareImageUrl(selectedTradeoffImage.src, {
+			width: inlinePreviewImageWidth,
+			fit: "scale-down",
+			sourceOrigin: siteBaseUrl
+		})
+	);
+	const selectedTheaterOriginalPreviewSrc = $derived(
+		getCloudflareImageUrl(selectedTradeoffImage.src, {
+			width: theaterPreviewImageWidth,
+			fit: "scale-down",
+			sourceOrigin: siteBaseUrl
+		})
+	);
+	const selectedInlineOptimizedPreviewSrc = $derived(
+		getTransformedOptimizedQualityImageUrl(selectedTradeoffImage.id, navigateTradeoffSliderValue, {
+			width: inlinePreviewImageWidth,
+			fit: "scale-down"
+		})
+	);
+	const selectedTheaterOptimizedPreviewSrc = $derived(
+		getTransformedOptimizedQualityImageUrl(selectedTradeoffImage.id, navigateTradeoffSliderValue, {
+			width: theaterPreviewImageWidth,
+			fit: "scale-down"
+		})
+	);
 	const selectedOriginalFileSize = $derived(
-		getOriginalQualityFileSize(navigateTradeoffImages[navigateTradeoffIndex].id)
+		getOriginalQualityFileSize(selectedTradeoffImage.id)
 	);
 	const selectedOptimizedFileSize = $derived(
 		getOptimizedQualityFileSize(
-			navigateTradeoffImages[navigateTradeoffIndex].id,
+			selectedTradeoffImage.id,
 			navigateTradeoffSliderValue
 		)
 	);
@@ -495,12 +528,16 @@
 		}
 	});
 
-	function handleOptimizedPreviewError(event: Event) {
+	function handlePreviewImageError(event: Event) {
 		const image = event.currentTarget as HTMLImageElement | null;
 
 		if (!image) return;
 
-		image.src = image.dataset.fallbackSrc ?? navigateTradeoffImages[navigateTradeoffIndex].src;
+		const fallbackSrc = image.dataset.fallbackSrc ?? selectedTradeoffImage.src;
+		if (image.dataset.usedFallbackFor === fallbackSrc) return;
+
+		image.dataset.usedFallbackFor = fallbackSrc;
+		image.src = fallbackSrc;
 	}
 
 	onMount(() => {
@@ -1136,9 +1173,11 @@
 								>
 									<img
 										class="block h-auto max-h-[72vh] max-w-full object-contain"
-										src={navigateTradeoffImages[navigateTradeoffIndex].src}
-										alt={navigateTradeoffImages[navigateTradeoffIndex].alt}
+										src={selectedTheaterOriginalPreviewSrc}
+										data-fallback-src={selectedTradeoffImage.src}
+										alt={selectedTradeoffImage.alt}
 										draggable="false"
+										onerror={handlePreviewImageError}
 									/>
 									<div
 										class="absolute inset-0 overflow-hidden"
@@ -1146,12 +1185,12 @@
 									>
 										<img
 											class="block h-full w-full object-cover"
-											src={selectedOptimizedPreviewSrc}
-											data-fallback-src={navigateTradeoffImages[navigateTradeoffIndex].src}
+											src={selectedTheaterOptimizedPreviewSrc}
+											data-fallback-src={selectedRawOptimizedPreviewSrc}
 											alt=""
 											aria-hidden="true"
 											draggable="false"
-											onerror={handleOptimizedPreviewError}
+											onerror={handlePreviewImageError}
 										/>
 									</div>
 									<div class="pointer-events-none absolute inset-y-0" style={`left: calc(${navigateTradeoffReveal}% - 1px);`}>
@@ -1301,24 +1340,26 @@
 									>
 										<img
 											class="block aspect-[16/10] h-auto w-full object-cover"
-											src={navigateTradeoffImages[navigateTradeoffIndex].src}
-										alt={navigateTradeoffImages[navigateTradeoffIndex].alt}
-										draggable="false"
-										loading="lazy"
-									/>
+											src={selectedInlineOriginalPreviewSrc}
+											data-fallback-src={selectedTradeoffImage.src}
+											alt={selectedTradeoffImage.alt}
+											draggable="false"
+											loading="lazy"
+											onerror={handlePreviewImageError}
+										/>
 									<div
 										class="absolute inset-0 overflow-hidden"
 										style={`clip-path: inset(0 0 0 ${navigateTradeoffReveal}%);`}
 									>
 										<img
 											class="block aspect-[16/10] h-full w-full object-cover"
-											src={selectedOptimizedPreviewSrc}
-											data-fallback-src={navigateTradeoffImages[navigateTradeoffIndex].src}
+											src={selectedInlineOptimizedPreviewSrc}
+											data-fallback-src={selectedRawOptimizedPreviewSrc}
 											alt=""
 											aria-hidden="true"
 											draggable="false"
 											loading="lazy"
-											onerror={handleOptimizedPreviewError}
+											onerror={handlePreviewImageError}
 										/>
 									</div>
 									<div class="pointer-events-none absolute inset-y-0" style={`left: calc(${navigateTradeoffReveal}% - 1px);`}>
@@ -1435,9 +1476,15 @@
 								>
 									<img
 										class="block h-18 w-24 rounded-xl object-cover sm:h-20 sm:w-28"
-										src={image.src}
+										src={getCloudflareImageUrl(image.src, {
+											width: thumbnailImageWidth,
+											fit: "cover",
+											sourceOrigin: siteBaseUrl
+										})}
+										data-fallback-src={image.src}
 										alt={image.alt}
 										loading="lazy"
+										onerror={handlePreviewImageError}
 									/>
 								</button>
 							{/each}

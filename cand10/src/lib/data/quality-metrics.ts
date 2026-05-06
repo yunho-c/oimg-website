@@ -17,6 +17,13 @@ export type QualityFileSizes = {
 	optimized: Record<QualityValue, string>;
 };
 
+export type CloudflareImageTransformOptions = {
+	width: number;
+	fit?: "cover" | "scale-down";
+	format?: "auto";
+	sourceOrigin?: string;
+};
+
 export const qualityMetricLabels: Record<QualityMetricKey, string> = {
 	pmp: "Pixel match",
 	msSsim: "MS-SSIM",
@@ -211,6 +218,37 @@ export function getNearestQualityValue(quality: number) {
 
 export function getOptimizedQualityImageUrl(imageId: QualityImageId, quality: number) {
 	return `${qualitySweepBaseUrl}/${imageId}_opt_q${getNearestQualityValue(quality)}.jpeg`;
+}
+
+export function getCloudflareImageUrl(
+	src: string,
+	{ width, fit = "scale-down", format = "auto", sourceOrigin }: CloudflareImageTransformOptions
+) {
+	const options = `width=${width},fit=${fit},format=${format}`;
+
+	if (src.startsWith("http://") || src.startsWith("https://")) {
+		const url = new URL(src);
+
+		return `${url.origin}/cdn-cgi/image/${options}${url.pathname}${url.search}`;
+	}
+
+	if (src.startsWith("/")) {
+		if (sourceOrigin) {
+			return `${sourceOrigin}/cdn-cgi/image/${options}${src}`;
+		}
+
+		return `/cdn-cgi/image/${options}${src}`;
+	}
+
+	return src;
+}
+
+export function getTransformedOptimizedQualityImageUrl(
+	imageId: QualityImageId,
+	quality: number,
+	options: CloudflareImageTransformOptions
+) {
+	return getCloudflareImageUrl(getOptimizedQualityImageUrl(imageId, quality), options);
 }
 
 export function getQualityMetrics(imageId: QualityImageId, quality: number) {
