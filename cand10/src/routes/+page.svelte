@@ -81,6 +81,11 @@
 		kind: "binary" | "verb" | "flag" | "package" | "utility";
 	};
 
+	type FileSizeDisplay = {
+		value: number;
+		unit: string;
+	};
+
 	type NavigatorWithUAData = Navigator & {
 		userAgentData?: {
 			platform?: string;
@@ -258,6 +263,9 @@
 	const metricNumberFormat = {
 		maximumFractionDigits: 1
 	} satisfies Intl.NumberFormatOptions;
+	const fileSizeNumberFormat = {
+		maximumFractionDigits: 1
+	} satisfies Intl.NumberFormatOptions;
 	const openEffortlesslyCarouselOptions = { duration: 32 };
 	const openEffortlesslyAutoplay = Autoplay({ delay: 5000 });
 
@@ -385,6 +393,16 @@
 		return `Download for ${downloadCatalog[platform].label} (${getArchitectureLabel(platform, architecture)})`;
 	}
 
+	function parseFileSizeDisplay(fileSize: string | null | undefined): FileSizeDisplay | null {
+		const match = fileSize?.match(/^([\d.]+)\s+(.+)$/);
+		if (!match) return null;
+
+		return {
+			value: Number(match[1]),
+			unit: match[2]
+		};
+	}
+
 	function selectPlatform(platform: DownloadPlatform) {
 		selectedPlatform = platform;
 
@@ -459,6 +477,8 @@
 			navigateTradeoffSliderValue
 		)
 	);
+	const selectedOriginalFileSizeDisplay = $derived(parseFileSizeDisplay(selectedOriginalFileSize));
+	const selectedOptimizedFileSizeDisplay = $derived(parseFileSizeDisplay(selectedOptimizedFileSize));
 	const remainControlStats = $derived(
 		qualityMetricOrder.map((metric) => {
 			const rawValue = selectedQualityMetrics[metric];
@@ -1153,15 +1173,33 @@
 									<div class="pointer-events-none absolute inset-x-0 top-0 flex justify-between gap-4 px-4 pt-3 text-white">
 										<div class="min-w-0 text-xs font-medium tracking-[0.12em] uppercase drop-shadow">
 											Original
-											<span class="ml-2 font-semibold tracking-normal normal-case tabular-nums">
-												{selectedOriginalFileSize ?? "--"}
-											</span>
+											{#if selectedOriginalFileSizeDisplay}
+												<span class="ml-2 inline-flex items-baseline gap-1 font-semibold tracking-normal normal-case tabular-nums">
+													<NumberFlow
+														value={selectedOriginalFileSizeDisplay.value}
+														format={fileSizeNumberFormat}
+														class="[font:inherit] leading-none"
+													/>
+													<span>{selectedOriginalFileSizeDisplay.unit}</span>
+												</span>
+											{:else}
+												<span class="ml-2 font-semibold tracking-normal normal-case tabular-nums">--</span>
+											{/if}
 										</div>
 										<div class="min-w-0 text-right text-xs font-medium tracking-[0.12em] uppercase drop-shadow">
 											Optimized
-											<span class="ml-2 font-semibold tracking-normal normal-case tabular-nums">
-												{selectedOptimizedFileSize ?? "--"}
-											</span>
+											{#if selectedOptimizedFileSizeDisplay}
+												<span class="ml-2 inline-flex items-baseline gap-1 font-semibold tracking-normal normal-case tabular-nums">
+													<NumberFlow
+														value={selectedOptimizedFileSizeDisplay.value}
+														format={fileSizeNumberFormat}
+														class="[font:inherit] leading-none"
+													/>
+													<span>{selectedOptimizedFileSizeDisplay.unit}</span>
+												</span>
+											{:else}
+												<span class="ml-2 font-semibold tracking-normal normal-case tabular-nums">--</span>
+											{/if}
 										</div>
 									</div>
 								</div>
@@ -1302,15 +1340,33 @@
 									<div class="pointer-events-none absolute inset-x-0 top-0 flex justify-between gap-4 px-4 pt-3 text-white">
 										<div class="min-w-0 text-xs font-medium tracking-[0.12em] uppercase drop-shadow">
 											Original
-											<span class="ml-2 font-semibold tracking-normal normal-case tabular-nums">
-												{selectedOriginalFileSize ?? "--"}
-											</span>
+											{#if selectedOriginalFileSizeDisplay}
+												<span class="ml-2 inline-flex items-baseline gap-1 font-semibold tracking-normal normal-case tabular-nums">
+													<NumberFlow
+														value={selectedOriginalFileSizeDisplay.value}
+														format={fileSizeNumberFormat}
+														class="[font:inherit] leading-none"
+													/>
+													<span>{selectedOriginalFileSizeDisplay.unit}</span>
+												</span>
+											{:else}
+												<span class="ml-2 font-semibold tracking-normal normal-case tabular-nums">--</span>
+											{/if}
 										</div>
 										<div class="min-w-0 text-right text-xs font-medium tracking-[0.12em] uppercase drop-shadow">
 											Optimized
-											<span class="ml-2 font-semibold tracking-normal normal-case tabular-nums">
-												{selectedOptimizedFileSize ?? "--"}
-											</span>
+											{#if selectedOptimizedFileSizeDisplay}
+												<span class="ml-2 inline-flex items-baseline gap-1 font-semibold tracking-normal normal-case tabular-nums">
+													<NumberFlow
+														value={selectedOptimizedFileSizeDisplay.value}
+														format={fileSizeNumberFormat}
+														class="[font:inherit] leading-none"
+													/>
+													<span>{selectedOptimizedFileSizeDisplay.unit}</span>
+												</span>
+											{:else}
+												<span class="ml-2 font-semibold tracking-normal normal-case tabular-nums">--</span>
+											{/if}
 										</div>
 									</div>
 									</div>
