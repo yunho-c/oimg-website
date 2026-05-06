@@ -1149,7 +1149,7 @@
 											{/if}
 										</div>
 									</div>
-									<div class="pointer-events-none absolute inset-x-0 top-0 h-14 bg-gradient-to-b from-black/85 via-black/45 to-transparent"></div>
+									<div class="pointer-events-none absolute inset-x-0 top-0 h-28 shadow-[inset_0_48px_36px_-30px_rgba(0,0,0,0.94)]"></div>
 									<div class="pointer-events-none absolute inset-x-0 top-0 flex justify-between gap-4 px-4 pt-3 text-white">
 										<div class="min-w-0 text-xs font-medium tracking-[0.12em] uppercase drop-shadow">
 											Original
@@ -1298,7 +1298,7 @@
 											{/if}
 										</div>
 									</div>
-									<div class="pointer-events-none absolute inset-x-0 top-0 h-12 bg-gradient-to-b from-black/85 via-black/45 to-transparent"></div>
+									<div class="pointer-events-none absolute inset-x-0 top-0 h-24 shadow-[inset_0_42px_32px_-28px_rgba(0,0,0,0.92)]"></div>
 									<div class="pointer-events-none absolute inset-x-0 top-0 flex justify-between gap-4 px-4 pt-3 text-white">
 										<div class="min-w-0 text-xs font-medium tracking-[0.12em] uppercase drop-shadow">
 											Original
