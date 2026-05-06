@@ -1136,7 +1136,7 @@
 									</div>
 								</div>
 
-								<div class="flex min-h-40 items-center justify-center rounded-2xl bg-black/55 px-1 py-3 shadow-2xl ring-1 ring-white/10 backdrop-blur">
+								<div class="flex min-h-40 items-center justify-center px-1 py-3">
 									<div class="flex h-full min-h-40 flex-col items-center gap-2">
 										<span class="text-[0.65rem] font-semibold tabular-nums text-white">
 											{navigateTradeoffSliderValue}
@@ -1151,7 +1151,7 @@
 												step={10}
 												aria-label="Theater optimized preview amount"
 												aria-valuetext={`${navigateTradeoffSliderValue}%`}
-												class="h-full min-h-40"
+												class="h-full min-h-40 [&_[data-slot=slider-range]]:bg-blue-600"
 											/>
 										</div>
 									</div>
