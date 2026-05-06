@@ -1,6 +1,7 @@
 <script lang="ts">
-	import { onMount } from "svelte";
-	import { fly } from "svelte/transition";
+	import { onMount, tick } from "svelte";
+	import { cubicOut } from "svelte/easing";
+	import { fade, fly, scale } from "svelte/transition";
 	import {
 		Check,
 		Copy,
@@ -10,7 +11,8 @@
 		Layers3,
 		Scaling,
 		ScanSearch,
-		ShieldCheck
+		ShieldCheck,
+		X
 	} from "@lucide/svelte";
 	import Autoplay from "embla-carousel-autoplay";
 	import NumberFlow, { NumberFlowGroup } from "@number-flow/svelte";
@@ -346,8 +348,13 @@
 		let navigateTradeoffReveal = $state(50);
 		let navigateTradeoffTargetReveal = $state(50);
 		let navigateTradeoffPointerId = $state<number | null>(null);
+		let navigateTradeoffPointerStart = $state<{ x: number; y: number; source: "inline" | "theater" } | null>(null);
 		let navigateTradeoffFrame = $state<HTMLDivElement | null>(null);
+		let navigateTradeoffTheaterFrame = $state<HTMLDivElement | null>(null);
 		let navigateTradeoffSliderValue = $state(50);
+		let isNavigateTradeoffTheaterOpen = $state(false);
+		let navigateTradeoffTheaterDialog = $state<HTMLDivElement | null>(null);
+		let navigateTradeoffTheaterCloseButton = $state<HTMLButtonElement | null>(null);
 		let selectedPlatform = $state<DownloadPlatform>("macos");
 	let selectedArchitecture = $state<DownloadArch>("arm64");
 	let detectedPlatform = $state<DownloadPlatform | null>(null);
@@ -592,8 +599,8 @@
 		return "text-emerald-200";
 	}
 
-		function updateNavigateTradeoffReveal(clientX: number) {
-			const frame = navigateTradeoffFrame;
+		function updateNavigateTradeoffReveal(clientX: number, source: "inline" | "theater" = "inline") {
+			const frame = source === "theater" ? navigateTradeoffTheaterFrame : navigateTradeoffFrame;
 			if (!frame) return;
 
 			const rect = frame.getBoundingClientRect();
@@ -603,25 +610,40 @@
 			navigateTradeoffTargetReveal = ratio * 100;
 		}
 
-		function handleNavigateTradeoffPointerDown(event: PointerEvent) {
+		function handleNavigateTradeoffPointerDown(event: PointerEvent, source: "inline" | "theater" = "inline") {
 			navigateTradeoffPointerId = event.pointerId;
-			navigateTradeoffFrame?.setPointerCapture(event.pointerId);
-			updateNavigateTradeoffReveal(event.clientX);
+			navigateTradeoffPointerStart = { x: event.clientX, y: event.clientY, source };
+			(source === "theater" ? navigateTradeoffTheaterFrame : navigateTradeoffFrame)?.setPointerCapture(
+				event.pointerId
+			);
+			updateNavigateTradeoffReveal(event.clientX, source);
 		}
 
-		function handleNavigateTradeoffPointerMove(event: PointerEvent) {
+		function handleNavigateTradeoffPointerMove(event: PointerEvent, source: "inline" | "theater" = "inline") {
 			if (event.pointerType !== "mouse" && navigateTradeoffPointerId !== event.pointerId) {
 				return;
 			}
 
-			updateNavigateTradeoffReveal(event.clientX);
+			updateNavigateTradeoffReveal(event.clientX, source);
 		}
 
 		function releaseNavigateTradeoffPointer(event: PointerEvent) {
 			if (navigateTradeoffPointerId !== event.pointerId) return;
 
-			navigateTradeoffFrame?.releasePointerCapture(event.pointerId);
+			const pointerStart = navigateTradeoffPointerStart;
+			const source = pointerStart?.source ?? "inline";
+			(source === "theater" ? navigateTradeoffTheaterFrame : navigateTradeoffFrame)?.releasePointerCapture(
+				event.pointerId
+			);
 			navigateTradeoffPointerId = null;
+			navigateTradeoffPointerStart = null;
+
+			if (pointerStart?.source !== "inline" || event.type !== "pointerup") return;
+
+			const movement = Math.hypot(event.clientX - pointerStart.x, event.clientY - pointerStart.y);
+			if (movement <= 6) {
+				void openNavigateTradeoffTheater();
+			}
 		}
 
 		function handleNavigateTradeoffKeydown(event: KeyboardEvent) {
@@ -631,6 +653,41 @@
 			} else if (event.key === "ArrowRight") {
 				event.preventDefault();
 				navigateTradeoffTargetReveal = Math.min(navigateTradeoffTargetReveal + 5, 100);
+			} else if (event.key === "Enter" || event.key === " ") {
+				event.preventDefault();
+				void openNavigateTradeoffTheater();
+			}
+		}
+
+		async function openNavigateTradeoffTheater() {
+			if (isNavigateTradeoffTheaterOpen) return;
+
+			isNavigateTradeoffTheaterOpen = true;
+			await tick();
+			navigateTradeoffTheaterCloseButton?.focus();
+		}
+
+		async function closeNavigateTradeoffTheater() {
+			if (!isNavigateTradeoffTheaterOpen) return;
+
+			isNavigateTradeoffTheaterOpen = false;
+			await tick();
+			navigateTradeoffFrame?.focus();
+		}
+
+		function handleNavigateTradeoffTheaterBackdropClick(event: MouseEvent) {
+			const target = event.target;
+			if (!(target instanceof Node)) return;
+
+			if (!navigateTradeoffTheaterDialog?.contains(target)) {
+				void closeNavigateTradeoffTheater();
+			}
+		}
+
+		function handleWindowKeydown(event: KeyboardEvent) {
+			if (event.key === "Escape" && isNavigateTradeoffTheaterOpen) {
+				event.preventDefault();
+				void closeNavigateTradeoffTheater();
 			}
 		}
 
@@ -658,6 +715,17 @@
 				if (frameId) {
 					cancelAnimationFrame(frameId);
 				}
+			};
+		});
+
+		$effect(() => {
+			if (!isNavigateTradeoffTheaterOpen || typeof document === "undefined") return;
+
+			const previousOverflow = document.body.style.overflow;
+			document.body.style.overflow = "hidden";
+
+			return () => {
+				document.body.style.overflow = previousOverflow;
 			};
 		});
 
@@ -689,6 +757,8 @@
 		};
 	});
 </script>
+
+<svelte:window onkeydown={handleWindowKeydown} />
 
 <svelte:head>
 	<title>OIMG | A better way to compress images</title>
@@ -982,6 +1052,125 @@
 						</div>
 				</div>
 			</section>
+
+			{#if isNavigateTradeoffTheaterOpen}
+				<div
+					class="fixed inset-0 z-50 bg-black/60 backdrop-blur-[2px]"
+					role="presentation"
+					onclick={handleNavigateTradeoffTheaterBackdropClick}
+					transition:fade={{ duration: 200 }}
+				>
+					<div class="flex min-h-screen items-center justify-center p-4 sm:p-6 lg:p-10">
+						<div
+							bind:this={navigateTradeoffTheaterDialog}
+							class="relative mx-auto grid w-full max-w-6xl gap-4 rounded-[1.5rem] bg-background/95 p-3 shadow-2xl ring-1 ring-white/10 backdrop-blur sm:p-4 lg:grid-cols-[minmax(0,1fr)_4rem]"
+							role="dialog"
+							tabindex="-1"
+							aria-modal="true"
+							aria-label="Quality comparison theater mode"
+							transition:scale={{ duration: 220, easing: cubicOut, start: 0.96 }}
+						>
+							<button
+								bind:this={navigateTradeoffTheaterCloseButton}
+								type="button"
+								class="absolute right-5 top-5 z-20 inline-flex size-10 items-center justify-center rounded-full bg-black/60 text-white shadow-lg transition-colors hover:bg-black/75 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
+								aria-label="Close theater mode"
+								onclick={() => void closeNavigateTradeoffTheater()}
+							>
+								<X class="size-4" />
+							</button>
+
+							<!-- svelte-ignore a11y_no_static_element_interactions -->
+							<div
+								bind:this={navigateTradeoffTheaterFrame}
+								class="relative touch-none select-none cursor-ew-resize overflow-hidden rounded-[1.25rem] bg-muted/30"
+								role="slider"
+								tabindex="0"
+								aria-label="Theater before and after image comparison"
+								aria-valuemin={0}
+								aria-valuemax={100}
+								aria-valuenow={Math.round(navigateTradeoffReveal)}
+								onpointerdown={(event) => handleNavigateTradeoffPointerDown(event, "theater")}
+								onpointermove={(event) => handleNavigateTradeoffPointerMove(event, "theater")}
+								onpointerup={releaseNavigateTradeoffPointer}
+								onpointercancel={releaseNavigateTradeoffPointer}
+								onlostpointercapture={releaseNavigateTradeoffPointer}
+								onkeydown={handleNavigateTradeoffKeydown}
+							>
+								<img
+									class="block max-h-[78vh] min-h-[42vh] w-full object-contain"
+									src={navigateTradeoffImages[navigateTradeoffIndex].src}
+									alt={navigateTradeoffImages[navigateTradeoffIndex].alt}
+								/>
+								<div
+									class="absolute inset-0 overflow-hidden"
+									style={`clip-path: inset(0 0 0 ${navigateTradeoffReveal}%);`}
+								>
+									<img
+										class="block h-full w-full object-contain"
+										src={selectedOptimizedPreviewSrc}
+										data-fallback-src={navigateTradeoffImages[navigateTradeoffIndex].src}
+										alt=""
+										aria-hidden="true"
+										onerror={handleOptimizedPreviewError}
+									/>
+								</div>
+								<div class="pointer-events-none absolute inset-y-0" style={`left: calc(${navigateTradeoffReveal}% - 1px);`}>
+									<div class="h-full w-0.5 bg-white/90 shadow-[0_0_0_1px_rgba(15,23,42,0.18)]"></div>
+								</div>
+								<div
+									class="pointer-events-none absolute top-1/2 z-10 -translate-y-1/2"
+									style={`left: calc(${navigateTradeoffReveal}% - 22px);`}
+								>
+									<div class="flex size-11 items-center justify-center rounded-full border border-white/80 bg-white/90 shadow-lg backdrop-blur">
+										<div class="flex items-center gap-1 text-[0.65rem] font-semibold text-slate-900">
+											<span>&larr;</span>
+											<span>&rarr;</span>
+										</div>
+									</div>
+								</div>
+								<div class="pointer-events-none absolute left-4 top-4 flex flex-col items-start gap-1.5">
+									<div class="rounded-full bg-white/80 px-3 py-1 text-xs font-medium tracking-[0.12em] text-slate-900 uppercase">
+										Original
+									</div>
+									<div class="rounded-full bg-white/75 px-2.5 py-0.5 text-[0.7rem] font-semibold tabular-nums text-slate-900 shadow-sm backdrop-blur">
+										{selectedOriginalFileSize ?? "--"}
+									</div>
+								</div>
+								<div class="pointer-events-none absolute right-16 top-4 flex flex-col items-end gap-1.5">
+									<div class="rounded-full bg-black/55 px-3 py-1 text-xs font-medium tracking-[0.12em] text-white uppercase">
+										Optimized
+									</div>
+									<div class="rounded-full bg-black/50 px-2.5 py-0.5 text-[0.7rem] font-semibold tabular-nums text-white shadow-sm backdrop-blur">
+										{selectedOptimizedFileSize ?? "--"}
+									</div>
+								</div>
+							</div>
+
+							<div class="flex min-h-40 items-center justify-center px-1 py-1">
+								<div class="flex h-full min-h-40 flex-col items-center gap-2">
+									<span class="text-[0.65rem] font-semibold tabular-nums text-foreground">
+										{navigateTradeoffSliderValue}
+									</span>
+									<div class="relative flex min-h-40 flex-1 items-center justify-center">
+										<Slider
+											type="single"
+											bind:value={navigateTradeoffSliderValue}
+											orientation="vertical"
+											min={0}
+											max={100}
+											step={10}
+											aria-label="Theater optimized preview amount"
+											aria-valuetext={`${navigateTradeoffSliderValue}%`}
+											class="h-full min-h-40"
+										/>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			{/if}
 
 				<section class={`grid gap-6 ${featureSectionColumns} lg:items-center`}>
 					<div class="space-y-4">
