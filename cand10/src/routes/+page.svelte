@@ -1151,7 +1151,7 @@
 												step={10}
 												aria-label="Theater optimized preview amount"
 												aria-valuetext={`${navigateTradeoffSliderValue}%`}
-												class="h-full min-h-40 [&_[data-slot=slider-range]]:bg-blue-600"
+												class="h-full min-h-40 [&_[data-slot=slider-range]]:bg-[linear-gradient(to_bottom,var(--color-teal-700),var(--color-teal-500),var(--color-teal-700))]"
 											/>
 										</div>
 									</div>
