@@ -3,12 +3,14 @@
 	import { cubicOut } from "svelte/easing";
 	import { fade, fly, scale } from "svelte/transition";
 	import {
+		ArrowLeftRight,
 		Check,
 		Copy,
 		Download,
 		ExternalLink,
 		FolderOpen,
 		Layers3,
+		Lock,
 		Scaling,
 		ScanSearch,
 		ShieldCheck
@@ -1140,10 +1142,11 @@
 										style={`left: calc(${navigateTradeoffReveal}% - 22px);`}
 									>
 										<div class="flex size-11 items-center justify-center rounded-full border border-white/80 bg-white/90 shadow-lg backdrop-blur">
-											<div class="flex items-center gap-1 text-[0.65rem] font-semibold text-slate-900">
-												<span>&larr;</span>
-												<span>&rarr;</span>
-											</div>
+											{#if isNavigateTradeoffRevealLatched}
+												<Lock class="size-4 text-slate-900" aria-hidden="true" />
+											{:else}
+												<ArrowLeftRight class="size-4 text-slate-900" aria-hidden="true" />
+											{/if}
 										</div>
 									</div>
 									<div class="pointer-events-none absolute left-4 top-4 flex flex-col items-start gap-1.5">
@@ -1289,10 +1292,11 @@
 										style={`left: calc(${navigateTradeoffReveal}% - 22px);`}
 									>
 										<div class="flex size-11 items-center justify-center rounded-full border border-white/80 bg-white/90 shadow-lg backdrop-blur">
-											<div class="flex items-center gap-1 text-[0.65rem] font-semibold text-slate-900">
-												<span>&larr;</span>
-												<span>&rarr;</span>
-											</div>
+											{#if isNavigateTradeoffRevealLatched}
+												<Lock class="size-4 text-slate-900" aria-hidden="true" />
+											{:else}
+												<ArrowLeftRight class="size-4 text-slate-900" aria-hidden="true" />
+											{/if}
 										</div>
 									</div>
 									<div class="pointer-events-none absolute left-4 top-4 flex flex-col items-start gap-1.5">
