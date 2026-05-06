@@ -1158,7 +1158,7 @@
 								</div>
 							</div>
 
-							<div class="grid grid-cols-3 rounded-2xl bg-black/55 px-2 py-3 text-white shadow-2xl ring-1 ring-white/10 backdrop-blur">
+							<div class="grid grid-cols-3 px-2 py-1 text-white">
 								<NumberFlowGroup>
 									{#each remainControlStats as stat}
 										<div class="px-3 text-center">
