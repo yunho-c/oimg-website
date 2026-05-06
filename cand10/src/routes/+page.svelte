@@ -346,8 +346,14 @@
 		let navigateTradeoffIndex = $state(0);
 		let navigateTradeoffReveal = $state(50);
 		let navigateTradeoffTargetReveal = $state(50);
+		let isNavigateTradeoffRevealLatched = $state(false);
 		let navigateTradeoffPointerId = $state<number | null>(null);
-		let navigateTradeoffPointerStart = $state<{ x: number; y: number; source: "inline" | "theater" } | null>(null);
+		let navigateTradeoffPointerStart = $state<{
+			x: number;
+			y: number;
+			source: "inline" | "theater";
+			wasLatched: boolean;
+		} | null>(null);
 		let navigateTradeoffFrame = $state<HTMLDivElement | null>(null);
 		let navigateTradeoffTheaterFrame = $state<HTMLDivElement | null>(null);
 		let navigateTradeoffSliderValue = $state(50);
@@ -556,11 +562,12 @@
 		}
 	}
 
-	function showNavigateTradeoffImage(index: number) {
-		navigateTradeoffIndex = index;
-		navigateTradeoffReveal = 50;
-		navigateTradeoffTargetReveal = 50;
-	}
+		function showNavigateTradeoffImage(index: number) {
+			navigateTradeoffIndex = index;
+			navigateTradeoffReveal = 50;
+			navigateTradeoffTargetReveal = 50;
+			isNavigateTradeoffRevealLatched = false;
+		}
 
 	function tokenizeCommand(command: string): CommandToken[] {
 		const tokens = command.trim().split(/\s+/);
@@ -610,7 +617,12 @@
 
 		function handleNavigateTradeoffPointerDown(event: PointerEvent, source: "inline" | "theater" = "inline") {
 			navigateTradeoffPointerId = event.pointerId;
-			navigateTradeoffPointerStart = { x: event.clientX, y: event.clientY, source };
+			navigateTradeoffPointerStart = {
+				x: event.clientX,
+				y: event.clientY,
+				source,
+				wasLatched: isNavigateTradeoffRevealLatched
+			};
 			(source === "theater" ? navigateTradeoffTheaterFrame : navigateTradeoffFrame)?.setPointerCapture(
 				event.pointerId
 			);
@@ -618,7 +630,12 @@
 		}
 
 		function handleNavigateTradeoffPointerMove(event: PointerEvent, source: "inline" | "theater" = "inline") {
-			if (event.pointerType !== "mouse" && navigateTradeoffPointerId !== event.pointerId) {
+			if (navigateTradeoffPointerId === event.pointerId) {
+				updateNavigateTradeoffReveal(event.clientX, source);
+				return;
+			}
+
+			if (event.pointerType !== "mouse" || isNavigateTradeoffRevealLatched) {
 				return;
 			}
 
@@ -636,9 +653,18 @@
 			navigateTradeoffPointerId = null;
 			navigateTradeoffPointerStart = null;
 
-			if (pointerStart?.source !== "inline" || event.type !== "pointerup") return;
+			if (event.type !== "pointerup" || !pointerStart) return;
 
 			const movement = Math.hypot(event.clientX - pointerStart.x, event.clientY - pointerStart.y);
+			if (pointerStart.wasLatched) {
+				isNavigateTradeoffRevealLatched = false;
+				return;
+			}
+
+			isNavigateTradeoffRevealLatched = true;
+
+			if (pointerStart.source !== "inline") return;
+
 			if (movement <= 6) {
 				void openNavigateTradeoffTheater();
 			}
@@ -1090,6 +1116,7 @@
 										class="block h-auto max-h-[72vh] max-w-full object-contain"
 										src={navigateTradeoffImages[navigateTradeoffIndex].src}
 										alt={navigateTradeoffImages[navigateTradeoffIndex].alt}
+										draggable="false"
 									/>
 									<div
 										class="absolute inset-0 overflow-hidden"
@@ -1101,6 +1128,7 @@
 											data-fallback-src={navigateTradeoffImages[navigateTradeoffIndex].src}
 											alt=""
 											aria-hidden="true"
+											draggable="false"
 											onerror={handleOptimizedPreviewError}
 										/>
 									</div>
@@ -1235,6 +1263,7 @@
 											class="block aspect-[16/10] h-auto w-full object-cover"
 											src={navigateTradeoffImages[navigateTradeoffIndex].src}
 										alt={navigateTradeoffImages[navigateTradeoffIndex].alt}
+										draggable="false"
 										loading="lazy"
 									/>
 									<div
@@ -1247,6 +1276,7 @@
 											data-fallback-src={navigateTradeoffImages[navigateTradeoffIndex].src}
 											alt=""
 											aria-hidden="true"
+											draggable="false"
 											loading="lazy"
 											onerror={handleOptimizedPreviewError}
 										/>
