@@ -1126,7 +1126,7 @@
 											{selectedOriginalFileSize ?? "--"}
 										</div>
 									</div>
-									<div class="pointer-events-none absolute right-16 top-4 flex flex-col items-end gap-1.5">
+									<div class="pointer-events-none absolute right-4 top-4 flex flex-col items-end gap-1.5">
 										<div class="rounded-full bg-black/55 px-3 py-1 text-xs font-medium tracking-[0.12em] text-white uppercase">
 											Optimized
 										</div>
