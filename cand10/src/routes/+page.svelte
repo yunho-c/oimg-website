@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount, tick } from "svelte";
-	import { cubicOut } from "svelte/easing";
+	import { cubicInOut, cubicOut } from "svelte/easing";
 	import { fade, fly, scale } from "svelte/transition";
 	import {
 		ArrowLeftRight,
@@ -13,16 +13,20 @@
 		Lock,
 		Scaling,
 		ScanSearch,
-		ShieldCheck
+		ShieldCheck,
+		TrendingUp
 	} from "@lucide/svelte";
 	import Autoplay from "embla-carousel-autoplay";
 	import NumberFlow, { NumberFlowGroup } from "@number-flow/svelte";
 	import { AppleLogoIcon, LinuxLogoIcon, WindowsLogoIcon } from "phosphor-svelte";
+	import { BarChart } from "layerchart";
+	import { scaleBand } from "d3-scale";
 	import InteractiveImage from "$lib/components/interactive-image.svelte";
 	import InteractiveVideo from "$lib/components/interactive-video.svelte";
 	import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "$lib/components/ui/accordion";
 	import { Badge } from "$lib/components/ui/badge";
 	import { Button } from "$lib/components/ui/button";
+	import * as Chart from "$lib/components/ui/chart";
 	import * as Carousel from "$lib/components/ui/carousel";
 	import {
 		Card,
@@ -273,6 +277,21 @@
 
 	const featureSectionColumns = "lg:grid-cols-[1.00fr_1.00fr]";
 	const currentYear = new Date().getFullYear();
+
+	const storageSavingsData = [
+		{ month: "January", desktop: 186, mobile: 80 },
+		{ month: "February", desktop: 305, mobile: 200 },
+		{ month: "March", desktop: 237, mobile: 120 },
+		{ month: "April", desktop: 73, mobile: 190 },
+		{ month: "May", desktop: 209, mobile: 130 },
+		{ month: "June", desktop: 214, mobile: 140 }
+	];
+
+	const storageSavingsChartConfig = {
+		desktop: { label: "Storage saved", color: "rgb(68 125 247)" },
+		mobile: { label: "Mobile", color: "var(--chart-2)" },
+		label: { color: "var(--background)" }
+	} satisfies Chart.ChartConfig;
 
 	const boardCases = [
 		{
@@ -1042,6 +1061,79 @@
 					theaterLabel="Product demo theater mode"
 					relativeSize={heroDemoVideo.relativeSize}
 				/>
+			</section>
+
+			<section class={`grid gap-6 pt-12 sm:pt-16 ${featureSectionColumns} lg:items-center`}>
+				<div class="space-y-4">
+					<h2 class="text-3xl font-semibold tracking-tight sm:text-4xl">
+						Save storage
+					</h2>
+					<p class="text-base leading-7 text-muted-foreground">
+						Lighter exports compound quickly across libraries, campaigns, and handoff folders.
+						OIMG keeps the image readable while reducing the space every finished file has to occupy.
+					</p>
+				</div>
+
+				<Card>
+					<CardHeader>
+						<CardTitle>Storage saved by month</CardTitle>
+						<CardDescription>January - June 2024</CardDescription>
+					</CardHeader>
+					<CardContent>
+						<Chart.Container config={storageSavingsChartConfig} class="min-h-[260px] w-full">
+							<BarChart
+								labels={{ offset: 12 }}
+								data={storageSavingsData}
+								orientation="horizontal"
+								yScale={scaleBand().padding(0.25)}
+								y="month"
+								axis="y"
+								rule={false}
+								series={[
+									{
+										key: "desktop",
+										label: storageSavingsChartConfig.desktop.label,
+										color: storageSavingsChartConfig.desktop.color
+									}
+								]}
+								padding={{ right: 16 }}
+								props={{
+									bars: {
+										stroke: "none",
+										radius: 5,
+										rounded: "all",
+										motion: { type: "tween", duration: 500, easing: cubicInOut }
+									},
+									highlight: { area: { fill: "none" } },
+									yAxis: {
+										tickLabelProps: {
+											textAnchor: "start",
+											dx: 6,
+											class: "stroke-none fill-background!"
+										},
+										tickLength: 0
+									}
+								}}
+							>
+								{#snippet tooltip()}
+									<Chart.Tooltip hideLabel />
+								{/snippet}
+							</BarChart>
+						</Chart.Container>
+					</CardContent>
+					<CardFooter>
+						<div class="flex w-full items-start gap-2 text-sm">
+							<div class="grid gap-2">
+								<div class="flex items-center gap-2 leading-none font-medium">
+									Storage saved is up by 5.2% this month <TrendingUp class="size-4" />
+								</div>
+								<div class="flex items-center gap-2 leading-none text-muted-foreground">
+									Showing estimated storage saved across recent image batches
+								</div>
+							</div>
+						</div>
+					</CardFooter>
+				</Card>
 			</section>
 
 			<section class={`grid gap-6 pt-12 sm:pt-16 ${featureSectionColumns} lg:items-center`}>
