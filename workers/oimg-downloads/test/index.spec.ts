@@ -24,9 +24,9 @@ function createRelease(assets: MockAsset[] = defaultAssets()) {
 
 function defaultAssets() {
 	return [
-		{ name: "OIMG-0.1.1-macos.dmg", size: 10_000 },
+		{ name: "OIMG-0.1.1.dmg", size: 10_000 },
 		{ name: "OIMG-0.1.1-windows-x64-setup.exe", size: 20_000 },
-		{ name: "oimg_0.1.1_amd64.deb", size: 30_000 }
+		{ name: "oimg_0.1.1+4_amd64.deb", size: 30_000 }
 	];
 }
 
@@ -42,6 +42,16 @@ function createEnv(testName: string) {
 
 function mockGitHubRelease(response: Response) {
 	vi.stubGlobal("fetch", vi.fn(async () => response));
+}
+
+function mockFetchSequence(responses: Response[]) {
+	const fetchMock = vi.fn();
+
+	for (const response of responses) {
+		fetchMock.mockResolvedValueOnce(response);
+	}
+
+	vi.stubGlobal("fetch", fetchMock);
 }
 
 async function fetchWorker(path: string, env: Env) {
@@ -69,10 +79,10 @@ afterEach(() => {
 
 describe("download resolver", () => {
 	it.each([
-		["/download/macos-arm64", "OIMG-0.1.1-macos.dmg"],
-		["/download/macos-x64", "OIMG-0.1.1-macos.dmg"],
+		["/download/macos-arm64", "OIMG-0.1.1.dmg"],
+		["/download/macos-x64", "OIMG-0.1.1.dmg"],
 		["/download/windows-x64", "OIMG-0.1.1-windows-x64-setup.exe"],
-		["/download/linux-x64", "oimg_0.1.1_amd64.deb"]
+		["/download/linux-x64", "oimg_0.1.1+4_amd64.deb"]
 	])("redirects %s to the matching GitHub release asset", async (path, assetName) => {
 		const env = createEnv(path.replaceAll("/", "-"));
 		mockGitHubRelease(Response.json(createRelease()));
@@ -108,6 +118,59 @@ describe("download resolver", () => {
 
 		expect(response.status).toBe(404);
 		expect(await response.text()).toBe("Download asset not found");
+	});
+
+	it("falls back to the latest release redirect when GitHub API lookup is rate-limited", async () => {
+		const env = createEnv("api-rate-limited");
+		mockFetchSequence([
+			new Response("rate limited", { status: 403 }),
+			new Response(null, {
+				status: 302,
+				headers: {
+					location: "https://github.com/yunho-c/oimg/releases/tag/v0.1.1"
+				}
+			}),
+			new Response(
+				`<a href="/yunho-c/${env.GITHUB_REPO}/releases/download/v0.1.1/OIMG-0.1.1-windows-x64-setup.exe">Download</a>`
+			)
+		]);
+
+		const response = await fetchWorker("/download/windows-x64", env);
+
+		expect(response.status).toBe(302);
+		expect(response.headers.get("location")).toBe(
+			`https://github.com/yunho-c/${env.GITHUB_REPO}/releases/download/v0.1.1/OIMG-0.1.1-windows-x64-setup.exe`
+		);
+		expect(env.DOWNLOAD_ANALYTICS.writeDataPoint).toHaveBeenCalledWith(
+			expect.objectContaining({
+				blobs: expect.arrayContaining(["windows-x64", "v0.1.1", "OIMG-0.1.1-windows-x64-setup.exe"]),
+				doubles: [expect.any(Number), 0],
+				indexes: ["windows-x64"]
+			})
+		);
+	});
+
+	it("uses expanded release assets in fallback mode for filenames with build metadata", async () => {
+		const env = createEnv("expanded-assets");
+		mockFetchSequence([
+			new Response("rate limited", { status: 403 }),
+			new Response(null, {
+				status: 302,
+				headers: {
+					location: "https://github.com/yunho-c/oimg/releases/tag/v0.1.1"
+				}
+			}),
+			new Response(
+				`<a href="/yunho-c/${env.GITHUB_REPO}/releases/download/v0.1.1/oimg_0.1.1%2B4_amd64.deb">Download</a>`
+			)
+		]);
+
+		const response = await fetchWorker("/download/linux-x64", env);
+
+		expect(response.status).toBe(302);
+		expect(response.headers.get("location")).toBe(
+			`https://github.com/yunho-c/${env.GITHUB_REPO}/releases/download/v0.1.1/oimg_0.1.1%2B4_amd64.deb`
+		);
 	});
 
 	it("returns 502 when GitHub release lookup fails", async () => {
