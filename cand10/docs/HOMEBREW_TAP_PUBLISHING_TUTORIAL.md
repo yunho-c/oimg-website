@@ -102,8 +102,11 @@ app "OIMG.app"
 From the tap repo:
 
 ```sh
-brew install --cask ./Casks/oimg.rb
+brew tap yunho-c/tap ~/GitHub/homebrew-tap
+brew install --cask yunho-c/tap/oimg
 ```
+
+Homebrew expects casks to be installed from a registered tap. Installing directly from `./Casks/oimg.rb` can be rejected even when the file is valid.
 
 Confirm that OIMG appears in `/Applications` and launches.
 
@@ -116,8 +119,8 @@ brew uninstall --cask oimg
 Run audit and style checks:
 
 ```sh
-brew audit --new --cask ./Casks/oimg.rb
-brew style --fix ./Casks/oimg.rb
+brew audit --new --cask yunho-c/tap/oimg
+brew style --fix yunho-c/tap/oimg
 ```
 
 Fix anything reported before publishing the tap.

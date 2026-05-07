@@ -126,12 +126,12 @@
 						arm64: {
 							label: "Apple Silicon",
 							downloadHref: `${downloadBaseUrl}/macos-arm64`,
-							command: "brew install --cask oimg"
+							command: "brew install --cask yunho-c/tap/oimg"
 						},
 						x64: {
 							label: "Intel",
 							downloadHref: `${downloadBaseUrl}/macos-x64`,
-							command: "brew install --cask oimg"
+							command: "brew install --cask yunho-c/tap/oimg"
 						}
 				}
 			},
