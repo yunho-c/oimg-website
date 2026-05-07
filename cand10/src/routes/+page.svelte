@@ -103,6 +103,7 @@
 	const mediaBaseUrl = "https://media.oimg.org";
 	const analyzeDemoVideoPath = "videos/analyze_demo.mp4";
 	const downloadPlatformOrder: DownloadPlatform[] = ["macos", "windows", "linux"];
+	const downloadBaseUrl = "https://oimg.org/download";
 	const platformIcons = {
 		macos: AppleLogoIcon,
 		windows: WindowsLogoIcon,
@@ -124,12 +125,12 @@
 				arches: {
 						arm64: {
 							label: "Apple Silicon",
-							downloadHref: `${oimgRepoHref}/releases/latest/download/oimg-macos-arm64.dmg`,
+							downloadHref: `${downloadBaseUrl}/macos-arm64`,
 							command: "brew install --cask oimg"
 						},
 						x64: {
 							label: "Intel",
-							downloadHref: `${oimgRepoHref}/releases/latest/download/oimg-macos-x64.dmg`,
+							downloadHref: `${downloadBaseUrl}/macos-x64`,
 							command: "brew install --cask oimg"
 						}
 				}
@@ -139,7 +140,7 @@
 					arches: {
 						x64: {
 							label: "x64",
-							downloadHref: `${oimgRepoHref}/releases/latest/download/oimg-windows-x64.exe`,
+							downloadHref: `${downloadBaseUrl}/windows-x64`,
 							command: "winget install YunhoCho.OIMG"
 						}
 					}
@@ -149,12 +150,7 @@
 					arches: {
 						x64: {
 							label: "x64",
-							downloadHref: `${oimgRepoHref}/releases/latest/download/oimg-linux-x64.AppImage`,
-							command: "sudo apt install oimg"
-						},
-						arm64: {
-							label: "arm64",
-							downloadHref: `${oimgRepoHref}/releases/latest/download/oimg-linux-arm64.AppImage`,
+							downloadHref: `${downloadBaseUrl}/linux-x64`,
 							command: "sudo apt install oimg"
 						}
 				}
@@ -926,8 +922,6 @@
 										<Button
 											size="lg"
 											href={selectedTarget.downloadHref}
-										target="_blank"
-										rel="noreferrer"
 										class="sm:w-auto"
 									>
 											{getDownloadButtonLabel(selectedPlatform, effectiveArchitecture)}

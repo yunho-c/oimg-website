@@ -6,6 +6,9 @@ declare namespace Cloudflare {
 		mainModule: typeof import("./src/index");
 	}
 	interface Env {
+		DOWNLOAD_ANALYTICS: AnalyticsEngineDataset;
+		GITHUB_OWNER: "yunho-c";
+		GITHUB_REPO: "oimg";
 	}
 }
 interface Env extends Cloudflare.Env {}
