@@ -1090,7 +1090,7 @@
 				<Card>
 					<CardHeader>
 						<div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-							<CardTitle>Percentage saved</CardTitle>
+							<CardTitle>Storage savings (from PNG)</CardTitle>
 							<div
 								class="relative grid w-fit grid-cols-2 overflow-hidden rounded-lg border bg-muted/30 p-0.5"
 								role="radiogroup"
