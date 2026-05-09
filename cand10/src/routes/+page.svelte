@@ -1092,16 +1092,26 @@
 						<div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
 							<CardTitle>Percentage saved</CardTitle>
 							<div
-								class="flex w-fit rounded-lg border bg-muted/30 p-0.5"
+								class="relative grid w-fit grid-cols-2 overflow-hidden rounded-lg border bg-muted/30 p-0.5"
 								role="radiogroup"
 								aria-label="Storage savings dataset"
 							>
+								<div
+									class={`absolute inset-y-0.5 left-0.5 w-[calc(50%-0.125rem)] rounded-md bg-primary shadow-sm transition-transform duration-200 ease-out ${
+										selectedStorageSavingsDataset === "screenshots" ? "translate-x-full" : "translate-x-0"
+									}`}
+									aria-hidden="true"
+								></div>
 								{#each storageSavingsDatasetOptions as option}
 									<Button
 										type="button"
 										size="sm"
-										variant={selectedStorageSavingsDataset === option.value ? "default" : "ghost"}
-										class="rounded-md"
+										variant="ghost"
+										class={`relative z-10 min-w-32 rounded-md bg-transparent hover:bg-transparent ${
+											selectedStorageSavingsDataset === option.value
+												? "text-primary-foreground hover:text-primary-foreground"
+												: "text-muted-foreground hover:text-foreground"
+										}`}
 										role="radio"
 										aria-checked={selectedStorageSavingsDataset === option.value}
 										onclick={() => (selectedStorageSavingsDataset = option.value)}
