@@ -279,12 +279,12 @@
 	const currentYear = new Date().getFullYear();
 
 	const storageSavingsData = [
-		{ codec: "PNG optimized", savings: 5.97, color: "#0466C8" },
-		{ codec: "JPEG (Quality: 90)", savings: 86.27, color: "#0353A4" },
-		{ codec: "WebP (Quality: 90)", savings: 86.42, color: "#023E7D" },
-		{ codec: "AVIF (Quality: 90)", savings: 85.7, color: "#002855" },
-		{ codec: "JPEG XL (Quality: 90)", savings: 87.12, color: "#001845" },
-		{ codec: "JPEG XL lossless", savings: 35.02, color: "#001233" }
+		{ codec: "PNG optimized (Lossless)", savings: 5.97, color: "#0466C8" },
+		{ codec: "JPEG XL (Lossless)", savings: 35.02, color: "#0353A4" },
+		{ codec: "JPEG (Quality: 90)", savings: 86.27, color: "#023E7D" },
+		{ codec: "WebP (Quality: 90)", savings: 86.42, color: "#002855" },
+		{ codec: "AVIF (Quality: 90)", savings: 85.7, color: "#001845" },
+		{ codec: "JPEG XL (Quality: 90)", savings: 87.12, color: "#001233" }
 	];
 
 	const storageSavingsChartConfig = {
