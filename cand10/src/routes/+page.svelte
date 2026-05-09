@@ -18,7 +18,7 @@
 	import Autoplay from "embla-carousel-autoplay";
 	import NumberFlow, { NumberFlowGroup } from "@number-flow/svelte";
 	import { AppleLogoIcon, LinuxLogoIcon, WindowsLogoIcon } from "phosphor-svelte";
-	import { BarChart } from "layerchart";
+	import { Bar, BarChart } from "layerchart";
 	import { scaleBand } from "d3-scale";
 	import InteractiveImage from "$lib/components/interactive-image.svelte";
 	import InteractiveVideo from "$lib/components/interactive-video.svelte";
@@ -278,18 +278,19 @@
 	const currentYear = new Date().getFullYear();
 
 	const storageSavingsData = [
-		{ codec: "PNG optimized", savings: 5.97 },
-		{ codec: "JPEG (Quality: 90)", savings: 86.27 },
-		{ codec: "WebP (Quality: 90)", savings: 86.42 },
-		{ codec: "AVIF (Quality: 90)", savings: 85.7 },
-		{ codec: "JPEG XL (Quality: 90)", savings: 87.12 },
-		{ codec: "JPEG XL lossless", savings: 35.02 }
+		{ codec: "PNG optimized", savings: 5.97, color: "#0466C8" },
+		{ codec: "JPEG (Quality: 90)", savings: 86.27, color: "#0353A4" },
+		{ codec: "WebP (Quality: 90)", savings: 86.42, color: "#023E7D" },
+		{ codec: "AVIF (Quality: 90)", savings: 85.7, color: "#002855" },
+		{ codec: "JPEG XL (Quality: 90)", savings: 87.12, color: "#001845" },
+		{ codec: "JPEG XL lossless", savings: 35.02, color: "#001233" }
 	];
 
 	const storageSavingsChartConfig = {
 		savings: { label: "Storage saved", color: "rgb(68 125 247)" },
 		label: { color: "var(--background)" }
 	} satisfies Chart.ChartConfig;
+	const storageSavingsBarDelayMs = 110;
 
 	function formatStorageSavingsPercent(value: unknown) {
 		const numericValue = Number(value);
@@ -1103,17 +1104,11 @@
 									{
 										key: "savings",
 										label: storageSavingsChartConfig.savings.label,
-										color: storageSavingsChartConfig.savings.color
+										color: "var(--color-savings)"
 									}
 								]}
 								padding={{ right: 16 }}
 								props={{
-									bars: {
-										stroke: "none",
-										radius: 5,
-										rounded: "all",
-										motion: { type: "tween", duration: 500, easing: cubicInOut }
-									},
 									highlight: { area: { fill: "none" } },
 									yAxis: {
 										tickLabelProps: {
@@ -1125,6 +1120,24 @@
 									}
 								}}
 							>
+								{#snippet marks()}
+									{#each storageSavingsData as item, index (item.codec)}
+										<Bar
+											data={item}
+											seriesKey="savings"
+											stroke="none"
+											fill={item.color}
+											radius={5}
+											rounded="all"
+											motion={{
+												type: "tween",
+												duration: 500,
+												delay: index * storageSavingsBarDelayMs,
+												easing: cubicInOut
+											}}
+										/>
+									{/each}
+								{/snippet}
 								{#snippet tooltip()}
 									<Chart.Tooltip hideLabel />
 								{/snippet}
