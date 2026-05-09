@@ -1089,25 +1089,27 @@
 
 				<Card>
 					<CardHeader>
-						<CardTitle>Percentage saved</CardTitle>
-						<div
-							class="flex w-fit rounded-lg border bg-muted/30 p-0.5"
-							role="radiogroup"
-							aria-label="Storage savings dataset"
-						>
-							{#each storageSavingsDatasetOptions as option}
-								<Button
-									type="button"
-									size="sm"
-									variant={selectedStorageSavingsDataset === option.value ? "default" : "ghost"}
-									class="rounded-md"
-									role="radio"
-									aria-checked={selectedStorageSavingsDataset === option.value}
-									onclick={() => (selectedStorageSavingsDataset = option.value)}
-								>
-									{option.label}
-								</Button>
-							{/each}
+						<div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+							<CardTitle>Percentage saved</CardTitle>
+							<div
+								class="flex w-fit rounded-lg border bg-muted/30 p-0.5"
+								role="radiogroup"
+								aria-label="Storage savings dataset"
+							>
+								{#each storageSavingsDatasetOptions as option}
+									<Button
+										type="button"
+										size="sm"
+										variant={selectedStorageSavingsDataset === option.value ? "default" : "ghost"}
+										class="rounded-md"
+										role="radio"
+										aria-checked={selectedStorageSavingsDataset === option.value}
+										onclick={() => (selectedStorageSavingsDataset = option.value)}
+									>
+										{option.label}
+									</Button>
+								{/each}
+							</div>
 						</div>
 					</CardHeader>
 					<CardContent>
