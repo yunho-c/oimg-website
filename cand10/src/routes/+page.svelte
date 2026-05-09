@@ -280,10 +280,10 @@
 
 	const storageSavingsData = [
 		{ codec: "PNG optimized", savings: 5.97 },
-		{ codec: "JPEG q90", savings: 86.27 },
-		{ codec: "WebP q90", savings: 86.42 },
-		{ codec: "AVIF q90", savings: 85.7 },
-		{ codec: "JPEG XL q90", savings: 87.12 },
+		{ codec: "JPEG (Quality: 90)", savings: 86.27 },
+		{ codec: "WebP (Quality: 90)", savings: 86.42 },
+		{ codec: "AVIF (Quality: 90)", savings: 85.7 },
+		{ codec: "JPEG XL (Quality: 90)", savings: 87.12 },
 		{ codec: "JPEG XL lossless", savings: 35.02 }
 	];
 
@@ -1083,7 +1083,7 @@
 
 				<Card>
 					<CardHeader>
-						<CardTitle>Average storage savings by codec</CardTitle>
+						<CardTitle>Percentage saved</CardTitle>
 						<CardDescription>CLIC 2024 image test set</CardDescription>
 					</CardHeader>
 					<CardContent>
@@ -1136,7 +1136,7 @@
 						<div class="flex w-full items-start gap-2 text-sm">
 							<div class="grid gap-2">
 								<div class="flex items-center gap-2 leading-none font-medium">
-									JPEG XL q90 saves 87.1% on average <TrendingUp class="size-4" />
+									JPEG XL (Quality: 90) saves 87.1% on average <TrendingUp class="size-4" />
 								</div>
 								<div class="flex items-center gap-2 leading-none text-muted-foreground">
 									Calculated from the CSV average savings row
