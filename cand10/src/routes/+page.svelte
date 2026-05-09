@@ -279,19 +279,26 @@
 	const currentYear = new Date().getFullYear();
 
 	const storageSavingsData = [
-		{ month: "January", desktop: 186, mobile: 80 },
-		{ month: "February", desktop: 305, mobile: 200 },
-		{ month: "March", desktop: 237, mobile: 120 },
-		{ month: "April", desktop: 73, mobile: 190 },
-		{ month: "May", desktop: 209, mobile: 130 },
-		{ month: "June", desktop: 214, mobile: 140 }
+		{ codec: "PNG optimized", savings: 5.97 },
+		{ codec: "JPEG q90", savings: 86.27 },
+		{ codec: "WebP q90", savings: 86.42 },
+		{ codec: "AVIF q90", savings: 85.7 },
+		{ codec: "JPEG XL q90", savings: 87.12 },
+		{ codec: "JPEG XL lossless", savings: 35.02 }
 	];
 
 	const storageSavingsChartConfig = {
-		desktop: { label: "Storage saved", color: "rgb(68 125 247)" },
-		mobile: { label: "Mobile", color: "var(--chart-2)" },
+		savings: { label: "Storage saved", color: "rgb(68 125 247)" },
 		label: { color: "var(--background)" }
 	} satisfies Chart.ChartConfig;
+
+	function formatStorageSavingsPercent(value: unknown) {
+		const numericValue = Number(value);
+
+		if (!Number.isFinite(numericValue)) return "";
+
+		return `${numericValue.toFixed(1)}%`;
+	}
 
 	const boardCases = [
 		{
@@ -1076,24 +1083,28 @@
 
 				<Card>
 					<CardHeader>
-						<CardTitle>Storage saved by month</CardTitle>
-						<CardDescription>January - June 2024</CardDescription>
+						<CardTitle>Average storage savings by codec</CardTitle>
+						<CardDescription>CLIC 2024 image test set</CardDescription>
 					</CardHeader>
 					<CardContent>
 						<Chart.Container config={storageSavingsChartConfig} class="min-h-[260px] w-full">
 							<BarChart
-								labels={{ offset: 12 }}
+								labels={{
+									offset: 12,
+									format: formatStorageSavingsPercent
+								}}
 								data={storageSavingsData}
 								orientation="horizontal"
 								yScale={scaleBand().padding(0.25)}
-								y="month"
+								y="codec"
+								xDomain={[0, 100]}
 								axis="y"
 								rule={false}
 								series={[
 									{
-										key: "desktop",
-										label: storageSavingsChartConfig.desktop.label,
-										color: storageSavingsChartConfig.desktop.color
+										key: "savings",
+										label: storageSavingsChartConfig.savings.label,
+										color: storageSavingsChartConfig.savings.color
 									}
 								]}
 								padding={{ right: 16 }}
@@ -1125,10 +1136,10 @@
 						<div class="flex w-full items-start gap-2 text-sm">
 							<div class="grid gap-2">
 								<div class="flex items-center gap-2 leading-none font-medium">
-									Storage saved is up by 5.2% this month <TrendingUp class="size-4" />
+									JPEG XL q90 saves 87.1% on average <TrendingUp class="size-4" />
 								</div>
 								<div class="flex items-center gap-2 leading-none text-muted-foreground">
-									Showing estimated storage saved across recent image batches
+									Calculated from the CSV average savings row
 								</div>
 							</div>
 						</div>
