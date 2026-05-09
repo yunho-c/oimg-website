@@ -53,6 +53,7 @@
 
 	type DownloadPlatform = "macos" | "windows" | "linux";
 	type DownloadArch = "x64" | "arm64";
+	type StorageSavingsDataset = "natural" | "screenshots";
 
 	type DownloadTarget = {
 		label: string;
@@ -291,6 +292,10 @@
 		label: { color: "var(--background)" }
 	} satisfies Chart.ChartConfig;
 	const storageSavingsBarDelayMs = 110;
+	const storageSavingsDatasetOptions: { value: StorageSavingsDataset; label: string }[] = [
+		{ value: "natural", label: "Natural images" },
+		{ value: "screenshots", label: "Screenshots" }
+	];
 
 	function formatStorageSavingsPercent(value: unknown) {
 		const numericValue = Number(value);
@@ -379,26 +384,27 @@
 		}
 	];
 
-		let openEffortlesslyApi = $state<CarouselAPI | undefined>(undefined);
-		let openEffortlesslyIndex = $state(0);
-		let navigateTradeoffIndex = $state(0);
-		let navigateTradeoffReveal = $state(50);
-		let navigateTradeoffTargetReveal = $state(50);
-		let isNavigateTradeoffRevealLatched = $state(false);
-		let navigateTradeoffPointerId = $state<number | null>(null);
-		let navigateTradeoffPointerStart = $state<{
-			x: number;
-			y: number;
-			source: "inline" | "theater";
-			wasLatched: boolean;
-		} | null>(null);
-		let navigateTradeoffFrame = $state<HTMLDivElement | null>(null);
-		let navigateTradeoffTheaterFrame = $state<HTMLDivElement | null>(null);
-		let navigateTradeoffSliderValue = $state(50);
-		let isNavigateTradeoffTheaterOpen = $state(false);
-		let navigateTradeoffTheaterDialog = $state<HTMLDivElement | null>(null);
-		let selectedPlatform = $state<DownloadPlatform>("macos");
+	let openEffortlesslyApi = $state<CarouselAPI | undefined>(undefined);
+	let openEffortlesslyIndex = $state(0);
+	let navigateTradeoffIndex = $state(0);
+	let navigateTradeoffReveal = $state(50);
+	let navigateTradeoffTargetReveal = $state(50);
+	let isNavigateTradeoffRevealLatched = $state(false);
+	let navigateTradeoffPointerId = $state<number | null>(null);
+	let navigateTradeoffPointerStart = $state<{
+		x: number;
+		y: number;
+		source: "inline" | "theater";
+		wasLatched: boolean;
+	} | null>(null);
+	let navigateTradeoffFrame = $state<HTMLDivElement | null>(null);
+	let navigateTradeoffTheaterFrame = $state<HTMLDivElement | null>(null);
+	let navigateTradeoffSliderValue = $state(50);
+	let isNavigateTradeoffTheaterOpen = $state(false);
+	let navigateTradeoffTheaterDialog = $state<HTMLDivElement | null>(null);
+	let selectedPlatform = $state<DownloadPlatform>("macos");
 	let selectedArchitecture = $state<DownloadArch>("arm64");
+	let selectedStorageSavingsDataset = $state<StorageSavingsDataset>("natural");
 	let detectedPlatform = $state<DownloadPlatform | null>(null);
 	let detectedArchitecture = $state<DownloadArch | null>(null);
 	let showAllDownloadOptions = $state(false);
@@ -1084,7 +1090,25 @@
 				<Card>
 					<CardHeader>
 						<CardTitle>Percentage saved</CardTitle>
-						<CardDescription>CLIC 2024 image test set</CardDescription>
+						<div
+							class="flex w-fit rounded-lg border bg-muted/30 p-0.5"
+							role="radiogroup"
+							aria-label="Storage savings dataset"
+						>
+							{#each storageSavingsDatasetOptions as option}
+								<Button
+									type="button"
+									size="sm"
+									variant={selectedStorageSavingsDataset === option.value ? "default" : "ghost"}
+									class="rounded-md"
+									role="radio"
+									aria-checked={selectedStorageSavingsDataset === option.value}
+									onclick={() => (selectedStorageSavingsDataset = option.value)}
+								>
+									{option.label}
+								</Button>
+							{/each}
+						</div>
 					</CardHeader>
 					<CardContent>
 						<Chart.Container config={storageSavingsChartConfig} class="min-h-[260px] w-full">
