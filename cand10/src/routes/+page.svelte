@@ -13,8 +13,7 @@
 		Lock,
 		Scaling,
 		ScanSearch,
-		ShieldCheck,
-		TrendingUp
+		ShieldCheck
 	} from "@lucide/svelte";
 	import Autoplay from "embla-carousel-autoplay";
 	import NumberFlow, { NumberFlowGroup } from "@number-flow/svelte";
@@ -1133,16 +1132,17 @@
 						</Chart.Container>
 					</CardContent>
 					<CardFooter>
-						<div class="flex w-full items-start gap-2 text-sm">
-							<div class="grid gap-2">
-								<div class="flex items-center gap-2 leading-none font-medium">
-									JPEG XL (Quality: 90) saves 87.1% on average <TrendingUp class="size-4" />
-								</div>
-								<div class="flex items-center gap-2 leading-none text-muted-foreground">
-									Calculated from the CSV average savings row
-								</div>
-							</div>
-						</div>
+						<p class="text-sm leading-6 text-muted-foreground">
+							Computed based on the
+							<a
+								href="https://clic2024.compression.cc/tasks/index.html"
+								target="_blank"
+								rel="noreferrer"
+								class="font-medium underline decoration-current underline-offset-4 transition-colors hover:text-foreground"
+							>
+								CLIC 2024 image compression test set
+							</a>.
+						</p>
 					</CardFooter>
 				</Card>
 			</section>
