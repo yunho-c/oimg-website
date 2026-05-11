@@ -284,6 +284,15 @@
 		label: { color: "var(--background)" }
 	} satisfies Chart.ChartConfig;
 	const storageSavingsBarDelayMs = 110;
+	const storageSavingsColors = [
+		"#0466C8",
+		"#035AB4",
+		"#034EA0",
+		"#02428B",
+		"#023676",
+		"#01275B",
+		"#001233"
+	];
 	const storageSavingsByQuality: Record<
 		StorageSavingsQuality,
 		{ jpeg: number; webp: number; avif: number; jpegXl: number }
@@ -515,31 +524,47 @@
 		storageSavingsByQuality[selectedStorageSavingsQualityValue]
 	);
 	const storageSavingsData = $derived([
-		{ id: "png-optimized", codec: "PNG optimized (Lossless)", savings: 5.97, color: "#0466C8" },
-		{ id: "jpeg-xl-lossless", codec: "JPEG XL (Lossless)", savings: 34.93, color: "#0353A4" },
+		{
+			id: "png-optimized",
+			codec: "PNG optimized (Lossless)",
+			savings: 5.97,
+			color: storageSavingsColors[0]
+		},
+		{
+			id: "webp-lossless",
+			codec: "WebP (Lossless)",
+			savings: 26.57,
+			color: storageSavingsColors[1]
+		},
+		{
+			id: "jpeg-xl-lossless",
+			codec: "JPEG XL (Lossless)",
+			savings: 34.93,
+			color: storageSavingsColors[2]
+		},
 		{
 			id: "jpeg",
 			codec: `JPEG (Quality: ${selectedStorageSavingsQualityValue})`,
 			savings: selectedStorageSavingsByQuality.jpeg,
-			color: "#023E7D"
+			color: storageSavingsColors[3]
 		},
 		{
 			id: "webp",
 			codec: `WebP (Quality: ${selectedStorageSavingsQualityValue})`,
 			savings: selectedStorageSavingsByQuality.webp,
-			color: "#002855"
+			color: storageSavingsColors[4]
 		},
 		{
 			id: "avif",
 			codec: `AVIF (Quality: ${selectedStorageSavingsQualityValue})`,
 			savings: selectedStorageSavingsByQuality.avif,
-			color: "#001845"
+			color: storageSavingsColors[5]
 		},
 		{
 			id: "jpeg-xl",
 			codec: `JPEG XL (Quality: ${selectedStorageSavingsQualityValue})`,
 			savings: selectedStorageSavingsByQuality.jpegXl,
-			color: "#001233"
+			color: storageSavingsColors[6]
 		}
 	]);
 	const selectedTradeoffImage = $derived(navigateTradeoffImages[navigateTradeoffIndex]);
@@ -1169,7 +1194,7 @@
 						</div>
 					</CardHeader>
 					<CardContent>
-						<Chart.Container config={storageSavingsChartConfig} class="min-h-[260px] w-full">
+						<Chart.Container config={storageSavingsChartConfig} class="min-h-[300px] w-full">
 							<BarChart
 								labels={{
 									offset: 12,
