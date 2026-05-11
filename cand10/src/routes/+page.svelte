@@ -54,6 +54,7 @@
 	type DownloadPlatform = "macos" | "windows" | "linux";
 	type DownloadArch = "x64" | "arm64";
 	type StorageSavingsDataset = "natural" | "screenshots";
+	type StorageSavingsMetric = "savings" | "efficiency";
 	type StorageSavingsQuality = 0 | 10 | 20 | 30 | 40 | 50 | 60 | 70 | 80 | 90;
 
 	type DownloadTarget = {
@@ -280,7 +281,7 @@
 	const currentYear = new Date().getFullYear();
 
 	const storageSavingsChartConfig = {
-		savings: { label: "Storage saved", color: "rgb(68 125 247)" },
+		value: { label: "Storage metric", color: "rgb(68 125 247)" },
 		label: { color: "var(--background)" }
 	} satisfies Chart.ChartConfig;
 	const storageSavingsBarDelayMs = 110;
@@ -308,21 +309,44 @@
 		80: { jpeg: 91.26, webp: 92.02, avif: 92.56, jpegXl: 92.76 },
 		90: { jpeg: 86.25, webp: 86.44, avif: 86.39, jpegXl: 87.12 }
 	};
+	const storageEfficiencyByQuality: Record<
+		StorageSavingsQuality,
+		{ jpeg: number; webp: number; avif: number; jpegXl: number }
+	> = {
+		0: { jpeg: 354.26, webp: 114.16, avif: 177.45, jpegXl: 145.89 },
+		10: { jpeg: 82.6, webp: 52.47, avif: 129, jpegXl: 82.13 },
+		20: { jpeg: 46.04, webp: 40.03, avif: 72.14, jpegXl: 56.29 },
+		30: { jpeg: 33.2, webp: 32.12, avif: 48.16, jpegXl: 42.72 },
+		40: { jpeg: 26.53, webp: 26.48, avif: 36.43, jpegXl: 38 },
+		50: { jpeg: 22.35, webp: 22.53, avif: 27.64, jpegXl: 32.76 },
+		60: { jpeg: 18.97, webp: 19.44, avif: 21.71, jpegXl: 27.14 },
+		70: { jpeg: 15.48, webp: 16.84, avif: 16.89, jpegXl: 20.87 },
+		80: { jpeg: 11.44, webp: 12.54, avif: 13.44, jpegXl: 13.82 },
+		90: { jpeg: 7.27, webp: 7.37, avif: 7.35, jpegXl: 7.76 }
+	};
 	const storageSavingsDatasetOptions: { value: StorageSavingsDataset; label: string }[] = [
 		{ value: "natural", label: "Natural images" },
 		{ value: "screenshots", label: "Screenshots" }
+	];
+	const storageSavingsMetricOptions: { value: StorageSavingsMetric; label: string }[] = [
+		{ value: "savings", label: "Savings" },
+		{ value: "efficiency", label: "Efficiency" }
 	];
 
 	function getStorageSavingsQuality(value: number): StorageSavingsQuality {
 		return Math.min(Math.max(Math.round(value / 10) * 10, 0), 90) as StorageSavingsQuality;
 	}
 
-	function formatStorageSavingsPercent(value: unknown) {
+	function formatStorageMetricValue(value: unknown) {
 		const numericValue = Number(value);
 
 		if (!Number.isFinite(numericValue)) return "";
 
-		return `${numericValue.toFixed(1)}%`;
+		if (selectedStorageSavingsMetric === "savings") {
+			return `${numericValue.toFixed(1)}%`;
+		}
+
+		return `${numericValue.toFixed(numericValue < 10 ? 2 : 1)}x`;
 	}
 
 	const boardCases = [
@@ -425,6 +449,7 @@
 	let selectedPlatform = $state<DownloadPlatform>("macos");
 	let selectedArchitecture = $state<DownloadArch>("arm64");
 	let selectedStorageSavingsDataset = $state<StorageSavingsDataset>("natural");
+	let selectedStorageSavingsMetric = $state<StorageSavingsMetric>("savings");
 	let selectedStorageSavingsQuality = $state(90);
 	let detectedPlatform = $state<DownloadPlatform | null>(null);
 	let detectedArchitecture = $state<DownloadArch | null>(null);
@@ -523,50 +548,90 @@
 	const selectedStorageSavingsByQuality = $derived(
 		storageSavingsByQuality[selectedStorageSavingsQualityValue]
 	);
+	const selectedStorageEfficiencyByQuality = $derived(
+		storageEfficiencyByQuality[selectedStorageSavingsQualityValue]
+	);
+	const selectedStorageMetricLabel = $derived(
+		selectedStorageSavingsMetric === "savings" ? "Storage saved" : "Efficiency"
+	);
 	const storageSavingsData = $derived([
 		{
 			id: "png-optimized",
 			codec: "PNG optimized (Lossless)",
 			savings: 5.97,
+			efficiency: 1.06,
+			value: selectedStorageSavingsMetric === "savings" ? 5.97 : 1.06,
 			color: storageSavingsColors[0]
 		},
 		{
 			id: "webp-lossless",
 			codec: "WebP (Lossless)",
 			savings: 26.57,
+			efficiency: 1.36,
+			value: selectedStorageSavingsMetric === "savings" ? 26.57 : 1.36,
 			color: storageSavingsColors[1]
 		},
 		{
 			id: "jpeg-xl-lossless",
 			codec: "JPEG XL (Lossless)",
 			savings: 34.93,
+			efficiency: 1.54,
+			value: selectedStorageSavingsMetric === "savings" ? 34.93 : 1.54,
 			color: storageSavingsColors[2]
 		},
 		{
 			id: "jpeg",
 			codec: `JPEG (Quality: ${selectedStorageSavingsQualityValue})`,
 			savings: selectedStorageSavingsByQuality.jpeg,
+			efficiency: selectedStorageEfficiencyByQuality.jpeg,
+			value:
+				selectedStorageSavingsMetric === "savings"
+					? selectedStorageSavingsByQuality.jpeg
+					: selectedStorageEfficiencyByQuality.jpeg,
 			color: storageSavingsColors[3]
 		},
 		{
 			id: "webp",
 			codec: `WebP (Quality: ${selectedStorageSavingsQualityValue})`,
 			savings: selectedStorageSavingsByQuality.webp,
+			efficiency: selectedStorageEfficiencyByQuality.webp,
+			value:
+				selectedStorageSavingsMetric === "savings"
+					? selectedStorageSavingsByQuality.webp
+					: selectedStorageEfficiencyByQuality.webp,
 			color: storageSavingsColors[4]
 		},
 		{
 			id: "avif",
 			codec: `AVIF (Quality: ${selectedStorageSavingsQualityValue})`,
 			savings: selectedStorageSavingsByQuality.avif,
+			efficiency: selectedStorageEfficiencyByQuality.avif,
+			value:
+				selectedStorageSavingsMetric === "savings"
+					? selectedStorageSavingsByQuality.avif
+					: selectedStorageEfficiencyByQuality.avif,
 			color: storageSavingsColors[5]
 		},
 		{
 			id: "jpeg-xl",
 			codec: `JPEG XL (Quality: ${selectedStorageSavingsQualityValue})`,
 			savings: selectedStorageSavingsByQuality.jpegXl,
+			efficiency: selectedStorageEfficiencyByQuality.jpegXl,
+			value:
+				selectedStorageSavingsMetric === "savings"
+					? selectedStorageSavingsByQuality.jpegXl
+					: selectedStorageEfficiencyByQuality.jpegXl,
 			color: storageSavingsColors[6]
 		}
 	]);
+	const storageMetricXDomain = $derived.by((): [number, number] => {
+		if (selectedStorageSavingsMetric === "savings") return [0, 100];
+
+		const maxValue = Math.max(...storageSavingsData.map((item) => item.value));
+		const step = maxValue > 100 ? 50 : maxValue > 20 ? 10 : 2;
+
+		return [0, Math.ceil(maxValue / step) * step];
+	});
 	const storageSavingsLosslessData = $derived(storageSavingsData.slice(0, 3));
 	const storageSavingsLossyData = $derived(storageSavingsData.slice(3));
 	const selectedTradeoffImage = $derived(navigateTradeoffImages[navigateTradeoffIndex]);
@@ -1163,7 +1228,11 @@
 				<Card>
 					<CardHeader>
 						<div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-							<CardTitle>Storage savings (from PNG)</CardTitle>
+							<CardTitle>
+								{selectedStorageSavingsMetric === "savings"
+									? "Storage savings (from PNG)"
+									: "Storage efficiency (from PNG)"}
+							</CardTitle>
 							<div
 								class="relative grid w-fit grid-cols-2 overflow-hidden rounded-lg border bg-muted/30 p-0.5"
 								role="radiogroup"
@@ -1210,20 +1279,20 @@
 								<BarChart
 									labels={{
 										offset: 12,
-										format: formatStorageSavingsPercent
+										format: formatStorageMetricValue
 									}}
 									data={storageSavingsLosslessData}
 									orientation="horizontal"
 									yScale={scaleBand().padding(0.25)}
 									y="codec"
-									xDomain={[0, 100]}
+									xDomain={storageMetricXDomain}
 									axis="y"
 									rule={false}
 									series={[
 										{
-											key: "savings",
-											label: storageSavingsChartConfig.savings.label,
-											color: "var(--color-savings)"
+											key: "value",
+											label: selectedStorageMetricLabel,
+											color: "var(--color-value)"
 										}
 									]}
 									padding={{ right: 16 }}
@@ -1243,7 +1312,7 @@
 										{#each storageSavingsLosslessData as item, index (item.id)}
 											<Bar
 												data={item}
-												seriesKey="savings"
+												seriesKey="value"
 												stroke="none"
 												fill={item.color}
 												radius={5}
@@ -1275,20 +1344,20 @@
 								<BarChart
 									labels={{
 										offset: 12,
-										format: formatStorageSavingsPercent
+										format: formatStorageMetricValue
 									}}
 									data={storageSavingsLossyData}
 									orientation="horizontal"
 									yScale={scaleBand().padding(0.25)}
 									y="codec"
-									xDomain={[0, 100]}
+									xDomain={storageMetricXDomain}
 									axis="y"
 									rule={false}
 									series={[
 										{
-											key: "savings",
-											label: storageSavingsChartConfig.savings.label,
-											color: "var(--color-savings)"
+											key: "value",
+											label: selectedStorageMetricLabel,
+											color: "var(--color-value)"
 										}
 									]}
 									padding={{ right: 16 }}
@@ -1308,7 +1377,7 @@
 										{#each storageSavingsLossyData as item, index (item.id)}
 											<Bar
 												data={item}
-												seriesKey="savings"
+												seriesKey="value"
 												stroke="none"
 												fill={item.color}
 												radius={5}
@@ -1345,6 +1414,40 @@
 								aria-valuetext={`Quality ${selectedStorageSavingsQualityValue}`}
 								class="[&_[data-slot=slider-range]]:bg-[rgb(68_125_247)]"
 							/>
+							<div class="flex flex-col gap-3 pt-1 sm:flex-row sm:items-center sm:justify-between">
+								<span class="text-sm font-medium">Show</span>
+								<div
+									class="relative grid w-fit grid-cols-2 overflow-hidden rounded-lg border bg-muted/30 p-0.5"
+									role="radiogroup"
+									aria-label="Storage chart metric"
+								>
+									<div
+										class={`absolute inset-y-0.5 left-0.5 w-[calc(50%-0.125rem)] rounded-md bg-primary shadow-sm transition-transform duration-200 ease-out ${
+											selectedStorageSavingsMetric === "efficiency"
+												? "translate-x-full"
+												: "translate-x-0"
+										}`}
+										aria-hidden="true"
+									></div>
+									{#each storageSavingsMetricOptions as option}
+										<Button
+											type="button"
+											size="sm"
+											variant="ghost"
+											class={`relative z-10 min-w-28 rounded-md bg-transparent hover:bg-transparent ${
+												selectedStorageSavingsMetric === option.value
+													? "text-primary-foreground hover:text-primary-foreground"
+													: "text-muted-foreground hover:text-foreground"
+											}`}
+											role="radio"
+											aria-checked={selectedStorageSavingsMetric === option.value}
+											onclick={() => (selectedStorageSavingsMetric = option.value)}
+										>
+											{option.label}
+										</Button>
+									{/each}
+								</div>
+							</div>
 						</div>
 					</CardContent>
 					<CardFooter>
