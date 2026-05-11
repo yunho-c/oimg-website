@@ -567,6 +567,8 @@
 			color: storageSavingsColors[6]
 		}
 	]);
+	const storageSavingsLosslessData = $derived(storageSavingsData.slice(0, 3));
+	const storageSavingsLossyData = $derived(storageSavingsData.slice(3));
 	const selectedTradeoffImage = $derived(navigateTradeoffImages[navigateTradeoffIndex]);
 	const selectedRawOptimizedPreviewSrc = $derived(
 		getOptimizedQualityImageUrl(
@@ -1194,62 +1196,138 @@
 						</div>
 					</CardHeader>
 					<CardContent>
-						<Chart.Container config={storageSavingsChartConfig} class="min-h-[300px] w-full">
-							<BarChart
-								labels={{
-									offset: 12,
-									format: formatStorageSavingsPercent
-								}}
-								data={storageSavingsData}
-								orientation="horizontal"
-								yScale={scaleBand().padding(0.25)}
-								y="codec"
-								xDomain={[0, 100]}
-								axis="y"
-								rule={false}
-								series={[
-									{
-										key: "savings",
-										label: storageSavingsChartConfig.savings.label,
-										color: "var(--color-savings)"
-									}
-								]}
-								padding={{ right: 16 }}
-								props={{
-									highlight: { area: { fill: "none" } },
-									yAxis: {
-										tickLabelProps: {
-											textAnchor: "start",
-											dx: 6,
-											class: "stroke-none fill-background!"
-										},
-										tickLength: 0
-									}
-								}}
+						<div class="space-y-2">
+							<div
+								class="flex items-center gap-3 text-[0.7rem] font-semibold uppercase tracking-wide text-muted-foreground"
 							>
-								{#snippet marks()}
-									{#each storageSavingsData as item, index (item.id)}
-										<Bar
-											data={item}
-											seriesKey="savings"
-											stroke="none"
-											fill={item.color}
-											radius={5}
-											rounded="all"
-											motion={{
-												type: "tween",
-												duration: 500,
-												delay: index * storageSavingsBarDelayMs,
-												easing: cubicInOut
-											}}
-										/>
-									{/each}
-								{/snippet}
-								{#snippet tooltip()}
-									<Chart.Tooltip hideLabel />
-								{/snippet}
-							</BarChart>
-						</Chart.Container>
+								<span>Lossless</span>
+								<div class="h-px flex-1 bg-border/70"></div>
+							</div>
+							<Chart.Container
+								config={storageSavingsChartConfig}
+								class="h-[138px] min-h-[138px] w-full aspect-auto"
+							>
+								<BarChart
+									labels={{
+										offset: 12,
+										format: formatStorageSavingsPercent
+									}}
+									data={storageSavingsLosslessData}
+									orientation="horizontal"
+									yScale={scaleBand().padding(0.25)}
+									y="codec"
+									xDomain={[0, 100]}
+									axis="y"
+									rule={false}
+									series={[
+										{
+											key: "savings",
+											label: storageSavingsChartConfig.savings.label,
+											color: "var(--color-savings)"
+										}
+									]}
+									padding={{ right: 16 }}
+									props={{
+										highlight: { area: { fill: "none" } },
+										yAxis: {
+											tickLabelProps: {
+												textAnchor: "start",
+												dx: 6,
+												class: "stroke-none fill-background!"
+											},
+											tickLength: 0
+										}
+									}}
+								>
+									{#snippet marks()}
+										{#each storageSavingsLosslessData as item, index (item.id)}
+											<Bar
+												data={item}
+												seriesKey="savings"
+												stroke="none"
+												fill={item.color}
+												radius={5}
+												rounded="all"
+												motion={{
+													type: "tween",
+													duration: 500,
+													delay: index * storageSavingsBarDelayMs,
+													easing: cubicInOut
+												}}
+											/>
+										{/each}
+									{/snippet}
+									{#snippet tooltip()}
+										<Chart.Tooltip hideLabel />
+									{/snippet}
+								</BarChart>
+							</Chart.Container>
+							<div
+								class="flex items-center gap-3 text-[0.7rem] font-semibold uppercase tracking-wide text-muted-foreground"
+							>
+								<span>Lossy</span>
+								<div class="h-px flex-1 bg-border/70"></div>
+							</div>
+							<Chart.Container
+								config={storageSavingsChartConfig}
+								class="h-[184px] min-h-[184px] w-full aspect-auto"
+							>
+								<BarChart
+									labels={{
+										offset: 12,
+										format: formatStorageSavingsPercent
+									}}
+									data={storageSavingsLossyData}
+									orientation="horizontal"
+									yScale={scaleBand().padding(0.25)}
+									y="codec"
+									xDomain={[0, 100]}
+									axis="y"
+									rule={false}
+									series={[
+										{
+											key: "savings",
+											label: storageSavingsChartConfig.savings.label,
+											color: "var(--color-savings)"
+										}
+									]}
+									padding={{ right: 16 }}
+									props={{
+										highlight: { area: { fill: "none" } },
+										yAxis: {
+											tickLabelProps: {
+												textAnchor: "start",
+												dx: 6,
+												class: "stroke-none fill-background!"
+											},
+											tickLength: 0
+										}
+									}}
+								>
+									{#snippet marks()}
+										{#each storageSavingsLossyData as item, index (item.id)}
+											<Bar
+												data={item}
+												seriesKey="savings"
+												stroke="none"
+												fill={item.color}
+												radius={5}
+												rounded="all"
+												motion={{
+													type: "tween",
+													duration: 500,
+													delay: (index + storageSavingsLosslessData.length) * storageSavingsBarDelayMs,
+													easing: cubicInOut
+												}}
+											/>
+										{/each}
+									{/snippet}
+									{#snippet tooltip()}
+										<Chart.Tooltip hideLabel />
+									{/snippet}
+								</BarChart>
+							</Chart.Container>
+						</div>
 						<div class="space-y-3 border-t pt-4">
 							<div class="flex items-center justify-between gap-4 text-sm">
 								<span class="font-medium">Target quality</span>
