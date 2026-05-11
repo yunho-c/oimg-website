@@ -54,6 +54,7 @@
 	type DownloadPlatform = "macos" | "windows" | "linux";
 	type DownloadArch = "x64" | "arm64";
 	type StorageSavingsDataset = "natural" | "screenshots";
+	type StorageSavingsQuality = 0 | 10 | 20 | 30 | 40 | 50 | 60 | 70 | 80 | 90;
 
 	type DownloadTarget = {
 		label: string;
@@ -278,24 +279,34 @@
 	const featureSectionColumns = "lg:grid-cols-[1.00fr_1.00fr]";
 	const currentYear = new Date().getFullYear();
 
-	const storageSavingsData = [
-		{ codec: "PNG optimized (Lossless)", savings: 5.97, color: "#0466C8" },
-		{ codec: "JPEG XL (Lossless)", savings: 35.02, color: "#0353A4" },
-		{ codec: "JPEG (Quality: 90)", savings: 86.27, color: "#023E7D" },
-		{ codec: "WebP (Quality: 90)", savings: 86.42, color: "#002855" },
-		{ codec: "AVIF (Quality: 90)", savings: 85.7, color: "#001845" },
-		{ codec: "JPEG XL (Quality: 90)", savings: 87.12, color: "#001233" }
-	];
-
 	const storageSavingsChartConfig = {
 		savings: { label: "Storage saved", color: "rgb(68 125 247)" },
 		label: { color: "var(--background)" }
 	} satisfies Chart.ChartConfig;
 	const storageSavingsBarDelayMs = 110;
+	const storageSavingsByQuality: Record<
+		StorageSavingsQuality,
+		{ jpeg: number; webp: number; avif: number; jpegXl: number }
+	> = {
+		0: { jpeg: 99.72, webp: 99.12, avif: 99.44, jpegXl: 99.31 },
+		10: { jpeg: 98.79, webp: 98.09, avif: 99.22, jpegXl: 98.78 },
+		20: { jpeg: 97.83, webp: 97.5, avif: 98.61, jpegXl: 98.22 },
+		30: { jpeg: 96.99, webp: 96.89, avif: 97.92, jpegXl: 97.66 },
+		40: { jpeg: 96.23, webp: 96.22, avif: 97.26, jpegXl: 97.37 },
+		50: { jpeg: 95.53, webp: 95.56, avif: 96.38, jpegXl: 96.95 },
+		60: { jpeg: 94.73, webp: 94.86, avif: 95.39, jpegXl: 96.32 },
+		70: { jpeg: 93.54, webp: 94.06, avif: 94.08, jpegXl: 95.21 },
+		80: { jpeg: 91.26, webp: 92.02, avif: 92.56, jpegXl: 92.76 },
+		90: { jpeg: 86.25, webp: 86.44, avif: 86.39, jpegXl: 87.12 }
+	};
 	const storageSavingsDatasetOptions: { value: StorageSavingsDataset; label: string }[] = [
 		{ value: "natural", label: "Natural images" },
 		{ value: "screenshots", label: "Screenshots" }
 	];
+
+	function getStorageSavingsQuality(value: number): StorageSavingsQuality {
+		return Math.min(Math.max(Math.round(value / 10) * 10, 0), 90) as StorageSavingsQuality;
+	}
 
 	function formatStorageSavingsPercent(value: unknown) {
 		const numericValue = Number(value);
@@ -405,6 +416,7 @@
 	let selectedPlatform = $state<DownloadPlatform>("macos");
 	let selectedArchitecture = $state<DownloadArch>("arm64");
 	let selectedStorageSavingsDataset = $state<StorageSavingsDataset>("natural");
+	let selectedStorageSavingsQuality = $state(90);
 	let detectedPlatform = $state<DownloadPlatform | null>(null);
 	let detectedArchitecture = $state<DownloadArch | null>(null);
 	let showAllDownloadOptions = $state(false);
@@ -496,6 +508,40 @@
 	const selectedQualityMetrics = $derived(
 		getQualityMetrics(navigateTradeoffImages[navigateTradeoffIndex].id, navigateTradeoffSliderValue)
 	);
+	const selectedStorageSavingsQualityValue = $derived(
+		getStorageSavingsQuality(selectedStorageSavingsQuality)
+	);
+	const selectedStorageSavingsByQuality = $derived(
+		storageSavingsByQuality[selectedStorageSavingsQualityValue]
+	);
+	const storageSavingsData = $derived([
+		{ id: "png-optimized", codec: "PNG optimized (Lossless)", savings: 5.97, color: "#0466C8" },
+		{ id: "jpeg-xl-lossless", codec: "JPEG XL (Lossless)", savings: 34.93, color: "#0353A4" },
+		{
+			id: "jpeg",
+			codec: `JPEG (Quality: ${selectedStorageSavingsQualityValue})`,
+			savings: selectedStorageSavingsByQuality.jpeg,
+			color: "#023E7D"
+		},
+		{
+			id: "webp",
+			codec: `WebP (Quality: ${selectedStorageSavingsQualityValue})`,
+			savings: selectedStorageSavingsByQuality.webp,
+			color: "#002855"
+		},
+		{
+			id: "avif",
+			codec: `AVIF (Quality: ${selectedStorageSavingsQualityValue})`,
+			savings: selectedStorageSavingsByQuality.avif,
+			color: "#001845"
+		},
+		{
+			id: "jpeg-xl",
+			codec: `JPEG XL (Quality: ${selectedStorageSavingsQualityValue})`,
+			savings: selectedStorageSavingsByQuality.jpegXl,
+			color: "#001233"
+		}
+	]);
 	const selectedTradeoffImage = $derived(navigateTradeoffImages[navigateTradeoffIndex]);
 	const selectedRawOptimizedPreviewSrc = $derived(
 		getOptimizedQualityImageUrl(
@@ -1157,7 +1203,7 @@
 								}}
 							>
 								{#snippet marks()}
-									{#each storageSavingsData as item, index (item.codec)}
+									{#each storageSavingsData as item, index (item.id)}
 										<Bar
 											data={item}
 											seriesKey="savings"
@@ -1179,6 +1225,24 @@
 								{/snippet}
 							</BarChart>
 						</Chart.Container>
+						<div class="space-y-3 border-t pt-4">
+							<div class="flex items-center justify-between gap-4 text-sm">
+								<span class="font-medium">Target quality</span>
+								<span class="font-semibold tabular-nums text-foreground">
+									{selectedStorageSavingsQualityValue}
+								</span>
+							</div>
+							<Slider
+								type="single"
+								bind:value={selectedStorageSavingsQuality}
+								min={0}
+								max={90}
+								step={10}
+								aria-label="Storage savings target quality"
+								aria-valuetext={`Quality ${selectedStorageSavingsQualityValue}`}
+								class="[&_[data-slot=slider-range]]:bg-[rgb(68_125_247)]"
+							/>
+						</div>
 					</CardContent>
 					<CardFooter>
 						<p class="text-sm leading-6 text-muted-foreground">
