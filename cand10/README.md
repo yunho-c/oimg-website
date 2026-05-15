@@ -18,7 +18,7 @@ bun run build
 
 ## Upload Media To R2
 
-The landing page video is expected to live in the `oimg` R2 bucket at `videos/analyze_demo.mp4`.
+The landing page video is served from `https://media.oimg.org/videos/oimg_demo.mp4`.
 
 Preview the upload plan:
 

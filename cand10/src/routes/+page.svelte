@@ -106,8 +106,8 @@
 
 	const oimgRepoHref = "https://github.com/yunho-c/oimg";
 	const siteBaseUrl = "https://oimg.org";
-	const mediaBaseUrl = "https://media.oimg.org";
-	const analyzeDemoVideoPath = "videos/analyze_demo.mp4";
+	const mainDemoVideoUrl = "https://media.oimg.org/videos/oimg_demo.mp4";
+	const analyzeDemoVideoUrl = "https://media.oimg.org/videos/analyze_demo.mp4";
 	const downloadPlatformOrder: DownloadPlatform[] = ["macos", "windows", "linux"];
 	const downloadBaseUrl = "https://oimg.org/download";
 	const platformIcons = {
@@ -120,10 +120,6 @@
 		windows: "#0078D4",
 		linux: "#EAB308"
 	};
-
-	function getMediaUrl(path: string) {
-		return `${mediaBaseUrl}/${path}`;
-	}
 
 	const downloadCatalog: Record<DownloadPlatform, PlatformDownloadConfig> = {
 			macos: {
@@ -392,12 +388,12 @@
 	];
 
 	const heroDemoVideo: PageMedia = {
-		src: getMediaUrl(analyzeDemoVideoPath),
+		src: mainDemoVideoUrl,
 		relativeSize: 1
 	};
 
 	const navigateTradeoffsVideo: PageMedia = {
-		src: getMediaUrl(analyzeDemoVideoPath),
+		src: analyzeDemoVideoUrl,
 		relativeSize: 1
 	};
 
