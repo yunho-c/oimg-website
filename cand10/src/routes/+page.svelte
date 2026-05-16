@@ -21,6 +21,7 @@
 	import { AppleLogoIcon, LinuxLogoIcon, WindowsLogoIcon } from "phosphor-svelte";
 	import { Bar, BarChart } from "layerchart";
 	import { scaleBand } from "d3-scale";
+	import HighlightedCode from "$lib/components/highlighted-code.svelte";
 	import InteractiveImage from "$lib/components/interactive-image.svelte";
 	import InteractiveVideo from "$lib/components/interactive-video.svelte";
 	import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "$lib/components/ui/accordion";
@@ -112,6 +113,18 @@
 	const downloadPlatformOrder: DownloadPlatform[] = ["macos", "windows", "linux"];
 	const downloadBaseUrl = "https://oimg.org/download";
 	const linuxInstallScriptUrl = "https://apt.oimg.org/install.sh";
+	const linuxManualInstallCommand = [
+		"sudo install -d -m 0755 /usr/share/keyrings /etc/apt/sources.list.d",
+		"",
+		"curl -fsSL https://apt.oimg.org/oimg-archive-keyring.gpg \\",
+		"  | sudo tee /usr/share/keyrings/oimg-archive-keyring.gpg >/dev/null",
+		"",
+		'echo "deb [arch=amd64 signed-by=/usr/share/keyrings/oimg-archive-keyring.gpg] https://apt.oimg.org stable main" \\',
+		"  | sudo tee /etc/apt/sources.list.d/oimg.list >/dev/null",
+		"",
+		"sudo apt-get update",
+		"sudo apt-get install -y oimg"
+	].join("\n");
 	const platformIcons = {
 		macos: AppleLogoIcon,
 		windows: WindowsLogoIcon,
@@ -453,6 +466,7 @@
 	let detectedArchitecture = $state<DownloadArch | null>(null);
 	let showAllDownloadOptions = $state(false);
 	let showCliInstall = $state(false);
+	let showManualLinuxInstallCommand = $state(false);
 	let copyFeedback = $state<"idle" | "copied">("idle");
 
 	function getAvailableArchitectures(platform: DownloadPlatform): DownloadArch[] {
@@ -536,6 +550,12 @@
 	);
 	const selectedTarget = $derived(
 		selectedPlatformConfig.arches[effectiveArchitecture] as DownloadTarget
+	);
+	const isShowingManualLinuxCommand = $derived(
+		selectedPlatform === "linux" && showManualLinuxInstallCommand
+	);
+	const displayedInstallCommand = $derived(
+		isShowingManualLinuxCommand ? linuxManualInstallCommand : selectedTarget.command
 	);
 	const selectedQualityMetrics = $derived(
 		getQualityMetrics(navigateTradeoffImages[navigateTradeoffIndex].id, navigateTradeoffSliderValue)
@@ -780,7 +800,7 @@
 	async function copySelectedCommand() {
 		if (!navigator.clipboard) return;
 
-		await navigator.clipboard.writeText(selectedTarget.command);
+		await navigator.clipboard.writeText(displayedInstallCommand);
 		copyFeedback = "copied";
 
 		window.setTimeout(() => {
@@ -1130,13 +1150,21 @@
 											>
 												<div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
 													<div class="min-w-0 flex-1 space-y-2">
-														<div class="flex flex-wrap items-baseline gap-x-2 gap-y-1 font-mono text-sm leading-6">
-															{#each tokenizeCommand(selectedTarget.command) as token}
-																<span class={getCommandTokenClass(token.kind)}>
-																	{token.text}
-																</span>
-															{/each}
-														</div>
+														{#if isShowingManualLinuxCommand}
+															<HighlightedCode
+																code={displayedInstallCommand}
+																lang="bash"
+																class="font-mono text-sm leading-6"
+															/>
+														{:else}
+															<div class="flex flex-wrap items-baseline gap-x-2 gap-y-1 font-mono text-sm leading-6">
+																{#each tokenizeCommand(displayedInstallCommand) as token}
+																	<span class={getCommandTokenClass(token.kind)}>
+																		{token.text}
+																	</span>
+																{/each}
+															</div>
+														{/if}
 													</div>
 													<div class="flex shrink-0 items-center gap-2">
 														<Button
@@ -1159,18 +1187,26 @@
 														{/if}
 													</Button>
 														{#if selectedPlatform === "linux"}
-															<Button
-																size="icon-sm"
-																variant="outline"
-																href={linuxInstallScriptUrl}
-																target="_blank"
-																rel="noreferrer"
-																aria-label="Open Linux installation script"
-																title="Open Linux installation script"
-																class="border-white/15 bg-white/5 text-white hover:bg-white/10 hover:text-white"
-															>
-																<BadgeQuestionMark class="size-4" />
-															</Button>
+															<div class="group/linux-install-help relative">
+																<Button
+																	type="button"
+																	size="icon-sm"
+																	variant="outline"
+																	aria-label="Show manual Linux installation commands"
+																	aria-pressed={isShowingManualLinuxCommand}
+																	class="border-white/15 bg-white/5 text-white hover:bg-white/10 hover:text-white"
+																	onclick={() =>
+																		(showManualLinuxInstallCommand = !showManualLinuxInstallCommand)}
+																>
+																	<BadgeQuestionMark class="size-4" />
+																</Button>
+																<span
+																	class="pointer-events-none absolute right-0 top-full z-10 mt-2 w-max max-w-64 rounded-lg border border-white/10 bg-neutral-900 px-3 py-1.5 text-sm font-medium text-white opacity-0 shadow-lg transition-opacity duration-150 group-hover/linux-install-help:opacity-100 group-focus-within/linux-install-help:opacity-100"
+																	role="tooltip"
+																>
+																	Prefer to run the commands yourself?
+																</span>
+															</div>
 														{/if}
 													</div>
 												</div>
