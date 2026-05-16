@@ -19,7 +19,7 @@
 	import Autoplay from "embla-carousel-autoplay";
 	import NumberFlow, { NumberFlowGroup } from "@number-flow/svelte";
 	import { AppleLogoIcon, LinuxLogoIcon, WindowsLogoIcon } from "phosphor-svelte";
-	import { Bar, BarChart } from "layerchart";
+	import { Bar, BarChart, Text } from "layerchart";
 	import { scaleBand } from "d3-scale";
 	import HighlightedCode from "$lib/components/highlighted-code.svelte";
 	import InteractiveImage from "$lib/components/interactive-image.svelte";
@@ -354,6 +354,19 @@
 		}
 
 		return `${numericValue.toFixed(numericValue < 10 ? 2 : 1)}x`;
+	}
+
+	type StorageMetricLabelContext = {
+		xScale: (value: number) => number;
+		yScale: ((value: string) => number | undefined) & { bandwidth?: () => number };
+	};
+
+	function getStorageMetricLabelX(context: StorageMetricLabelContext, value: number) {
+		return context.xScale(value) + 12;
+	}
+
+	function getStorageMetricLabelY(context: StorageMetricLabelContext, codec: string) {
+		return (context.yScale(codec) ?? 0) + (context.yScale.bandwidth?.() ?? 0) / 2;
 	}
 
 	const boardCases = [
@@ -1339,10 +1352,6 @@
 								class="h-[138px] min-h-[138px] w-full aspect-auto"
 							>
 								<BarChart
-									labels={{
-										offset: 12,
-										format: formatStorageMetricValue
-									}}
 									data={storageSavingsLosslessData}
 									orientation="horizontal"
 									yScale={scaleBand().padding(0.25)}
@@ -1388,6 +1397,25 @@
 											/>
 										{/each}
 									{/snippet}
+									{#snippet labels({ context })}
+										{#each storageSavingsLosslessData as item, index (item.id)}
+											<Text
+												value={formatStorageMetricValue(item.value)}
+												x={getStorageMetricLabelX(context, item.value)}
+												y={getStorageMetricLabelY(context, item.codec)}
+												textAnchor="start"
+												verticalAnchor="middle"
+												capHeight=".6rem"
+												class="lc-labels-text"
+												motion={{
+													type: "tween",
+													duration: 500,
+													delay: index * storageSavingsBarDelayMs,
+													easing: cubicInOut
+												}}
+											/>
+										{/each}
+									{/snippet}
 									{#snippet tooltip()}
 										<Chart.Tooltip hideLabel />
 									{/snippet}
@@ -1404,10 +1432,6 @@
 								class="h-[184px] min-h-[184px] w-full aspect-auto"
 							>
 								<BarChart
-									labels={{
-										offset: 12,
-										format: formatStorageMetricValue
-									}}
 									data={storageSavingsLossyData}
 									orientation="horizontal"
 									yScale={scaleBand().padding(0.25)}
@@ -1444,6 +1468,25 @@
 												fill={item.color}
 												radius={5}
 												rounded="all"
+												motion={{
+													type: "tween",
+													duration: 500,
+													delay: (index + storageSavingsLosslessData.length) * storageSavingsBarDelayMs,
+													easing: cubicInOut
+												}}
+											/>
+										{/each}
+									{/snippet}
+									{#snippet labels({ context })}
+										{#each storageSavingsLossyData as item, index (item.id)}
+											<Text
+												value={formatStorageMetricValue(item.value)}
+												x={getStorageMetricLabelX(context, item.value)}
+												y={getStorageMetricLabelY(context, item.codec)}
+												textAnchor="start"
+												verticalAnchor="middle"
+												capHeight=".6rem"
+												class="lc-labels-text"
 												motion={{
 													type: "tween",
 													duration: 500,
