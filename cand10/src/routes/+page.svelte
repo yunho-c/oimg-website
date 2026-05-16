@@ -339,10 +339,6 @@
 		{ value: "natural", label: "Natural images" },
 		{ value: "screenshots", label: "Screenshots" }
 	];
-	const storageSavingsMetricOptions: { value: StorageSavingsMetric; label: string }[] = [
-		{ value: "savings", label: "Savings" },
-		{ value: "efficiency", label: "Efficiency" }
-	];
 
 	function getStorageSavingsQuality(value: number): StorageSavingsQuality {
 		return Math.min(Math.max(Math.round(value / 10) * 10, 0), 90) as StorageSavingsQuality;
@@ -483,6 +479,11 @@
 
 	function getDownloadButtonLabel(platform: DownloadPlatform, architecture: DownloadArch): string {
 		return `Download for ${downloadCatalog[platform].label} (${getArchitectureLabel(platform, architecture)})`;
+	}
+
+	function toggleStorageSavingsMetric() {
+		selectedStorageSavingsMetric =
+			selectedStorageSavingsMetric === "savings" ? "efficiency" : "savings";
 	}
 
 	function parseFileSizeDisplay(fileSize: string | null | undefined): FileSizeDisplay | null {
@@ -1284,11 +1285,19 @@
 				<Card>
 					<CardHeader>
 						<div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-							<CardTitle>
-								{selectedStorageSavingsMetric === "savings"
-									? "Storage savings (from PNG)"
-									: "Storage efficiency (from PNG)"}
-							</CardTitle>
+								<CardTitle>
+									Storage
+									<button
+										type="button"
+										class="cursor-pointer appearance-none border-0 bg-transparent p-0 font-inherit text-inherit underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+										aria-label={`Switch storage chart to ${
+											selectedStorageSavingsMetric === "savings" ? "efficiency" : "savings"
+										}`}
+										onclick={toggleStorageSavingsMetric}
+									>
+										{selectedStorageSavingsMetric}
+									</button>
+								</CardTitle>
 							<div
 								class="relative grid w-fit grid-cols-2 overflow-hidden rounded-lg border bg-muted/30 p-0.5"
 								role="radiogroup"
@@ -1470,42 +1479,8 @@
 								aria-valuetext={`Quality ${selectedStorageSavingsQualityValue}`}
 								class="[&_[data-slot=slider-range]]:bg-[rgb(68_125_247)]"
 							/>
-							<div class="flex flex-col gap-3 pt-1 sm:flex-row sm:items-center sm:justify-between">
-								<span class="text-sm font-medium">Show</span>
-								<div
-									class="relative grid w-fit grid-cols-2 overflow-hidden rounded-lg border bg-muted/30 p-0.5"
-									role="radiogroup"
-									aria-label="Storage chart metric"
-								>
-									<div
-										class={`absolute inset-y-0.5 left-0.5 w-[calc(50%-0.125rem)] rounded-md bg-primary shadow-sm transition-transform duration-200 ease-out ${
-											selectedStorageSavingsMetric === "efficiency"
-												? "translate-x-full"
-												: "translate-x-0"
-										}`}
-										aria-hidden="true"
-									></div>
-									{#each storageSavingsMetricOptions as option}
-										<Button
-											type="button"
-											size="sm"
-											variant="ghost"
-											class={`relative z-10 min-w-28 rounded-md bg-transparent hover:bg-transparent ${
-												selectedStorageSavingsMetric === option.value
-													? "text-primary-foreground hover:text-primary-foreground"
-													: "text-muted-foreground hover:text-foreground"
-											}`}
-											role="radio"
-											aria-checked={selectedStorageSavingsMetric === option.value}
-											onclick={() => (selectedStorageSavingsMetric = option.value)}
-										>
-											{option.label}
-										</Button>
-									{/each}
-								</div>
 							</div>
-						</div>
-					</CardContent>
+						</CardContent>
 					<CardFooter>
 						<p class="text-sm leading-6 text-muted-foreground">
 							Computed based on the
