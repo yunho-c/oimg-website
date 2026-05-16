@@ -1287,8 +1287,7 @@
 						Save storage
 					</h2>
 					<p class="text-base leading-7 text-muted-foreground">
-						Lighter exports compound quickly across libraries, campaigns, and handoff folders.
-						OIMG keeps the image readable while reducing the space every finished file has to occupy.
+						OIMG supports modern image formats that achieve substantial efficiency gains over popular formats like PNG and JPEG.
 					</p>
 				</div>
 
@@ -1525,7 +1524,7 @@
 						<p class="text-sm leading-6 text-muted-foreground">
 							Computed based on the
 							<a
-								href="https://clic2024.compression.cc/tasks/index.html"
+								href="https://archive.compression.cc/2024/tasks/#image"
 								target="_blank"
 								rel="noreferrer"
 								class="font-medium underline decoration-current underline-offset-4 transition-colors hover:text-foreground"
