@@ -646,10 +646,7 @@
 	const storageMetricXDomain = $derived.by((): [number, number] => {
 		if (selectedStorageSavingsMetric === "savings") return [0, 100];
 
-		const maxValue = Math.max(...storageSavingsData.map((item) => item.value));
-		const step = maxValue > 100 ? 50 : maxValue > 20 ? 10 : 2;
-
-		return [0, Math.ceil(maxValue / step) * step];
+		return [0, Math.max(...storageSavingsData.map((item) => item.value))];
 	});
 	const storageSavingsLosslessData = $derived(storageSavingsData.slice(0, 3));
 	const storageSavingsLossyData = $derived(storageSavingsData.slice(3));
