@@ -4,6 +4,7 @@
 	import { fade, fly, scale } from "svelte/transition";
 	import {
 		ArrowLeftRight,
+		BadgeQuestionMark,
 		Check,
 		Copy,
 		Download,
@@ -110,6 +111,7 @@
 	const analyzeDemoVideoUrl = "https://media.oimg.org/videos/analyze_demo.mp4";
 	const downloadPlatformOrder: DownloadPlatform[] = ["macos", "windows", "linux"];
 	const downloadBaseUrl = "https://oimg.org/download";
+	const linuxInstallScriptUrl = "https://apt.oimg.org/install.sh";
 	const platformIcons = {
 		macos: AppleLogoIcon,
 		windows: WindowsLogoIcon,
@@ -153,7 +155,7 @@
 						x64: {
 							label: "x64",
 							downloadHref: `${downloadBaseUrl}/linux-x64`,
-							command: "sudo apt install oimg"
+							command: `curl -fsSL ${linuxInstallScriptUrl} | bash`
 						}
 				}
 			}
@@ -1117,39 +1119,61 @@
 
 									{#if showCliInstall}
 										<div
-											class="w-full rounded-xl border border-white/10 bg-neutral-950 p-4 text-white sm:w-4/5"
+											class="flex w-full items-start gap-2"
 											in:fly={{ y: -8, duration: 180 }}
 											out:fly={{ y: -6, duration: 150 }}
 										>
-											<div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-												<div class="space-y-2">
-													<div class="flex flex-wrap items-baseline gap-x-2 gap-y-1 font-mono text-sm leading-6">
-														{#each tokenizeCommand(selectedTarget.command) as token}
-															<span class={getCommandTokenClass(token.kind)}>
-																{token.text}
-															</span>
-														{/each}
+											<div
+												class={`min-w-0 flex-1 rounded-xl border border-white/10 bg-neutral-950 p-4 text-white ${
+													selectedPlatform === "linux" ? "sm:max-w-[95%]" : "sm:max-w-[80%]"
+												}`}
+											>
+												<div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+													<div class="min-w-0 flex-1 space-y-2">
+														<div class="flex flex-wrap items-baseline gap-x-2 gap-y-1 font-mono text-sm leading-6">
+															{#each tokenizeCommand(selectedTarget.command) as token}
+																<span class={getCommandTokenClass(token.kind)}>
+																	{token.text}
+																</span>
+															{/each}
+														</div>
+													</div>
+													<div class="flex shrink-0 items-center gap-2">
+														<Button
+															type="button"
+															size="sm"
+															variant="outline"
+															class={`transition-colors duration-200 ${
+																copyFeedback === "copied"
+																	? "border-white bg-white text-neutral-950 hover:bg-white hover:text-neutral-950"
+																	: "border-white/15 bg-white/5 text-white hover:bg-white/10 hover:text-white"
+															}`}
+															onclick={copySelectedCommand}
+														>
+														{#if copyFeedback === "copied"}
+															Copied
+															<Check class="size-4" />
+														{:else}
+															Copy
+															<Copy class="size-4" />
+														{/if}
+													</Button>
+														{#if selectedPlatform === "linux"}
+															<Button
+																size="icon-sm"
+																variant="outline"
+																href={linuxInstallScriptUrl}
+																target="_blank"
+																rel="noreferrer"
+																aria-label="Open Linux installation script"
+																title="Open Linux installation script"
+																class="border-white/15 bg-white/5 text-white hover:bg-white/10 hover:text-white"
+															>
+																<BadgeQuestionMark class="size-4" />
+															</Button>
+														{/if}
 													</div>
 												</div>
-												<Button
-													type="button"
-													size="sm"
-													variant="outline"
-													class={`sm:shrink-0 transition-colors duration-200 ${
-														copyFeedback === "copied"
-															? "border-white bg-white text-neutral-950 hover:bg-white hover:text-neutral-950"
-															: "border-white/15 bg-white/5 text-white hover:bg-white/10 hover:text-white"
-													}`}
-													onclick={copySelectedCommand}
-												>
-												{#if copyFeedback === "copied"}
-													Copied
-													<Check class="size-4" />
-												{:else}
-													Copy
-													<Copy class="size-4" />
-												{/if}
-											</Button>
 											</div>
 										</div>
 									{/if}
