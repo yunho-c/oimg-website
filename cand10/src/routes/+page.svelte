@@ -1289,7 +1289,7 @@
 									Storage
 									<button
 										type="button"
-										class="cursor-pointer appearance-none border-0 bg-transparent p-0 font-inherit text-inherit underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+										class="cursor-pointer appearance-none border-0 bg-transparent p-0 font-inherit text-[rgb(45_91_190)] underline decoration-current underline-offset-4 transition-colors duration-200 ease-out hover:text-[rgb(68_125_247)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
 										aria-label={`Switch storage chart to ${
 											selectedStorageSavingsMetric === "savings" ? "efficiency" : "savings"
 										}`}
